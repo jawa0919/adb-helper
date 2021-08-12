@@ -1,16 +1,17 @@
 {
   "name": "adb-helper",
-  "displayName": "adb-helper",
-  "description": "",
+  "displayName": "ADB Helper",
+  "description": "Devices Wifi Connect, File Explorer, APK Manager",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.59.0"
+    "vscode": "^1.56.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:adb-helper.helloWorld"
+    "workspaceContains:**/AndroidManifest.xml",
+    "workspaceContains:**.apk"
   ],
   "main": "./out/extension.js",
   "contributes": {
