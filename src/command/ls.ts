@@ -12,7 +12,7 @@ import { cmd, createUri } from "../util";
 export async function ls(id: string, path: string): Promise<IFileStat[]> {
   const s = `adb -s ${id} shell ls -l ${path}`;
   let lines = await cmd(s);
-  if (lines[0].startsWith("total")) {
+  if (lines.length > 0 && lines[0].startsWith("total")) {
     lines.shift();
     lines = lines.map((r) => r.trim());
     return _parseV2(id, path, lines);

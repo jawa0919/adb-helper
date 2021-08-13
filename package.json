@@ -196,7 +196,7 @@
         {
           "command": "adb-helper.Explorer.UploadFile",
           "when": "view == adb-helper.Explorer && viewItem == directory",
-          "group": "e2@2"
+          "group": "e3@2"
         },
         {
           "command": "adb-helper.Explorer.UploadDirectory",

@@ -69,7 +69,7 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
     }
     return new Promise<TreeItem[]>(async (resolve) => {
       const fileList = await pm(this.device.id, this.args).catch((err) => {
-        resolve([new TreeItem(err)]);
+        resolve([new TreeItem(`${err}`)]);
         return [] as IApk[];
       });
       let treeItemList = fileList.map((r) => {

@@ -57,8 +57,8 @@ export async function cmd(cmd: string): Promise<string[]> {
     return err;
   });
   let lines = res.stdout.trim().split(/\n|\r\n/);
-  lines = lines.map((r) => r.trim());
-  console.debug(`cmd return start---\n${lines.join("\n")}\n---end`);
+  lines = lines.map((r) => r.trim()).filter((r) => r !== "");
+  console.debug(`cmd return start${lines.length}---\n${lines.join("\n")}\n---end`);
   return lines;
 }
 
