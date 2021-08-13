@@ -6,9 +6,9 @@
  */
 
 import { IApk } from "../type";
-import { cmd } from "../util";
+import { c, cmd, cSync } from "../util";
 
-export async function pm(id: string, args: string): Promise<IApk[]> {
+export async function list(id: string, args: string): Promise<IApk[]> {
   const s = `adb -s ${id} shell pm list packages  -f ${args}`;
   let lines = await cmd(s);
   return _parseV1(id, lines);
@@ -25,4 +25,23 @@ function _parseV1(id: string, lines: string[]): IApk[] {
   });
   res.sort((a, b) => (a.name < b.name ? -1 : 1));
   return res;
+}
+
+export async function install(id: string, path: string, args = ""): Promise<boolean> {
+  path = path.replace(/ /g, "\\ ");
+  const s = `adb -s ${id} install ${path} ${args}`;
+  let lines = await cmd(s);
+  return true;
+}
+
+export async function uninstall(id: string, name: string, args = ""): Promise<boolean> {
+  const s = `adb -s ${id} shell pm uninstall ${name} ${args}`;
+  let lines = await cmd(s);
+  return true;
+}
+
+export async function clear(id: string, name: string): Promise<boolean> {
+  const s = `adb -s ${id} shell pm clear ${name}`;
+  let lines = await cmd(s);
+  return true;
 }
