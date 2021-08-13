@@ -17,8 +17,101 @@
   "contributes": {
     "commands": [
       {
-        "command": "adb-helper.helloWorld",
-        "title": "Hello World"
+        "command": "adb-helper.adbVersion",
+        "title": "ADB Version"
+      },
+      {
+        "command": "adb-helper.Devices.refresh",
+        "title": "refresh Devices",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "adb-helper.Devices.disconnect",
+        "title": "disconnect all wifi connect Devices",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "adb-helper.Devices.connect",
+        "title": "connect wifi Device",
+        "icon": "$(broadcast)"
+      },
+      {
+        "command": "adb-helper.Devices.openSDCardExplorer",
+        "title": "Open SDCard Explorer"
+      },
+      {
+        "command": "adb-helper.Devices.openRootExplorer",
+        "title": "Open Root Explorer"
+      },
+      {
+        "command": "adb-helper.Devices.openAppManager",
+        "title": "Open App Manager"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "adb-helper",
+          "title": "ADB Helper",
+          "icon": "assets/adb-helper.svg"
+        }
+      ]
+    },
+    "views": {
+      "adb-helper": [
+        {
+          "id": "adb-helper.Devices",
+          "name": "Devices",
+          "when": "adb-helper:isADBSupport"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "adb-helper.Devices.refresh",
+          "when": "view == adb-helper.Devices",
+          "group": "navigation@1"
+        },
+        {
+          "command": "adb-helper.Devices.disconnect",
+          "when": "view == adb-helper.Devices",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "adb-helper.Devices.connect",
+          "when": "view == adb-helper.Devices && viewItem == usb",
+          "group": "inline"
+        },
+        {
+          "command": "adb-helper.Devices.openSDCardExplorer",
+          "when": "view == adb-helper.Devices",
+          "group": "d1@1"
+        },
+        {
+          "command": "adb-helper.Devices.openRootExplorer",
+          "when": "view == adb-helper.Devices",
+          "group": "d1@2"
+        },
+        {
+          "command": "adb-helper.Devices.openAppManager",
+          "when": "view == adb-helper.Devices"
+        }
+      ]
+    },
+    "configuration": [
+      {
+        "title": "ADB Helper",
+        "properties": {
+          "adb-helper.startPort": {
+            "type": "number",
+            "default": "5555",
+            "description": "wifi Connect Start Port",
+            "scope": "window"
+          }
+        }
       }
     ]
   },
