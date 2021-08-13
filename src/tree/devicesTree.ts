@@ -26,6 +26,7 @@ import {
 import { connect, tcpIp, wifiIP } from "../command/device";
 import { IDevice } from "../type";
 import { waitMoment } from "../util";
+import { ExplorerProvider, ExplorerTree } from "./explorerTree";
 
 export class DevicesTree {
   constructor(context: ExtensionContext) {
@@ -82,8 +83,8 @@ export class DevicesTree {
     async function _open1(item: TreeItem) {
       const device: IDevice = JSON.parse(item.tooltip as string);
       // const uri = Uri.parse(`adbEx://${device.id}/sdcard/`);
-      // const provider = new ExplorerTreeDataProvider(device, "/sdcard/");
-      // new ExplorerTree(context, provider);
+      const provider = new ExplorerProvider(device, "/sdcard/");
+      new ExplorerTree(context, provider);
     }
 
     async function _open2(item: TreeItem) {

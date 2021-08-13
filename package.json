@@ -46,6 +46,11 @@
       {
         "command": "adb-helper.Devices.openAppManager",
         "title": "Open App Manager"
+      },
+      {
+        "command": "adb-helper.Explorer.refresh",
+        "title": "refresh Explorer",
+        "icon": "$(refresh)"
       }
     ],
     "viewsContainers": {
@@ -63,6 +68,11 @@
           "id": "adb-helper.Devices",
           "name": "Devices",
           "when": "adb-helper:isADBSupport"
+        },
+        {
+          "id": "adb-helper.Explorer",
+          "name": "Explorer",
+          "when": "adb-helper:isADBSupport"
         }
       ]
     },
@@ -77,6 +87,11 @@
           "command": "adb-helper.Devices.disconnect",
           "when": "view == adb-helper.Devices",
           "group": "navigation@2"
+        },
+        {
+          "command": "adb-helper.Explorer.refresh",
+          "when": "view == adb-helper.Explorer",
+          "group": "navigation@1"
         }
       ],
       "view/item/context": [
