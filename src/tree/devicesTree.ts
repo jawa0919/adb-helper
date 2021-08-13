@@ -5,40 +5,29 @@
  * @Description  : devicesTree
  */
 
-import {
-  commands,
-  Event,
-  EventEmitter,
-  ExtensionContext,
-  ProviderResult,
-  ThemeIcon,
-  TreeDataProvider,
-  TreeItem,
-  window,
-  workspace,
-} from "vscode";
-import {
-  adbDevices,
-  adbKillServer,
-  adbStartServer,
-  disconnectAll,
-} from "../command/base";
+import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from "vscode";
+import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../command/base";
 import { connect, tcpIp, wifiIP } from "../command/device";
 import { IDevice } from "../type";
-import { waitMoment } from "../util";
+import { c, waitMoment } from "../util";
 import { ExplorerProvider, ExplorerTree } from "./explorerTree";
+import { ManagerTree } from "./managerTree";
 
 export class DevicesTree {
+  explorerTree?: ExplorerTree;
+  managerTree?: ManagerTree;
+
   constructor(context: ExtensionContext) {
     console.debug("DevicesTree constructor");
     const provider = new DevicesProvider();
     window.registerTreeDataProvider("adb-helper.Devices", provider);
 
-    commands.registerCommand("adb-helper.Devices.refresh", () => {
+    commands.registerCommand("adb-helper.Devices.Refresh", () => {
+      console.log("Devices.Refresh");
       provider.refresh();
     });
-
-    commands.registerCommand("adb-helper.Devices.disconnect", async () => {
+    commands.registerCommand("adb-helper.Devices.Disconnect", async () => {
+      console.log("Disconnect");
       disconnectAll();
       await waitMoment();
       adbKillServer();
@@ -48,17 +37,11 @@ export class DevicesTree {
       provider.refresh();
     });
 
-    commands.registerCommand("adb-helper.Devices.connect", _connectDevice);
-    commands.registerCommand("adb-helper.Devices.openSDCardExplorer", _open1);
-    commands.registerCommand("adb-helper.Devices.openRootExplorer", _open2);
-    commands.registerCommand("adb-helper.Devices.openAppManager", _open3);
-
-    async function _connectDevice(item: TreeItem) {
-      const device: IDevice = JSON.parse(item.tooltip as string);
+    commands.registerCommand("adb-helper.Devices.Connect", async (r) => {
+      console.log("Connect");
+      const device: IDevice = JSON.parse(r.tooltip);
       const ip: string = wifiIP(device.id);
-      let port: number = parseInt(
-        workspace.getConfiguration().get("adb-helper.startPort") ?? "5555"
-      );
+      let port: number = parseInt(workspace.getConfiguration().get("adb-helper.startPort") ?? "5555");
       port = port + device.transportId;
 
       await waitMoment();
@@ -78,27 +61,39 @@ export class DevicesTree {
       }
       await waitMoment();
       provider.refresh();
-    }
-
-    async function _open1(item: TreeItem) {
-      const device: IDevice = JSON.parse(item.tooltip as string);
+    });
+    commands.registerCommand("adb-helper.Devices.OpenSDCardExplorer", async (r) => {
+      console.log("OpenSDCardExplorer");
+      const device: IDevice = JSON.parse(r.tooltip);
       // const uri = Uri.parse(`adbEx://${device.id}/sdcard/`);
-      const provider = new ExplorerProvider(device, "/sdcard/");
-      new ExplorerTree(context, provider);
-    }
-
-    async function _open2(item: TreeItem) {
-      const device: IDevice = JSON.parse(item.tooltip as string);
+      if (this.explorerTree) {
+        this.explorerTree.refreshTree("/sdcard/");
+      } else {
+        this.explorerTree = new ExplorerTree(context, device);
+        this.explorerTree.refreshTree("/sdcard/");
+      }
+    });
+    commands.registerCommand("adb-helper.Devices.OpenRootExplorer", async (r) => {
+      console.log("OpenRootExplorer");
+      const device: IDevice = JSON.parse(r.tooltip);
       // const uri = Uri.parse(`adbEx://${device.id}/`);
-      // const provider = new ExplorerTreeDataProvider(device, "/");
-      // new ExplorerTree(context, provider);
-    }
-
-    async function _open3(item: TreeItem) {
-      const device: IDevice = JSON.parse(item.tooltip as string);
-      // const provider = new ManagerTreeDataProvider(device);
-      // new ManagerTree(context, provider);
-    }
+      if (this.explorerTree) {
+        this.explorerTree.refreshTree("/");
+      } else {
+        this.explorerTree = new ExplorerTree(context, device);
+        this.explorerTree.refreshTree("/");
+      }
+    });
+    commands.registerCommand("adb-helper.Devices.OpenAppManager", async (r) => {
+      console.log("OpenAppManager");
+      const device: IDevice = JSON.parse(r.tooltip);
+      if (this.managerTree) {
+        this.managerTree.refreshTree();
+      } else {
+        this.managerTree = new ManagerTree(context, device);
+        this.managerTree.refreshTree();
+      }
+    });
   }
 }
 

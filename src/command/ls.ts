@@ -62,8 +62,7 @@ function _parseV2(id: string, path: string, lines: string[]): IFileStat[] {
     const userGroupStr = temp[3];
     const sizeStr = temp[4];
     const modificationTimeStr = [temp[5], temp[6]].join(" ");
-    const nameStr =
-      temp.length > 8 ? [temp[7], temp[8], temp[9]].join(" ") : temp[7];
+    const nameStr = temp.length > 8 ? [temp[7], temp[8], temp[9]].join(" ") : temp[7];
 
     let type = _parseFileType(permissionsStr.substr(0, 1));
     let size = parseInt(sizeStr);

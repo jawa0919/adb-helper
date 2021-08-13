@@ -21,36 +21,60 @@
         "title": "ADB Version"
       },
       {
-        "command": "adb-helper.Devices.refresh",
-        "title": "refresh Devices",
+        "command": "adb-helper.Devices.Refresh",
+        "title": "Refresh Devices",
         "icon": "$(refresh)"
       },
       {
-        "command": "adb-helper.Devices.disconnect",
-        "title": "disconnect all wifi connect Devices",
+        "command": "adb-helper.Devices.Disconnect",
+        "title": "Disconnect all wifi connect Devices",
         "icon": "$(debug-disconnect)"
       },
       {
-        "command": "adb-helper.Devices.connect",
-        "title": "connect wifi Device",
+        "command": "adb-helper.Devices.Connect",
+        "title": "Connect wifi Device",
         "icon": "$(broadcast)"
       },
       {
-        "command": "adb-helper.Devices.openSDCardExplorer",
+        "command": "adb-helper.Devices.OpenSDCardExplorer",
         "title": "Open SDCard Explorer"
       },
       {
-        "command": "adb-helper.Devices.openRootExplorer",
+        "command": "adb-helper.Devices.OpenRootExplorer",
         "title": "Open Root Explorer"
       },
       {
-        "command": "adb-helper.Devices.openAppManager",
+        "command": "adb-helper.Devices.OpenAppManager",
         "title": "Open App Manager"
       },
       {
-        "command": "adb-helper.Explorer.refresh",
-        "title": "refresh Explorer",
+        "command": "adb-helper.Explorer.Refresh",
+        "title": "Refresh Explorer",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "adb-helper.Explorer.NewDirectory",
+        "title": "New Directory"
+      },
+      {
+        "command": "adb-helper.Explorer.SaveAs",
+        "title": "Save As..."
+      },
+      {
+        "command": "adb-helper.Explorer.UploadFile",
+        "title": "Upload File"
+      },
+      {
+        "command": "adb-helper.Explorer.UploadDirectory",
+        "title": "Upload Directory"
+      },
+      {
+        "command": "adb-helper.Explorer.Delete",
+        "title": "Delete"
+      },
+      {
+        "command": "adb-helper.Explorer.CopyPath",
+        "title": "Copy Path"
       }
     ],
     "viewsContainers": {
@@ -79,40 +103,69 @@
     "menus": {
       "view/title": [
         {
-          "command": "adb-helper.Devices.refresh",
+          "command": "adb-helper.Devices.Refresh",
           "when": "view == adb-helper.Devices",
           "group": "navigation@1"
         },
         {
-          "command": "adb-helper.Devices.disconnect",
+          "command": "adb-helper.Devices.Disconnect",
           "when": "view == adb-helper.Devices",
           "group": "navigation@2"
         },
         {
-          "command": "adb-helper.Explorer.refresh",
+          "command": "adb-helper.Explorer.Refresh",
           "when": "view == adb-helper.Explorer",
           "group": "navigation@1"
         }
       ],
       "view/item/context": [
         {
-          "command": "adb-helper.Devices.connect",
+          "command": "adb-helper.Devices.Connect",
           "when": "view == adb-helper.Devices && viewItem == usb",
           "group": "inline"
         },
         {
-          "command": "adb-helper.Devices.openSDCardExplorer",
+          "command": "adb-helper.Devices.OpenSDCardExplorer",
           "when": "view == adb-helper.Devices",
           "group": "d1@1"
         },
         {
-          "command": "adb-helper.Devices.openRootExplorer",
+          "command": "adb-helper.Devices.OpenRootExplorer",
           "when": "view == adb-helper.Devices",
           "group": "d1@2"
         },
         {
-          "command": "adb-helper.Devices.openAppManager",
+          "command": "adb-helper.Devices.OpenAppManager",
           "when": "view == adb-helper.Devices"
+        },
+        {
+          "command": "adb-helper.Explorer.NewDirectory",
+          "when": "view ==adb-helper.Explorer",
+          "group": "g1@1"
+        },
+        {
+          "command": "adb-helper.Explorer.SaveAs",
+          "when": "view ==adb-helper.Explorer",
+          "group": "g2@1"
+        },
+        {
+          "command": "adb-helper.Explorer.UploadFile",
+          "when": "view == adb-helper.Explorer && viewItem == directory",
+          "group": "g2@2"
+        },
+        {
+          "command": "adb-helper.Explorer.UploadDirectory",
+          "when": "view == adb-helper.Explorer && viewItem == directory",
+          "group": "g3@3"
+        },
+        {
+          "command": "adb-helper.Explorer.Delete",
+          "when": "view ==adb-helper.Explorer",
+          "group": "g3@4"
+        },
+        {
+          "command": "adb-helper.Explorer.CopyPath",
+          "when": "view ==adb-helper.Explorer"
         }
       ]
     },

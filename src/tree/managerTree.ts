@@ -5,4 +5,13 @@
  * @Description  : managerTree
  */
 
-export class ManagerTree {}
+import { ExtensionContext } from "vscode";
+import { IDevice } from "../type";
+
+export class ManagerTree {
+  constructor(context: ExtensionContext, device: IDevice) {
+    console.debug("ManagerTree constructor");
+  }
+
+  refreshTree(args?: any) {}
+}
