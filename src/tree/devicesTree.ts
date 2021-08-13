@@ -88,10 +88,10 @@ export class DevicesTree {
       console.log("OpenAppManager");
       const device: IDevice = JSON.parse(r.tooltip);
       if (this.managerTree) {
-        this.managerTree.refreshTree();
+        this.managerTree.refreshTree("-3");
       } else {
         this.managerTree = new ManagerTree(context, device);
-        this.managerTree.refreshTree();
+        this.managerTree.refreshTree("-3");
       }
     });
   }

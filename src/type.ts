@@ -23,3 +23,8 @@ export interface IFileStat extends FileStat {
   link: string;
   uri: Uri;
 }
+
+export interface IApk {
+  name: string;
+  path: string;
+}

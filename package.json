@@ -75,6 +75,36 @@
       {
         "command": "adb-helper.Explorer.CopyPath",
         "title": "Copy Path"
+      },
+      {
+        "command": "adb-helper.AppManager.Refresh",
+        "title": "Refresh App Manager",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "adb-helper.AppManager.Install",
+        "title": "Install New Apk",
+        "icon": "$(add)"
+      },
+      {
+        "command": "adb-helper.AppManager.Install_r_t",
+        "title": "Update/Install Apk"
+      },
+      {
+        "command": "adb-helper.AppManager.Uninstall",
+        "title": "Uninstall Apk"
+      },
+      {
+        "command": "adb-helper.AppManager.Uninstall_k",
+        "title": "Uninstall Apk And Keep Data"
+      },
+      {
+        "command": "adb-helper.AppManager.Clear",
+        "title": "Clear Apk Data"
+      },
+      {
+        "command": "adb-helper.AppManager.ExportApk",
+        "title": "Export Apk"
       }
     ],
     "viewsContainers": {
@@ -97,6 +127,11 @@
           "id": "adb-helper.Explorer",
           "name": "Explorer",
           "when": "adb-helper:isADBSupport"
+        },
+        {
+          "id": "adb-helper.AppManager",
+          "name": "App Manager",
+          "when": "adb-helper:isADBSupport"
         }
       ]
     },
@@ -115,6 +150,16 @@
         {
           "command": "adb-helper.Explorer.Refresh",
           "when": "view == adb-helper.Explorer",
+          "group": "navigation@1"
+        },
+        {
+          "command": "adb-helper.AppManager.Refresh",
+          "when": "view == adb-helper.AppManager",
+          "group": "navigation@2"
+        },
+        {
+          "command": "adb-helper.AppManager.Install",
+          "when": "view == adb-helper.AppManager",
           "group": "navigation@1"
         }
       ],
@@ -141,31 +186,56 @@
         {
           "command": "adb-helper.Explorer.NewDirectory",
           "when": "view ==adb-helper.Explorer",
-          "group": "g1@1"
+          "group": "e1@1"
         },
         {
           "command": "adb-helper.Explorer.SaveAs",
           "when": "view ==adb-helper.Explorer",
-          "group": "g2@1"
+          "group": "e2@1"
         },
         {
           "command": "adb-helper.Explorer.UploadFile",
           "when": "view == adb-helper.Explorer && viewItem == directory",
-          "group": "g2@2"
+          "group": "e2@2"
         },
         {
           "command": "adb-helper.Explorer.UploadDirectory",
           "when": "view == adb-helper.Explorer && viewItem == directory",
-          "group": "g3@3"
+          "group": "e3@3"
         },
         {
           "command": "adb-helper.Explorer.Delete",
           "when": "view ==adb-helper.Explorer",
-          "group": "g3@4"
+          "group": "e3@4"
         },
         {
           "command": "adb-helper.Explorer.CopyPath",
           "when": "view ==adb-helper.Explorer"
+        },
+        {
+          "command": "adb-helper.AppManager.Install_r_t",
+          "when": "view == adb-helper.AppManager",
+          "group": "m1@1"
+        },
+        {
+          "command": "adb-helper.AppManager.Uninstall",
+          "when": "view == adb-helper.AppManager",
+          "group": "m2@1"
+        },
+        {
+          "command": "adb-helper.AppManager.Uninstall_k",
+          "when": "view == adb-helper.AppManager",
+          "group": "m2@2"
+        },
+        {
+          "command": "adb-helper.AppManager.Clear",
+          "when": "view == adb-helper.AppManager",
+          "group": "m3@1"
+        },
+        {
+          "command": "adb-helper.AppManager.ExportApk",
+          "when": "view == adb-helper.AppManager",
+          "group": "m4@1"
         }
       ]
     },
