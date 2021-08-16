@@ -1,9 +1,7 @@
-# Change Log
+# 0.0.1
 
-All notable changes to the "adb-helper" extension will be documented in this file.
+- Device manager, which is used to manage ADB connected devices.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- File manager, used to manage various files on the device. Similar to Android studio file management.
 
-## [Unreleased]
-
-- Initial release
+- Application manager, which is used to manage third-party applications on the device.
