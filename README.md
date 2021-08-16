@@ -1,71 +1,39 @@
-# adb-helper README
+# adb-helper
 
-This is the README for your extension "adb-helper". After writing up a brief description, we recommend including the following sections.
+## 简介
 
-## Features
+[【English】](./docs/README_EN.md)
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+ADB 帮手，辅助执行 adb 常用命令。目前功能有 设备管理器，文件管理器，应用管理器。
 
-For example if there is an image subfolder under your extension project workspace:
+![Home](./docs/assets/home.png)
 
-\!\[feature X\]\(images/feature-x.png\)
+## v0.0.1 更新
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- 设备管理器，用于管理 adb 连接的设备。
 
-## Requirements
+- 文件管理器，用于设备上各种文件管理。与 Android Studio 文件管理类似。
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- 应用管理器，用于设备上第三方应用的管理。
 
-## Extension Settings
+## 功能
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. 使移动设备通过 wifi 连接电脑端，可代替 usd 连接。
 
-For example:
+   ![Home](./docs/assets/device.gif)
 
-This extension contributes the following settings:
+2. SDCard/Root 文件管理，包含新建文件夹，导出文件/文件夹，导入文件，导入文件夹，删除文件/文件夹，复制文件路径。
 
-- `myExtension.enable`: enable/disable this extension
-- `myExtension.thing`: set to `blah` to do something
+   ![Home](./docs/assets/explorer.png)
 
-## Known Issues
+3. 应用管理器，升级 apk，卸载 apk，清除 apk 缓存，导出 apk。
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+   ![Home](./docs/assets/manager.png)
 
-## Release Notes
+## adb
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-- [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-- Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-- Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+```
+Android Debug Bridge version 1.0.41
+Version 31.0.3-7562133
+Installed as E:\sdk\android\platform-tools\adb.exe
+```
