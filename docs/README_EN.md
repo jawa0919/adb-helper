@@ -6,7 +6,7 @@ ADB helper to assist in executing common ADB commands. At present, the functions
 
 ![Home](./assets/home.png)
 
-## V0.0.1 update
+## update
 
 -Device manager, which is used to manage ADB connected devices.
 

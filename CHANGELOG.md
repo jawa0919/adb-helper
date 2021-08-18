@@ -1,3 +1,7 @@
+# 0.0.4
+
+- Fix appManager bug
+
 # 0.0.1
 
 - Device manager, which is used to manage ADB connected devices.
