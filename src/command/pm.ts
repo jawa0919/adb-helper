@@ -9,7 +9,7 @@ import { IApk } from "../type";
 import { c, cmd, cSync } from "../util";
 
 export async function list(id: string, args: string): Promise<IApk[]> {
-  const s = `adb -s ${id} shell pm list packages  -f ${args}`;
+  const s = `adb -s ${id} shell pm list packages -f ${args}`;
   let lines = await cmd(s);
   return _parseV1(id, lines);
 }
@@ -19,8 +19,8 @@ export async function list(id: string, args: string): Promise<IApk[]> {
 function _parseV1(id: string, lines: string[]): IApk[] {
   let res = lines.map<IApk>((line) => {
     const temp = line.split(/=/);
-    let path = temp[0].replace(/package:/g, "");
-    let name = temp[1];
+    let name = temp.pop() || "";
+    let path = temp.join("=").replace(/package:/g, "");
     return { path, name };
   });
   res.sort((a, b) => (a.name < b.name ? -1 : 1));
