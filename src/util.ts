@@ -6,16 +6,23 @@
  */
 
 import { command, commandSync } from "execa";
-import { Uri } from "vscode";
+import { Uri, window } from "vscode";
+
+const log = window.createOutputChannel("ADB Helper");
+log.show();
+
+export function appendLine(logStr: string): void {
+  log.appendLine(logStr);
+}
 
 export function cSync(cmd: string): string {
-  console.debug(`cSync:${cmd}`);
+  appendLine(`cSync:${cmd}`);
   try {
     const res = commandSync(cmd);
     if (res.stderr) {
       throw new Error(res.stderr);
     }
-    console.debug(`cSync return start---\n${res.stdout}\n---end`);
+    appendLine(`cSync return start---\n${res.stdout}\n---end`);
     return res.stdout;
   } catch (err) {
     console.error(`cSync catch start---\n${err}\n---catch end`);
@@ -24,17 +31,17 @@ export function cSync(cmd: string): string {
 }
 
 export async function c(cmd: string): Promise<string> {
-  console.debug(`c:${cmd}`);
+  appendLine(`c:${cmd}`);
   const res = await command(cmd).catch((err) => {
     console.error(`c catch start---\n${err}\n---catch end`);
     return err;
   });
-  console.debug(`c return start---\n${res.stdout}\n---end`);
+  appendLine(`c return start---\n${res.stdout}\n---end`);
   return res.stdout;
 }
 
 export function cmdSync(cmd: string): string[] {
-  console.debug(`cmdSync:${cmd}`);
+  appendLine(`cmdSync:${cmd}`);
   try {
     const res = commandSync(cmd);
     if (res.stderr) {
@@ -42,7 +49,7 @@ export function cmdSync(cmd: string): string[] {
     }
     let lines = res.stdout.trim().split(/\n|\r\n/);
     lines = lines.map((r) => r.trim());
-    console.debug(`cmdSync return start---\n${lines.join("\n")}\n---end`);
+    appendLine(`cmdSync return start---\n${lines.join("\n")}\n---end`);
     return lines;
   } catch (err) {
     console.error(`cmdSync catch start---\n${err}\n---catch end`);
@@ -51,14 +58,14 @@ export function cmdSync(cmd: string): string[] {
 }
 
 export async function cmd(cmd: string): Promise<string[]> {
-  console.debug(`cmd:${cmd}`);
+  appendLine(`cmd:${cmd}`);
   const res = await command(cmd).catch((err) => {
     console.error(`cmd catch start---\n${err}\n---catch end`);
     return err;
   });
   let lines = res.stdout.trim().split(/\n|\r\n/);
   lines = lines.map((r) => r.trim()).filter((r) => r !== "");
-  console.debug(`cmd return start${lines.length}---\n${lines.join("\n")}\n---end`);
+  appendLine(`cmd return start-length${lines.length}---\n${lines.join("\n")}\n---end`);
   return lines;
 }
 
