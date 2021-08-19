@@ -115,6 +115,10 @@ export class ExplorerTree {
     });
   }
 
+  setDevice(device: IDevice) {
+    this.provider.device = device;
+  }
+
   refreshTree(root: string) {
     this.provider.root = root;
     this.provider.refresh();
@@ -128,7 +132,7 @@ export class ExplorerProvider implements TreeDataProvider<TreeItem> {
   public refresh(): any {
     this._onDidChangeTreeData.fire(undefined);
   }
-  constructor(readonly device: IDevice, public root = "") {}
+  constructor(public device: IDevice, public root = "") {}
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;

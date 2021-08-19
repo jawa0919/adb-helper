@@ -113,6 +113,10 @@ export class ManagerTree {
     });
   }
 
+  setDevice(device: IDevice) {
+    this.provider.device = device;
+  }
+
   refreshTree(args: string) {
     this.provider.args = args;
     this.provider.refresh();
@@ -127,7 +131,7 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  constructor(readonly device: IDevice, public args = "") {}
+  constructor(public device: IDevice, public args = "") {}
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;

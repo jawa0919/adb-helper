@@ -9,8 +9,8 @@ import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeI
 import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../command/base";
 import { connect, tcpIp, wifiIP } from "../command/device";
 import { IDevice } from "../type";
-import { c, waitMoment } from "../util";
-import { ExplorerProvider, ExplorerTree } from "./explorerTree";
+import { waitMoment } from "../util";
+import { ExplorerTree } from "./explorerTree";
 import { ManagerTree } from "./managerTree";
 
 export class DevicesTree {
@@ -67,6 +67,7 @@ export class DevicesTree {
       const device: IDevice = JSON.parse(r.tooltip);
       // const uri = Uri.parse(`adbEx://${device.id}/sdcard/`);
       if (this.explorerTree) {
+        this.explorerTree.setDevice(device);
         this.explorerTree.refreshTree("/sdcard/");
       } else {
         this.explorerTree = new ExplorerTree(context, device);
@@ -78,6 +79,7 @@ export class DevicesTree {
       const device: IDevice = JSON.parse(r.tooltip);
       // const uri = Uri.parse(`adbEx://${device.id}/`);
       if (this.explorerTree) {
+        this.explorerTree.setDevice(device);
         this.explorerTree.refreshTree("/");
       } else {
         this.explorerTree = new ExplorerTree(context, device);
@@ -88,6 +90,7 @@ export class DevicesTree {
       console.log("OpenAppManager");
       const device: IDevice = JSON.parse(r.tooltip);
       if (this.managerTree) {
+        this.managerTree.setDevice(device);
         this.managerTree.refreshTree("-3");
       } else {
         this.managerTree = new ManagerTree(context, device);

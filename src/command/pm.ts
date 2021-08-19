@@ -6,7 +6,7 @@
  */
 
 import { IApk } from "../type";
-import { c, cmd, cSync } from "../util";
+import { cmd } from "../util";
 
 export async function list(id: string, args: string): Promise<IApk[]> {
   const s = `adb -s ${id} shell pm list packages -f ${args}`;
