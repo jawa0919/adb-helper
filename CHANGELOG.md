@@ -1,8 +1,12 @@
+# 0.0.5
+
+- Fix device open Explorer/Manager bug
+
 # 0.0.4
 
 - Fix appManager bug
 
-# 0.0.1
+# 0.0.3
 
 - Device manager, which is used to manage ADB connected devices.
 
