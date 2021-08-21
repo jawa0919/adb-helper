@@ -9,7 +9,6 @@ import { command, commandSync } from "execa";
 import { Uri, window } from "vscode";
 
 const log = window.createOutputChannel("ADB Helper");
-log.show();
 
 export function appendLine(logStr: string): void {
   log.appendLine(logStr);

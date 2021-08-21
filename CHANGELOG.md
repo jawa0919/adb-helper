@@ -1,3 +1,7 @@
+# 0.0.6
+
+- Fix show log bug
+
 # 0.0.5
 
 - Fix device open Explorer/Manager bug

@@ -2,37 +2,37 @@
 
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://vsmarketplacebadge.apphb.com/installs/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
 
-## 简介
+[【中文】](./README_CN.md)
 
-[【English】](./docs/README_EN.md)
-
-ADB 帮手，辅助执行 adb 常用命令。目前功能有 设备管理器，文件管理器，应用管理器。
+ADB Helper to assist in executing common ADB commands. At present, the functions include device manager, file manager and application manager.
 
 ![Home](./docs/assets/home.png)
 
-## 更新
+## update
 
-- 设备管理器，用于管理 adb 连接的设备。
+-Device manager, which is used to manage ADB connected devices.
 
-- 文件管理器，用于设备上各种文件管理。与 Android Studio 文件管理类似。
+-File manager, used to manage various files on the device. Similar to Android studio file management.
 
-- 应用管理器，用于设备上第三方应用的管理。
+-Application manager, which is used to manage third-party applications on the device.
 
-## 功能
+## Function
 
-1. 使移动设备通过 wifi 连接电脑端，可代替 usd 连接。
+1. Connect the mobile device to the computer through WiFi instead of USD connection.
 
-   ![Home](./docs/assets/device.gif)
+   ![ Home](./docs/assets/device.gif)
 
-2. SDCard/Root 文件管理，包含新建文件夹，导出文件/文件夹，导入文件，导入文件夹，删除文件/文件夹，复制文件路径。
+2. Sdcard / Root file management, including creating new folders, exporting files / folders, importing files, importing folders, deleting files / folders, and copying file paths.
 
-   ![Home](./docs/assets/explorer.png)
+   ![ Home](./docs/assets/explorer.png)
 
-3. 应用管理器，升级 apk，卸载 apk，清除 apk 缓存，导出 apk。
+3. Application manager, upgrade APK, uninstall APK, clear APK cache and export APK.
 
    ![Home](./docs/assets/manager.png)
 
 ## adb
+
+You are welcome to put forward your ideas and feedback [issues](https://github.com/jawa0919/adb-helper/issues)
 
 ```
 Android Debug Bridge version 1.0.41
