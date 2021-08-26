@@ -10,7 +10,7 @@ import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../com
 import { connect, screencap, tcpIp, wifiIP } from "../command/device";
 import { pull } from "../command/shellFile";
 import { IDevice } from "../type";
-import { waitMoment } from "../util";
+import { c, waitMoment } from "../util";
 import { ExplorerTree } from "./explorerTree";
 import { ManagerTree } from "./managerTree";
 
@@ -29,9 +29,37 @@ export class DevicesTree {
       provider.refresh();
     });
 
-    commands.registerCommand("adb-helper.Devices.Command", () => {
+    commands.registerCommand("adb-helper.Devices.Command", async () => {
       console.log("Devices.Command");
       // TODO 2021-08-26 10:42:24 Command
+      let result = await window.showInputBox({
+        placeHolder: "ADB Command",
+        validateInput: (text) => {
+          return text.startsWith("adb") ? "" : text;
+        },
+      });
+      if (result) {
+        result = result.trim();
+        await c(result);
+        const commandHistory = context.globalState.get<string[]>("adb-helper.CommandHistory") ?? [];
+        context.globalState.update("adb-helper.CommandHistory", commandHistory.concat([result]));
+      }
+    });
+
+    commands.registerCommand("adb-helper.Devices.CommandHistory", async () => {
+      console.log("Devices.CommandHistory");
+      // TODO 2021-08-26 10:42:24 Command
+      const commandHistory = context.globalState.get<string[]>("adb-helper.CommandHistory") ?? [];
+      await window.showQuickPick(commandHistory, {
+        placeHolder: "adb command history",
+        onDidSelectItem: (item) => {
+          if (typeof item === "string") {
+            if (item !== "") {
+              c(`${item}`);
+            }
+          }
+        },
+      });
     });
 
     commands.registerCommand("adb-helper.Devices.Disconnect", async () => {

@@ -45,6 +45,11 @@
         "icon": "$(run-all)"
       },
       {
+        "command": "adb-helper.Devices.CommandHistory",
+        "title": "Run Command History",
+        "icon": "$(history)"
+      },
+      {
         "command": "adb-helper.Devices.Disconnect",
         "title": "Disconnect all wifi connect Devices",
         "icon": "$(debug-disconnect)"
@@ -169,6 +174,11 @@
           "command": "adb-helper.Devices.Command",
           "when": "view == adb-helper.Devices",
           "group": "navigation@-1"
+        },
+        {
+          "command": "adb-helper.Devices.CommandHistory",
+          "when": "view == adb-helper.Devices",
+          "group": "navigation@-2"
         },
         {
           "command": "adb-helper.Explorer.Refresh",
