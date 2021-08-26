@@ -7,7 +7,8 @@
 
 import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../command/base";
-import { connect, tcpIp, wifiIP } from "../command/device";
+import { connect, screencap, tcpIp, wifiIP } from "../command/device";
+import { pull } from "../command/shellFile";
 import { IDevice } from "../type";
 import { waitMoment } from "../util";
 import { ExplorerTree } from "./explorerTree";
@@ -75,6 +76,19 @@ export class DevicesTree {
     commands.registerCommand("adb-helper.Devices.Screenshot", async (r) => {
       console.log("Screenshot");
       const device: IDevice = JSON.parse(r.tooltip);
+      const path = screencap(device.id);
+      window.showOpenDialog({ canSelectFolders: true }).then((res) => {
+        let fileUri = res?.shift();
+        if (fileUri) {
+          window.showInformationMessage("SaveAs......ing");
+          let success = pull(device.id, path, fileUri.fsPath);
+          if (success) {
+            window.showInformationMessage("SaveAs Success");
+          } else {
+            window.showErrorMessage("SaveAs Error");
+          }
+        }
+      });
     });
     commands.registerCommand("adb-helper.Devices.OpenSDCardExplorer", async (r) => {
       console.log("OpenSDCardExplorer");

@@ -43,3 +43,10 @@ export function connect(id: string, ip: string, port: number): boolean {
   const res = cSync(s);
   return res === `connected to ${ip}:${port}`;
 }
+
+export function screencap(id: string): string {
+  const path = `/sdcard/screen${Date.now()}.png`;
+  const s = `adb -s ${id} shell screencap ${path}`;
+  cmdSync(s);
+  return path;
+}
