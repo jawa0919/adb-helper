@@ -5,7 +5,7 @@
  * @Description  : devicesTree
  */
 
-import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from "vscode";
+import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../command/base";
 import { connect, tcpIp, wifiIP } from "../command/device";
 import { IDevice } from "../type";
@@ -19,13 +19,20 @@ export class DevicesTree {
 
   constructor(context: ExtensionContext) {
     console.debug("DevicesTree constructor");
-    const provider = new DevicesProvider();
+    const provider = new DevicesProvider(adbDevices());
     window.registerTreeDataProvider("adb-helper.Devices", provider);
 
     commands.registerCommand("adb-helper.Devices.Refresh", () => {
       console.log("Devices.Refresh");
+      provider.devices = adbDevices();
       provider.refresh();
     });
+
+    commands.registerCommand("adb-helper.Devices.Command", () => {
+      console.log("Devices.Command");
+      // TODO 2021-08-26 10:42:24 Command
+    });
+
     commands.registerCommand("adb-helper.Devices.Disconnect", async () => {
       console.log("Disconnect");
       disconnectAll();
@@ -34,6 +41,7 @@ export class DevicesTree {
       await waitMoment();
       adbStartServer();
       await waitMoment();
+      provider.devices = adbDevices();
       provider.refresh();
     });
 
@@ -60,6 +68,7 @@ export class DevicesTree {
         return;
       }
       await waitMoment();
+      provider.devices = adbDevices();
       provider.refresh();
     });
     commands.registerCommand("adb-helper.Devices.OpenSDCardExplorer", async (r) => {
@@ -104,6 +113,14 @@ export class DevicesProvider implements TreeDataProvider<TreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
+  constructor(public devices: IDevice[] = []) {}
+  private get ipDevices(): IDevice[] {
+    return this.devices.filter((r) => r.ip);
+  }
+  private get usbDevices(): IDevice[] {
+    return this.devices.filter((r) => !r.ip);
+  }
+
   public refresh(): any {
     this._onDidChangeTreeData.fire(undefined);
   }
@@ -112,22 +129,39 @@ export class DevicesProvider implements TreeDataProvider<TreeItem> {
     return element;
   }
   getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
-    let devices = adbDevices();
-    if (devices.length === 0) {
+    if (this.devices.length === 0) {
       window.showWarningMessage("Please Connect Android Devices");
       return Promise.resolve([new TreeItem("Please Connect Android Devices")]);
     }
 
-    console.log(devices);
-    let treeItemList = devices.map((device: IDevice) => {
+    if (element?.contextValue === "ipGroup") {
+      let treeItemList = this.ipDevices.map((device: IDevice) => {
+        let item = new TreeItem(device.product);
+        item.id = device.id;
+        item.description = device.id;
+        item.tooltip = JSON.stringify(device);
+        item.contextValue = "ip";
+        item.iconPath = new ThemeIcon("broadcast");
+        return item;
+      });
+      return Promise.resolve(treeItemList);
+    }
+
+    let treeItemList = this.usbDevices.map((device: IDevice) => {
       let item = new TreeItem(device.product);
       item.id = device.id;
       item.description = device.id;
       item.tooltip = JSON.stringify(device);
-      item.contextValue = device.ip ? "wifi" : "usb";
-      item.iconPath = new ThemeIcon(device.ip ? "broadcast" : "device-mobile");
+      item.contextValue = "usb";
+      item.iconPath = new ThemeIcon("device-mobile");
       return item;
     });
-    return Promise.resolve(treeItemList);
+
+    let ipGroupItem = new TreeItem("IP Connect Group");
+    ipGroupItem.contextValue = "ipGroup";
+    ipGroupItem.iconPath = new ThemeIcon("globe");
+    ipGroupItem.collapsibleState = TreeItemCollapsibleState.Expanded;
+
+    return Promise.resolve(treeItemList.concat(ipGroupItem));
   }
 }
