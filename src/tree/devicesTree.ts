@@ -71,6 +71,11 @@ export class DevicesTree {
       provider.devices = adbDevices();
       provider.refresh();
     });
+
+    commands.registerCommand("adb-helper.Devices.Screenshot", async (r) => {
+      console.log("Screenshot");
+      const device: IDevice = JSON.parse(r.tooltip);
+    });
     commands.registerCommand("adb-helper.Devices.OpenSDCardExplorer", async (r) => {
       console.log("OpenSDCardExplorer");
       const device: IDevice = JSON.parse(r.tooltip);

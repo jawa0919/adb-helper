@@ -68,7 +68,7 @@
       },
       {
         "command": "adb-helper.Devices.Screenshot",
-        "title": "Open App Manager"
+        "title": "Screenshot"
       },
       {
         "command": "adb-helper.Explorer.Refresh",
@@ -188,28 +188,33 @@
       ],
       "view/item/context": [
         {
-          "command": "adb-helper.Devices.Connect",
-          "when": "view == adb-helper.Devices && viewItem == usb",
-          "group": "inline"
-        },
-        {
           "command": "adb-helper.Devices.Disconnect",
           "when": "view == adb-helper.Devices && viewItem == ipGroup",
           "group": "inline"
         },
         {
+          "command": "adb-helper.Devices.Connect",
+          "when": "view == adb-helper.Devices && viewItem == usb",
+          "group": "inline"
+        },
+        {
+          "command": "adb-helper.Devices.Screenshot",
+          "when": "view == adb-helper.Devices && viewItem != ipGroup",
+          "group": "d0@1"
+        },
+        {
           "command": "adb-helper.Devices.OpenSDCardExplorer",
-          "when": "view == adb-helper.Devices",
+          "when": "view == adb-helper.Devices && viewItem != ipGroup",
           "group": "d1@1"
         },
         {
           "command": "adb-helper.Devices.OpenRootExplorer",
-          "when": "view == adb-helper.Devices",
+          "when": "view == adb-helper.Devices && viewItem != ipGroup",
           "group": "d1@2"
         },
         {
           "command": "adb-helper.Devices.OpenAppManager",
-          "when": "view == adb-helper.Devices"
+          "when": "view == adb-helper.Devices && viewItem != ipGroup"
         },
         {
           "command": "adb-helper.Explorer.NewDirectory",
