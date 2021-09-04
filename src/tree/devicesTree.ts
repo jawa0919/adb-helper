@@ -10,7 +10,7 @@ import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../com
 import { connect, screencap, tcpIp, wifiIP } from "../command/device";
 import { pull } from "../command/shellFile";
 import { IDevice } from "../type";
-import { c, waitMoment } from "../util";
+import { waitMoment } from "../util";
 import { ExplorerTree } from "./explorerTree";
 import { ManagerTree } from "./managerTree";
 
@@ -29,41 +29,8 @@ export class DevicesTree {
       provider.refresh();
     });
 
-    commands.registerCommand("adb-helper.Devices.Command", async () => {
-      console.log("Devices.Command");
-      // TODO 2021-08-26 10:42:24 Command
-      let result = await window.showInputBox({
-        placeHolder: "ADB Command",
-        validateInput: (text) => {
-          return text.startsWith("adb") ? "" : text;
-        },
-      });
-      if (result) {
-        result = result.trim();
-        await c(result);
-        const commandHistory = context.globalState.get<string[]>("adb-helper.CommandHistory") ?? [];
-        context.globalState.update("adb-helper.CommandHistory", commandHistory.concat([result]));
-      }
-    });
-
-    commands.registerCommand("adb-helper.Devices.CommandHistory", async () => {
-      console.log("Devices.CommandHistory");
-      // TODO 2021-08-26 10:42:24 Command
-      const commandHistory = context.globalState.get<string[]>("adb-helper.CommandHistory") ?? [];
-      await window.showQuickPick(commandHistory, {
-        placeHolder: "adb command history",
-        onDidSelectItem: (item) => {
-          if (typeof item === "string") {
-            if (item !== "") {
-              c(`${item}`);
-            }
-          }
-        },
-      });
-    });
-
     commands.registerCommand("adb-helper.Devices.Disconnect", async () => {
-      console.log("Disconnect");
+      console.log("Devices.Disconnect");
       disconnectAll();
       await waitMoment();
       adbKillServer();
@@ -75,7 +42,7 @@ export class DevicesTree {
     });
 
     commands.registerCommand("adb-helper.Devices.Connect", async (r) => {
-      console.log("Connect");
+      console.log("Devices.Connect");
       const device: IDevice = JSON.parse(r.tooltip);
       const ip: string = wifiIP(device.id);
       let port: number = parseInt(workspace.getConfiguration().get("adb-helper.startPort") ?? "5555");
@@ -101,8 +68,43 @@ export class DevicesTree {
       provider.refresh();
     });
 
+    commands.registerCommand("adb-helper.Devices.OpenSDCardExplorer", async (r) => {
+      console.log("Devices.OpenSDCardExplorer");
+      const device: IDevice = JSON.parse(r.tooltip);
+      // const uri = Uri.parse(`adbEx://${device.id}/sdcard/`);
+      if (this.explorerTree) {
+        this.explorerTree.setDevice(device);
+        this.explorerTree.refreshTree("/sdcard/");
+      } else {
+        this.explorerTree = new ExplorerTree(context, device);
+        this.explorerTree.refreshTree("/sdcard/");
+      }
+    });
+    commands.registerCommand("adb-helper.Devices.OpenRootExplorer", async (r) => {
+      console.log("Devices.OpenRootExplorer");
+      const device: IDevice = JSON.parse(r.tooltip);
+      // const uri = Uri.parse(`adbEx://${device.id}/`);
+      if (this.explorerTree) {
+        this.explorerTree.setDevice(device);
+        this.explorerTree.refreshTree("/");
+      } else {
+        this.explorerTree = new ExplorerTree(context, device);
+        this.explorerTree.refreshTree("/");
+      }
+    });
+    commands.registerCommand("adb-helper.Devices.OpenAppManager", async (r) => {
+      console.log("Devices.OpenAppManager");
+      const device: IDevice = JSON.parse(r.tooltip);
+      if (this.managerTree) {
+        this.managerTree.setDevice(device);
+        this.managerTree.refreshTree("-3");
+      } else {
+        this.managerTree = new ManagerTree(context, device);
+        this.managerTree.refreshTree("-3");
+      }
+    });
     commands.registerCommand("adb-helper.Devices.Screenshot", async (r) => {
-      console.log("Screenshot");
+      console.log("Devices.Screenshot");
       const device: IDevice = JSON.parse(r.tooltip);
       const path = screencap(device.id);
       window.showOpenDialog({ canSelectFolders: true }).then((res) => {
@@ -117,41 +119,6 @@ export class DevicesTree {
           }
         }
       });
-    });
-    commands.registerCommand("adb-helper.Devices.OpenSDCardExplorer", async (r) => {
-      console.log("OpenSDCardExplorer");
-      const device: IDevice = JSON.parse(r.tooltip);
-      // const uri = Uri.parse(`adbEx://${device.id}/sdcard/`);
-      if (this.explorerTree) {
-        this.explorerTree.setDevice(device);
-        this.explorerTree.refreshTree("/sdcard/");
-      } else {
-        this.explorerTree = new ExplorerTree(context, device);
-        this.explorerTree.refreshTree("/sdcard/");
-      }
-    });
-    commands.registerCommand("adb-helper.Devices.OpenRootExplorer", async (r) => {
-      console.log("OpenRootExplorer");
-      const device: IDevice = JSON.parse(r.tooltip);
-      // const uri = Uri.parse(`adbEx://${device.id}/`);
-      if (this.explorerTree) {
-        this.explorerTree.setDevice(device);
-        this.explorerTree.refreshTree("/");
-      } else {
-        this.explorerTree = new ExplorerTree(context, device);
-        this.explorerTree.refreshTree("/");
-      }
-    });
-    commands.registerCommand("adb-helper.Devices.OpenAppManager", async (r) => {
-      console.log("OpenAppManager");
-      const device: IDevice = JSON.parse(r.tooltip);
-      if (this.managerTree) {
-        this.managerTree.setDevice(device);
-        this.managerTree.refreshTree("-3");
-      } else {
-        this.managerTree = new ManagerTree(context, device);
-        this.managerTree.refreshTree("-3");
-      }
     });
   }
 }
@@ -206,7 +173,7 @@ export class DevicesProvider implements TreeDataProvider<TreeItem> {
 
     let ipGroupItem = new TreeItem("IP Connect Group");
     ipGroupItem.contextValue = "ipGroup";
-    ipGroupItem.iconPath = new ThemeIcon("globe");
+    ipGroupItem.iconPath = new ThemeIcon("cloud");
     ipGroupItem.collapsibleState = TreeItemCollapsibleState.Expanded;
 
     return Promise.resolve(treeItemList.concat(ipGroupItem));

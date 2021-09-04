@@ -16,14 +16,14 @@ export class ManagerTree {
   constructor(context: ExtensionContext, device: IDevice) {
     console.debug("ManagerTree constructor");
     const provider = new ManagerProvider(device);
-    context.subscriptions.push(window.createTreeView("adb-helper.AppManager", { treeDataProvider: provider }));
+    context.subscriptions.push(window.createTreeView("adb-helper.Manager", { treeDataProvider: provider }));
     this.provider = provider;
 
-    commands.registerCommand("adb-helper.AppManager.Refresh", () => {
+    commands.registerCommand("adb-helper.Manager.Refresh", () => {
       console.log("AppManager.Refresh");
       provider.refresh();
     });
-    commands.registerCommand("adb-helper.AppManager.Install", () => {
+    commands.registerCommand("adb-helper.Manager.Install", () => {
       console.log("AppManager.Install");
       window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
         let fileUri = res?.shift();
@@ -39,7 +39,7 @@ export class ManagerTree {
       });
     });
 
-    commands.registerCommand("adb-helper.AppManager.Install_r_t", async (r) => {
+    commands.registerCommand("adb-helper.Manager.Install_r_t", async (r) => {
       console.log("AppManager.Install_r_t");
       window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
         let fileUri = res?.shift();
@@ -54,7 +54,7 @@ export class ManagerTree {
         }
       });
     });
-    commands.registerCommand("adb-helper.AppManager.Uninstall", async (r) => {
+    commands.registerCommand("adb-helper.Manager.Uninstall", async (r) => {
       console.log("AppManager.Uninstall");
       window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
         if (answer === "Yes") {
@@ -68,7 +68,7 @@ export class ManagerTree {
         }
       });
     });
-    commands.registerCommand("adb-helper.AppManager.Uninstall_k", async (r) => {
+    commands.registerCommand("adb-helper.Manager.Uninstall_k", async (r) => {
       console.log("AppManager.Uninstall_k");
       window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
         if (answer === "Yes") {
@@ -82,7 +82,7 @@ export class ManagerTree {
         }
       });
     });
-    commands.registerCommand("adb-helper.AppManager.Clear", async (r) => {
+    commands.registerCommand("adb-helper.Manager.Clear", async (r) => {
       console.log("AppManager.Clear");
       window.showInformationMessage("Do you want clear this apk data?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
         if (answer === "Yes") {
@@ -96,7 +96,7 @@ export class ManagerTree {
         }
       });
     });
-    commands.registerCommand("adb-helper.AppManager.ExportApk", async (r) => {
+    commands.registerCommand("adb-helper.Manager.ExportApk", async (r) => {
       console.log("AppManager.ExportApk");
       let path = r.tooltip;
       window.showOpenDialog({ canSelectFolders: true }).then((res) => {
