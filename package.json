@@ -40,6 +40,16 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "adb-helper.Devices.Command",
+        "title": "Run Command",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "adb-helper.Devices.CommandHistory",
+        "title": "Run Command History",
+        "icon": "$(history)"
+      },
+      {
         "command": "adb-helper.Devices.Disconnect",
         "title": "Disconnect all wifi connect Devices",
         "icon": "$(debug-disconnect)"
@@ -60,6 +70,10 @@
       {
         "command": "adb-helper.Devices.OpenAppManager",
         "title": "Open App Manager"
+      },
+      {
+        "command": "adb-helper.Devices.Screenshot",
+        "title": "Screenshot"
       },
       {
         "command": "adb-helper.Explorer.Refresh",
@@ -157,9 +171,14 @@
           "group": "navigation@1"
         },
         {
-          "command": "adb-helper.Devices.Disconnect",
+          "command": "adb-helper.Devices.Command",
           "when": "view == adb-helper.Devices",
-          "group": "navigation@2"
+          "group": "navigation@-1"
+        },
+        {
+          "command": "adb-helper.Devices.CommandHistory",
+          "when": "view == adb-helper.Devices",
+          "group": "navigation@-2"
         },
         {
           "command": "adb-helper.Explorer.Refresh",
@@ -179,23 +198,33 @@
       ],
       "view/item/context": [
         {
+          "command": "adb-helper.Devices.Disconnect",
+          "when": "view == adb-helper.Devices && viewItem == ipGroup",
+          "group": "inline"
+        },
+        {
           "command": "adb-helper.Devices.Connect",
           "when": "view == adb-helper.Devices && viewItem == usb",
           "group": "inline"
         },
         {
+          "command": "adb-helper.Devices.Screenshot",
+          "when": "view == adb-helper.Devices && viewItem != ipGroup",
+          "group": "d0@1"
+        },
+        {
           "command": "adb-helper.Devices.OpenSDCardExplorer",
-          "when": "view == adb-helper.Devices",
+          "when": "view == adb-helper.Devices && viewItem != ipGroup",
           "group": "d1@1"
         },
         {
           "command": "adb-helper.Devices.OpenRootExplorer",
-          "when": "view == adb-helper.Devices",
+          "when": "view == adb-helper.Devices && viewItem != ipGroup",
           "group": "d1@2"
         },
         {
           "command": "adb-helper.Devices.OpenAppManager",
-          "when": "view == adb-helper.Devices"
+          "when": "view == adb-helper.Devices && viewItem != ipGroup"
         },
         {
           "command": "adb-helper.Explorer.NewDirectory",
