@@ -4,9 +4,9 @@
 
 [【中文】](./README_CN.md)
 
-ADB Helper to assist in executing common ADB commands. At present, the functions include device manager, file manager and application manager.
+ADB Helper to assist in executing common ADB commands. At present, the functions include device manager, file manager, application manager and command history.
 
-![Home](./docs/assets/home.png)
+![Home](./docs/assets/homeNew.png)
 
 ## update
 
@@ -15,6 +15,8 @@ ADB Helper to assist in executing common ADB commands. At present, the functions
 -File manager, used to manage various files on the device. Similar to Android studio file management.
 
 -Application manager, which is used to manage third-party applications on the device.
+
+-Command History,Manually output ADB command.
 
 ## Function
 
@@ -29,6 +31,10 @@ ADB Helper to assist in executing common ADB commands. At present, the functions
 3. Application manager, upgrade APK, uninstall APK, clear APK cache and export APK.
 
    ![Home](./docs/assets/manager.png)
+
+4. Command History, Manually execute the ADB command and execute the ADB history command.
+
+   ![Home](./docs/assets/command.png)
 
 ## adb
 
