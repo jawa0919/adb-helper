@@ -1,11 +1,11 @@
 /*
- * @FilePath     : /adb-helper/src/command/device.ts
+ * @FilePath     : /adb-helper/src/api/device.ts
  * @Date         : 2021-08-13 11:40:50
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : device
  */
 
-import { c, cmdSync, cSync } from "../util";
+import { c, cmdSync, cSync } from "../util/c";
 
 export function wifiIP(id: string): string {
   const s = `adb -s ${id} shell ip addr show wlan0`;

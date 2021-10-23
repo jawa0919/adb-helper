@@ -1,5 +1,5 @@
 /*
- * @FilePath     : /adb-helper/src/command/ls.ts
+ * @FilePath     : /adb-helper/src/api/ls.ts
  * @Date         : 2021-08-13 13:56:34
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : ls
@@ -7,7 +7,8 @@
 
 import { FileType } from "vscode";
 import { IFileStat } from "../type";
-import { cmd, createUri } from "../util";
+import { createUri } from "../util/util";
+import { cmd } from "../util/c";
 
 export async function ls(id: string, path: string): Promise<IFileStat[]> {
   const s = `adb -s ${id} shell ls -l ${path}`;

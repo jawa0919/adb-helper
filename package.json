@@ -32,7 +32,7 @@
     "commands": [
       {
         "command": "adb-helper.Adb.Start",
-        "title": "ADB Version"
+        "title": "ADB Helper Start"
       },
       {
         "command": "adb-helper.Devices.Refresh",
@@ -153,22 +153,22 @@
       "adb-helper": [
         {
           "id": "adb-helper.Devices",
-          "name": "Devices",
+          "name": "Android Devices",
           "when": "adb-helper:isADBSupport"
         },
         {
           "id": "adb-helper.Explorer",
-          "name": "Explorer",
-          "when": "adb-helper:isADBSupport"
+          "name": "Device Explorer",
+          "when": "adb-helper:isADBSupport && adb-helper:showExplorer"
         },
         {
           "id": "adb-helper.Manager",
-          "name": "App Manager",
-          "when": "adb-helper:isADBSupport"
+          "name": "Device App Manager",
+          "when": "adb-helper:isADBSupport && adb-helper:showManager"
         },
         {
           "id": "adb-helper.Command",
-          "name": "Command History",
+          "name": "Adb Command History",
           "when": "adb-helper:isADBSupport"
         }
       ]

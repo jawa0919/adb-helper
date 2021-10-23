@@ -1,14 +1,14 @@
 /*
- * @FilePath     : /adb-helper/src/tree/explorerTree.ts
+ * @FilePath     : /adb-helper/src/explorer/explorerTree.ts
  * @Date         : 2021-08-12 18:27:59
  * @Author       : jawa0919 <jawa0919@163.com>
- * @Description  : explorerTree
+ * @Description  : 文件管理器树
  */
 
-import { commands, env, Event, EventEmitter, ExtensionContext, FileType, ProviderResult, TreeDataProvider, TreeItem, TreeItemCollapsibleState, window } from "vscode";
-import { ls } from "../command/ls";
-import { mkdir, pull, push, rm } from "../command/shellFile";
-import { IDevice, IFileStat } from "../type";
+import { commands, env, ExtensionContext, window } from "vscode";
+import { mkdir, pull, push, rm } from "../api/shellFile";
+import { IDevice } from "../type";
+import { ExplorerProvider } from "./explorerProvider";
 
 export class ExplorerTree {
   provider: ExplorerProvider;
@@ -122,41 +122,5 @@ export class ExplorerTree {
   refreshTree(root: string) {
     this.provider.root = root;
     this.provider.refresh();
-  }
-}
-
-export class ExplorerProvider implements TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
-  readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
-
-  public refresh(): any {
-    this._onDidChangeTreeData.fire(undefined);
-  }
-  constructor(public device: IDevice, public root = "") {}
-
-  getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
-    return element;
-  }
-
-  getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
-    if (this.root === "") {
-      return Promise.resolve([new TreeItem("Explorer Loading...")]);
-    }
-    return new Promise<TreeItem[]>(async (resolve) => {
-      const path = element?.resourceUri?.path ?? this.root;
-      const fileList = await ls(this.device.id, path).catch((err) => {
-        resolve([new TreeItem(`${err}`)]);
-        return [] as IFileStat[];
-      });
-
-      const directoryType = [FileType.Directory, FileType.SymbolicLink];
-      let treeItemList = fileList.map((r) => {
-        let isDirectory = directoryType.includes(r.type);
-        let item = new TreeItem(r.uri, isDirectory ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None);
-        item.contextValue = isDirectory ? "directory" : "file";
-        return item;
-      });
-      resolve(treeItemList);
-    });
   }
 }

@@ -1,14 +1,15 @@
 /*
- * @FilePath     : /adb-helper/src/tree/managerTree.ts
+ * @FilePath     : /adb-helper/src/manager/managerTree.ts
  * @Date         : 2021-08-12 18:27:59
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : managerTree
  */
 
-import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, window } from "vscode";
-import { clear, install, list, uninstall } from "../command/pm";
-import { pull } from "../command/shellFile";
-import { IApk, IDevice } from "../type";
+import { commands, ExtensionContext, window } from "vscode";
+import { clear, install, uninstall } from "../api/pm";
+import { pull } from "../api/shellFile";
+import { IDevice } from "../type";
+import { ManagerProvider } from "./managerProvider";
 
 export class ManagerTree {
   provider: ManagerProvider;
@@ -120,40 +121,5 @@ export class ManagerTree {
   refreshTree(args: string) {
     this.provider.args = args;
     this.provider.refresh();
-  }
-}
-
-export class ManagerProvider implements TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
-  readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
-
-  public refresh(): any {
-    this._onDidChangeTreeData.fire(undefined);
-  }
-
-  constructor(public device: IDevice, public args = "") {}
-
-  getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
-    return element;
-  }
-
-  getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
-    if (this.args === "") {
-      return Promise.resolve([new TreeItem("Explorer Loading...")]);
-    }
-    return new Promise<TreeItem[]>(async (resolve) => {
-      const fileList = await list(this.device.id, this.args).catch((err) => {
-        resolve([new TreeItem(`${err}`)]);
-        return [] as IApk[];
-      });
-      let treeItemList = fileList.map((r) => {
-        let item = new TreeItem(r.name);
-        item.iconPath = new ThemeIcon("symbol-constructor");
-        item.id = r.name;
-        item.tooltip = r.path;
-        return item;
-      });
-      resolve(treeItemList);
-    });
   }
 }

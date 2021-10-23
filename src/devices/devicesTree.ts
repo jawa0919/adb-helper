@@ -1,18 +1,19 @@
 /*
- * @FilePath     : /adb-helper/src/tree/devicesTree.ts
+ * @FilePath     : /adb-helper/src/devices/devicesTree.ts
  * @Date         : 2021-08-12 18:27:31
  * @Author       : jawa0919 <jawa0919@163.com>
- * @Description  : devicesTree
+ * @Description  : 设备树
  */
 
-import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
-import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../command/base";
-import { connect, screencap, tcpIp, wifiIP } from "../command/device";
-import { pull } from "../command/shellFile";
+import { commands, ExtensionContext, window, workspace } from "vscode";
+import { adbDevices, adbKillServer, adbStartServer, disconnectAll } from "../api/base";
+import { connect, screencap, tcpIp, wifiIP } from "../api/device";
+import { pull } from "../api/shellFile";
+import { ExplorerTree } from "../explorer/explorerTree";
+import { ManagerTree } from "../manager/managerTree";
 import { IDevice } from "../type";
-import { waitMoment } from "../util";
-import { ExplorerTree } from "./explorerTree";
-import { ManagerTree } from "./managerTree";
+import { waitMoment } from "../util/util";
+import { DevicesProvider } from "./devicesProvider";
 
 export class DevicesTree {
   explorerTree?: ExplorerTree;
@@ -76,6 +77,7 @@ export class DevicesTree {
         this.explorerTree.setDevice(device);
         this.explorerTree.refreshTree("/sdcard/");
       } else {
+        await commands.executeCommand("setContext", "adb-helper:showExplorer", true);
         this.explorerTree = new ExplorerTree(context, device);
         this.explorerTree.refreshTree("/sdcard/");
       }
@@ -88,6 +90,7 @@ export class DevicesTree {
         this.explorerTree.setDevice(device);
         this.explorerTree.refreshTree("/");
       } else {
+        await commands.executeCommand("setContext", "adb-helper:showExplorer", true);
         this.explorerTree = new ExplorerTree(context, device);
         this.explorerTree.refreshTree("/");
       }
@@ -99,6 +102,7 @@ export class DevicesTree {
         this.managerTree.setDevice(device);
         this.managerTree.refreshTree("-3");
       } else {
+        await commands.executeCommand("setContext", "adb-helper:showManager", true);
         this.managerTree = new ManagerTree(context, device);
         this.managerTree.refreshTree("-3");
       }
@@ -120,62 +124,5 @@ export class DevicesTree {
         }
       });
     });
-  }
-}
-
-export class DevicesProvider implements TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
-  readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
-
-  constructor(public devices: IDevice[] = []) {}
-  private get ipDevices(): IDevice[] {
-    return this.devices.filter((r) => r.ip);
-  }
-  private get usbDevices(): IDevice[] {
-    return this.devices.filter((r) => !r.ip);
-  }
-
-  public refresh(): any {
-    this._onDidChangeTreeData.fire(undefined);
-  }
-
-  getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
-    return element;
-  }
-  getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
-    if (this.devices.length === 0) {
-      window.showWarningMessage("Please Connect Android Devices");
-      return Promise.resolve([new TreeItem("Please Connect Android Devices")]);
-    }
-
-    if (element?.contextValue === "ipGroup") {
-      let treeItemList = this.ipDevices.map((device: IDevice) => {
-        let item = new TreeItem(device.product);
-        item.id = device.id;
-        item.description = device.id;
-        item.tooltip = JSON.stringify(device);
-        item.contextValue = "ip";
-        item.iconPath = new ThemeIcon("broadcast");
-        return item;
-      });
-      return Promise.resolve(treeItemList);
-    }
-
-    let treeItemList = this.usbDevices.map((device: IDevice) => {
-      let item = new TreeItem(device.product);
-      item.id = device.id;
-      item.description = device.id;
-      item.tooltip = JSON.stringify(device);
-      item.contextValue = "usb";
-      item.iconPath = new ThemeIcon("device-mobile");
-      return item;
-    });
-
-    let ipGroupItem = new TreeItem("IP Connect Group");
-    ipGroupItem.contextValue = "ipGroup";
-    ipGroupItem.iconPath = new ThemeIcon("cloud");
-    ipGroupItem.collapsibleState = TreeItemCollapsibleState.Expanded;
-
-    return Promise.resolve(treeItemList.concat(ipGroupItem));
   }
 }

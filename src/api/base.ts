@@ -1,12 +1,12 @@
 /*
- * @FilePath     : /adb-helper/src/command/base.ts
+ * @FilePath     : /adb-helper/src/api/base.ts
  * @Date         : 2021-08-12 18:26:33
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : base
  */
 
 import { IDevice } from "../type";
-import { cmdSync, cSync } from "../util";
+import { cmdSync, cSync } from "../util/c";
 
 export function adbVersion(path?: string): string {
   const s = `adb version`;

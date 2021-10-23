@@ -1,11 +1,11 @@
 /*
- * @FilePath     : /adb-helper/src/command/shellFile.ts
+ * @FilePath     : /adb-helper/src/api/shellFile.ts
  * @Date         : 2021-08-13 16:52:50
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : shellFile
  */
 
-import { cSync } from "../util";
+import { cSync } from "../util/c";
 
 export function mkdir(id: string, path: string): boolean {
   path = path.replace(/ /g, "\\ ");
