@@ -159,12 +159,12 @@
         {
           "id": "adb-helper.Explorer",
           "name": "Device Explorer",
-          "when": "adb-helper:isADBSupport && adb-helper:showExplorer"
+          "when": "adb-helper:isADBSupport"
         },
         {
           "id": "adb-helper.Manager",
           "name": "Device App Manager",
-          "when": "adb-helper:isADBSupport && adb-helper:showManager"
+          "when": "adb-helper:isADBSupport"
         },
         {
           "id": "adb-helper.Command",
@@ -182,17 +182,17 @@
         },
         {
           "command": "adb-helper.Explorer.Refresh",
-          "when": "view == adb-helper.Explorer",
+          "when": "view == adb-helper.Explorer && adb-helper:showExplorer",
           "group": "navigation@1"
         },
         {
           "command": "adb-helper.Manager.Refresh",
-          "when": "view == adb-helper.Manager",
+          "when": "view == adb-helper.Manager && adb-helper:showManager",
           "group": "navigation@2"
         },
         {
           "command": "adb-helper.Manager.Install",
-          "when": "view == adb-helper.Manager",
+          "when": "view == adb-helper.Manager && adb-helper:showManager",
           "group": "navigation@1"
         },
         {

@@ -16,19 +16,25 @@ export class ExplorerProvider implements TreeDataProvider<TreeItem> {
   public refresh(): any {
     this._onDidChangeTreeData.fire(undefined);
   }
-  constructor(public device: IDevice, public root = "") {}
+  constructor(public device?: IDevice, public root = "") {}
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
 
   getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
+    const deviceId = this.device?.id ?? "";
+
+    if (deviceId === "") {
+      return Promise.resolve([new TreeItem("Please choose a device")]);
+    }
+
     if (this.root === "") {
       return Promise.resolve([new TreeItem("Explorer Loading...")]);
     }
     return new Promise<TreeItem[]>(async (resolve) => {
       const path = element?.resourceUri?.path ?? this.root;
-      const fileList = await ls(this.device.id, path).catch((err) => {
+      const fileList = await ls(deviceId, path).catch((err) => {
         resolve([new TreeItem(`${err}`)]);
         return [] as IFileStat[];
       });

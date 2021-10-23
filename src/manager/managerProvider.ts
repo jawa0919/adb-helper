@@ -17,18 +17,23 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  constructor(public device: IDevice, public args = "") {}
+  constructor(public device?: IDevice, public args = "") {}
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
 
   getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
+    const deviceId = this.device?.id ?? "";
+
+    if (deviceId === "") {
+      return Promise.resolve([new TreeItem("Please choose a device")]);
+    }
     if (this.args === "") {
       return Promise.resolve([new TreeItem("Explorer Loading...")]);
     }
     return new Promise<TreeItem[]>(async (resolve) => {
-      const fileList = await list(this.device.id, this.args).catch((err) => {
+      const fileList = await list(deviceId, this.args).catch((err) => {
         resolve([new TreeItem(`${err}`)]);
         return [] as IApk[];
       });

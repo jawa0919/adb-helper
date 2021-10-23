@@ -14,7 +14,7 @@ import { ManagerProvider } from "./managerProvider";
 export class ManagerTree {
   provider: ManagerProvider;
 
-  constructor(context: ExtensionContext, device: IDevice) {
+  constructor(context: ExtensionContext, device?: IDevice) {
     console.debug("ManagerTree constructor");
     const provider = new ManagerProvider(device);
     context.subscriptions.push(window.createTreeView("adb-helper.Manager", { treeDataProvider: provider }));
@@ -29,7 +29,7 @@ export class ManagerTree {
       window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
         let fileUri = res?.shift();
         if (fileUri) {
-          let success = await install(provider.device.id, fileUri.fsPath);
+          let success = await install(provider.device?.id ?? "", fileUri.fsPath);
           if (success) {
             provider.refresh();
             window.showInformationMessage("install Success");
@@ -45,7 +45,7 @@ export class ManagerTree {
       window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
         let fileUri = res?.shift();
         if (fileUri) {
-          let success = await install(provider.device.id, fileUri.fsPath, "-t -r");
+          let success = await install(provider.device?.id ?? "", fileUri.fsPath, "-t -r");
           if (success) {
             provider.refresh();
             window.showInformationMessage("install Success");
@@ -59,7 +59,7 @@ export class ManagerTree {
       console.log("AppManager.Uninstall");
       window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
         if (answer === "Yes") {
-          let success = await uninstall(provider.device.id, r.id);
+          let success = await uninstall(provider.device?.id ?? "", r.id);
           if (success) {
             provider.refresh();
             window.showInformationMessage("Delete Success");
@@ -73,7 +73,7 @@ export class ManagerTree {
       console.log("AppManager.Uninstall_k");
       window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
         if (answer === "Yes") {
-          let success = await uninstall(provider.device.id, r.id, "-k");
+          let success = await uninstall(provider.device?.id ?? "", r.id, "-k");
           if (success) {
             provider.refresh();
             window.showInformationMessage("Delete Success");
@@ -87,7 +87,7 @@ export class ManagerTree {
       console.log("AppManager.Clear");
       window.showInformationMessage("Do you want clear this apk data?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
         if (answer === "Yes") {
-          let success = await clear(provider.device.id, r.id);
+          let success = await clear(provider.device?.id ?? "", r.id);
           if (success) {
             provider.refresh();
             window.showInformationMessage("clear Success");
@@ -103,7 +103,7 @@ export class ManagerTree {
       window.showOpenDialog({ canSelectFolders: true }).then((res) => {
         let fileUri = res?.shift();
         if (fileUri) {
-          let success = pull(provider.device.id, path, fileUri.fsPath + "\\" + r.id + ".apk");
+          let success = pull(provider.device?.id ?? "", path, fileUri.fsPath + "\\" + r.id + ".apk");
           if (success) {
             window.showInformationMessage("export Success");
           } else {

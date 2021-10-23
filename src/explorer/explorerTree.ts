@@ -13,7 +13,7 @@ import { ExplorerProvider } from "./explorerProvider";
 export class ExplorerTree {
   provider: ExplorerProvider;
 
-  constructor(context: ExtensionContext, device: IDevice) {
+  constructor(context: ExtensionContext, device?: IDevice) {
     console.debug("ExplorerTree constructor");
     const provider = new ExplorerProvider(device);
     context.subscriptions.push(window.createTreeView("adb-helper.Explorer", { treeDataProvider: provider }));
