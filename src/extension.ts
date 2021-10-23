@@ -6,15 +6,15 @@ import { DevicesTree } from "./tree/devicesTree";
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "adb-helper" is now active!');
 
-  let disposable = vscode.commands.registerCommand("adb-helper.Adb.Start", () => {
+  let disposable = vscode.commands.registerCommand("adb-helper.Adb.Start", async () => {
     const version = adbVersion();
     if (version === "") {
       vscode.window.showWarningMessage("ADB command not found in the PATH");
       return;
     }
+    await vscode.commands.executeCommand("setContext", "adb-helper:isADBSupport", true);
     const devicesTree = new DevicesTree(context);
     const commandTree = new CommandTree(context);
-    vscode.commands.executeCommand("setContext", "adb-helper:isADBSupport", true);
   });
   context.subscriptions.push(disposable);
 
