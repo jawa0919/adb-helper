@@ -6,8 +6,10 @@
  */
 
 import { command, commandSync } from "execa";
+import { log } from "./logs";
 
 export function cSync(cmd: string): string {
+  log(`cSync:${cmd}`);
   try {
     const res = commandSync(cmd);
     if (res.stderr) {
@@ -21,11 +23,13 @@ export function cSync(cmd: string): string {
 }
 
 export async function c(cmd: string): Promise<string> {
+  log(`c:${cmd}`);
   const res = await command(cmd);
   return res.stdout;
 }
 
 export function cmdSync(cmd: string): string[] {
+  log(`cmdSync:${cmd}`);
   try {
     const res = commandSync(cmd);
     if (res.stderr) {
@@ -41,6 +45,7 @@ export function cmdSync(cmd: string): string[] {
 }
 
 export async function cmd(cmd: string): Promise<string[]> {
+  log(`cmd:${cmd}`);
   const res = await command(cmd);
   let lines = res.stdout.trim().split(/\n|\r\n/);
   lines = lines.map((r) => r.trim()).filter((r) => r !== "");
