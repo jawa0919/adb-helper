@@ -1,5 +1,5 @@
 /*
- * @FilePath     : /adb-helper/src/util/c.ts
+ * @FilePath     : /src/util/c.ts
  * @Date         : 2021-10-23 11:04:39
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : 命令行封装
