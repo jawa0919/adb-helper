@@ -1,12 +1,11 @@
 /*
- * @FilePath     : /adb-helper/src/manager/managerProvider.ts
+ * @FilePath     : /src/manager/managerProvider.ts
  * @Date         : 2021-10-23 11:22:09
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : App管理树的提供者
  */
 
-import { Event, EventEmitter, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem } from "vscode";
-import { list } from "../api/pm";
+import { Event, EventEmitter, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemLabel } from "vscode";
 import { IApk, IDevice } from "../type";
 
 export class ManagerProvider implements TreeDataProvider<TreeItem> {
@@ -17,34 +16,41 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  constructor(public device?: IDevice, public args = "") {}
+  constructor(public device?: IDevice) {}
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
 
   getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
-    const deviceId = this.device?.id ?? "";
+    if (this.device) {
+      let currentDeviceItem = this._bindCurrentDevice(this.device);
 
-    if (deviceId === "") {
+      let item = new TreeItem("com.xx.xx");
+      item.iconPath = new ThemeIcon("symbol-constructor");
+      item.contextValue = "apk";
+
+      let item2 = new TreeItem("com.yy.yy");
+      item2.iconPath = new ThemeIcon("symbol-constructor");
+      item2.contextValue = "apk";
+
+      return [currentDeviceItem, item, item2];
+    } else {
       return Promise.resolve([new TreeItem("Please choose a device")]);
     }
-    if (this.args === "") {
-      return Promise.resolve([new TreeItem("Explorer Loading...")]);
-    }
-    return new Promise<TreeItem[]>(async (resolve) => {
-      const fileList = await list(deviceId, this.args).catch((err) => {
-        resolve([new TreeItem(`${err}`)]);
-        return [] as IApk[];
-      });
-      let treeItemList = fileList.map((r) => {
-        let item = new TreeItem(r.name);
-        item.iconPath = new ThemeIcon("symbol-constructor");
-        item.id = r.name;
-        item.tooltip = r.path;
-        return item;
-      });
-      resolve(treeItemList);
-    });
+  }
+
+  _bindCurrentDevice(device: IDevice): TreeItem {
+    let item = new TreeItem(device.model);
+    item.id = device.id;
+    item.iconPath = new ThemeIcon("chevron-down");
+    item.description = device.id;
+    item.tooltip = JSON.stringify(this.device);
+    item.command = {
+      command: "adb-helper.Manager.Device.Swap",
+      title: "Swap current device",
+    };
+    item.contextValue = "currentDevice";
+    return item;
   }
 }

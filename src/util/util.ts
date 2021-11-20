@@ -1,13 +1,13 @@
 /*
- * @FilePath     : /adb-helper/src/util/util.ts
+ * @FilePath     : /src/util/util.ts
  * @Date         : 2021-08-12 18:10:55
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : util
  */
 
-import { command } from "execa";
 import { Uri } from "vscode";
 import { log } from "./logs";
+import * as child_process from "child_process";
 
 export async function waitMoment(ms = 300): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -27,15 +27,14 @@ export function createUri(authority: string, path: string): Uri {
   return uri;
 }
 
-export async function cmd(cmd: string): Promise<string[]> {
+export function cmd(cmd: string): string {
   log(`cmd.start:${cmd}`);
-  const res = await command(cmd).catch((err) => {
-    log(`cmd.error:${cmd}`);
-    log(`error:${err}`);
-    return { stdout: "" };
-  });
-  log(`cmd.end:${cmd}`);
-  let lines = res.stdout.trim().split(/\n|\r\n/);
-  lines = lines.map((r) => r.trim()).filter((r) => r !== "");
-  return lines;
+  try {
+    const buf = child_process.execSync(cmd);
+    const res = Buffer.from(buf).toString();
+    return res.trim();
+  } catch (error) {
+    log(`cmd.start:${cmd} catch ${error}`);
+    return "";
+  }
 }
