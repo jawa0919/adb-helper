@@ -36,7 +36,7 @@
       },
       {
         "command": "adb-helper.Manager.Refresh",
-        "title": "Refresh",
+        "title": "Refresh Manager",
         "icon": "$(refresh)"
       },
       {
@@ -88,6 +88,39 @@
       {
         "command": "adb-helper.Manager.Apk.Export",
         "title": "Export Apk File"
+      },
+      {
+        "command": "adb-helper.Explorer.Refresh",
+        "title": "Refresh Explorer",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "adb-helper.Explorer.RootPath",
+        "title": "(TEST)Root Path"
+      },
+      {
+        "command": "adb-helper.Explorer.NewDirectory",
+        "title": "New Directory"
+      },
+      {
+        "command": "adb-helper.Explorer.SaveAs",
+        "title": "Save As..."
+      },
+      {
+        "command": "adb-helper.Explorer.UploadFile",
+        "title": "Upload File"
+      },
+      {
+        "command": "adb-helper.Explorer.UploadDirectory",
+        "title": "Upload Directory"
+      },
+      {
+        "command": "adb-helper.Explorer.Delete",
+        "title": "Delete"
+      },
+      {
+        "command": "adb-helper.Explorer.CopyPath",
+        "title": "Copy Path"
       }
     ],
     "viewsContainers": {
@@ -139,6 +172,16 @@
           "command": "adb-helper.Manager.Wifi.InputIPConnect",
           "when": "view == adb-helper.Manager",
           "group": "w1@3"
+        },
+        {
+          "command": "adb-helper.Explorer.Refresh",
+          "when": "view == adb-helper.Explorer",
+          "group": "navigation@1"
+        },
+        {
+          "command": "adb-helper.Explorer.RootPath",
+          "when": "view == adb-helper.Explorer",
+          "group": "e1@1"
         }
       ],
       "view/item/context": [
@@ -176,6 +219,36 @@
           "command": "adb-helper.Manager.Apk.Export",
           "when": "view == adb-helper.Manager && viewItem != currentDevice",
           "group": "d4@1"
+        },
+        {
+          "command": "adb-helper.Explorer.NewDirectory",
+          "when": "view == adb-helper.Explorer",
+          "group": "e1@1"
+        },
+        {
+          "command": "adb-helper.Explorer.SaveAs",
+          "when": "view == adb-helper.Explorer",
+          "group": "e2@1"
+        },
+        {
+          "command": "adb-helper.Explorer.UploadFile",
+          "when": "view == adb-helper.Explorer && viewItem == directory",
+          "group": "e3@2"
+        },
+        {
+          "command": "adb-helper.Explorer.UploadDirectory",
+          "when": "view == adb-helper.Explorer && viewItem == directory",
+          "group": "e3@3"
+        },
+        {
+          "command": "adb-helper.Explorer.Delete",
+          "when": "view == adb-helper.Explorer",
+          "group": "e3@4"
+        },
+        {
+          "command": "adb-helper.Explorer.CopyPath",
+          "when": "view == adb-helper.Explorer",
+          "group": "e4@1"
         }
       ]
     },

@@ -2,7 +2,7 @@
  * @FilePath     : /src/manager/managerProvider.ts
  * @Date         : 2021-10-23 11:22:09
  * @Author       : jawa0919 <jawa0919@163.com>
- * @Description  : App管理树的提供者
+ * @Description  : managerProvider
  */
 
 import { Event, EventEmitter, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemLabel } from "vscode";

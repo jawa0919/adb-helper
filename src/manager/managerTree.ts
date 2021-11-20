@@ -6,6 +6,7 @@
  */
 
 import { commands, ExtensionContext, window } from "vscode";
+import { ExplorerTree } from "../explorer/explorerTree";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
 import { ManagerProvider } from "./managerProvider";
@@ -15,11 +16,15 @@ export class ManagerTree {
   currentDevice?: IDevice;
   provider: ManagerProvider;
 
+  explorerTree: ExplorerTree;
+
   constructor(context: ExtensionContext, device?: IDevice) {
     console.debug("ManagerTree constructor");
     const provider = new ManagerProvider(device);
     this.provider = provider;
     window.registerTreeDataProvider("adb-helper.Manager", provider);
+
+    this.explorerTree = new ExplorerTree(context, device);
 
     commands.registerCommand("adb-helper.Manager.Refresh", async () => {
       console.log("Manager.Refresh");
@@ -148,6 +153,8 @@ export class ManagerTree {
 
   setDevice(device: IDevice) {
     this.provider.device = device;
+    this.explorerTree.setDevice(device);
+    this.explorerTree.refreshTree("");
   }
 
   refreshTree(args: string) {
