@@ -42,7 +42,7 @@
       {
         "command": "adb-helper.Manager.Device.Swap",
         "title": "Swap current device",
-        "icon": "$(sync)"
+        "icon": "$(device-mobile)"
       },
       {
         "command": "adb-helper.Manager.Wifi.History",
@@ -50,26 +50,26 @@
       },
       {
         "command": "adb-helper.Manager.Wifi.Disconnect",
-        "title": "Disconnect all wifi connect devices"
+        "title": "Disconnect All Wifi Connect Devices"
       },
       {
         "command": "adb-helper.Manager.Wifi.InputIPConnect",
-        "title": "Input device ip connect"
+        "title": "Input Device IP Connect"
       },
       {
         "command": "adb-helper.Manager.Device.Screenshot",
-        "title": "Device screenshot",
+        "title": "Device Screenshot",
         "icon": "$(device-camera)"
       },
       {
         "command": "adb-helper.Manager.Device.Install",
         "title": "Install New Apk",
-        "icon": "$(log-in)"
+        "icon": "$(diff-added)"
       },
       {
         "command": "adb-helper.Manager.Device.ConnectWifi",
-        "title": "Connect wifi adb",
-        "icon": "$(radio-tower)"
+        "title": "Connect Wifi",
+        "icon": "$(broadcast)"
       },
       {
         "command": "adb-helper.Manager.Apk.Install_r_t",
@@ -96,7 +96,7 @@
       },
       {
         "command": "adb-helper.Explorer.RootPath",
-        "title": "(TEST)Root Path"
+        "title": "(TEST) Root Path"
       },
       {
         "command": "adb-helper.Explorer.NewDirectory",
@@ -136,12 +136,12 @@
       "adb-helper": [
         {
           "id": "adb-helper.Manager",
-          "name": "Device App Manager",
+          "name": "Manager",
           "when": "adb-helper:isADBSupport"
         },
         {
           "id": "adb-helper.Explorer",
-          "name": "Device Explorer",
+          "name": "Explorer",
           "when": "adb-helper:isADBSupport"
         }
       ]
