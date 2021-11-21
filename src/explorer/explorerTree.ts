@@ -127,8 +127,7 @@ export class ExplorerTree {
     this.provider.device = device;
   }
 
-  refreshTree(root: string) {
-    this.provider.root = root;
+  refreshTree() {
     this.provider.refresh();
   }
 }

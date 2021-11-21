@@ -9,6 +9,6 @@ import { window } from "vscode";
 
 const logOutput = window.createOutputChannel("ADB Helper");
 
-export function log(obj: any): void {
+export function logPrint(obj: any): void {
   logOutput.appendLine(`${obj}`);
 }

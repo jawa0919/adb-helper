@@ -6,6 +6,7 @@
  */
 
 import { Event, EventEmitter, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemLabel } from "vscode";
+import { pmList } from "../command/pm";
 import { IApk, IDevice } from "../type";
 
 export class ManagerProvider implements TreeDataProvider<TreeItem> {
@@ -13,10 +14,13 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
   public refresh(): any {
+    this.apkList = pmList(this.device?.id ?? "", "-3");
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  constructor(public device?: IDevice) {}
+  constructor(public device?: IDevice, public apkList: IApk[] = []) {
+    this.refresh();
+  }
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
@@ -25,16 +29,8 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
   getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
     if (this.device) {
       let currentDeviceItem = this._bindCurrentDevice(this.device);
-
-      let item = new TreeItem("com.xx.xx");
-      item.iconPath = new ThemeIcon("symbol-constructor");
-      item.contextValue = "apk";
-
-      let item2 = new TreeItem("com.yy.yy");
-      item2.iconPath = new ThemeIcon("symbol-constructor");
-      item2.contextValue = "apk";
-
-      return [currentDeviceItem, item, item2];
+      let apkItem = this._bindApkItem3(this.device);
+      return [currentDeviceItem, ...apkItem];
     } else {
       return Promise.resolve([new TreeItem("Please choose a device")]);
     }
@@ -52,5 +48,17 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
     };
     item.contextValue = "currentDevice";
     return item;
+  }
+
+  _bindApkItem3(device: IDevice): TreeItem[] {
+    let treeItemList = this.apkList.map((r) => {
+      let item = new TreeItem(r.name);
+      item.iconPath = new ThemeIcon("symbol-constructor");
+      item.id = r.name;
+      item.tooltip = r.path;
+      item.contextValue = "apk";
+      return item;
+    });
+    return treeItemList;
   }
 }

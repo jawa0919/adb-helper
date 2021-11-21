@@ -6,8 +6,33 @@
  */
 
 import { Uri } from "vscode";
-import { log } from "./logs";
+import { logPrint } from "./logs";
 import * as child_process from "child_process";
+
+import execa = require("execa");
+
+export function ww(bin: string, args: string[], env?: { [key: string]: string | undefined }): execa.ExecaSyncReturnValue {
+  logPrint(`\nexeca.sync ${bin} with args ${JSON.stringify(args)}`);
+  const quotedArgs = args.map((a) => `${a.replace(/"/g, `\\"`)}`);
+  const customEnv = Object.assign({}, process.env, env);
+  const res = execa.sync(bin, quotedArgs, { env: customEnv, shell: true });
+  logPrint(`execa stdout\n${res.stdout}`);
+  return res;
+}
+
+export function www(bin: string, args: string[], env?: { [key: string]: string | undefined }): execa.ExecaChildProcess {
+  logPrint(`\nexeca.execa ${bin} with args ${JSON.stringify(args)}`);
+  const quotedArgs = args.map((a) => `${a.replace(/"/g, `\\"`)}`);
+  const customEnv = Object.assign({}, process.env, env);
+  const pro = execa(bin, quotedArgs, { env: customEnv, shell: true });
+  pro.stdout?.on("data", (data: string) => {
+    logPrint("execa.execa stdout\n" + data);
+  });
+  pro.stderr?.on("data", (data: string) => {
+    logPrint("execa.execa stderr\n" + data);
+  });
+  return pro;
+}
 
 export async function waitMoment(ms = 300): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -27,14 +52,73 @@ export function createUri(authority: string, path: string): Uri {
   return uri;
 }
 
-export function cmd(cmd: string): string {
-  log(`cmd.start:${cmd}`);
+export function cSync(bin: string, args: string[]): string {
   try {
-    const buf = child_process.execSync(cmd);
-    const res = Buffer.from(buf).toString();
-    return res.trim();
+    const buf = _safeExecFileSync(bin, args, {});
+    const res = Buffer.from(buf).toString().trim();
+    logPrint("cSync.res " + res);
+    return res;
   } catch (error) {
-    log(`cmd.start:${cmd} catch ${error}`);
+    const res = Buffer.from(error as Buffer).toString();
+    logPrint(`cSync.catch ${JSON.stringify(res)}`);
     return "";
   }
+}
+
+export function c(bin: string, args: string[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const pro = _safeExecFile(bin, args, {});
+    pro.stdout?.on("data", (data: Buffer | string) => {
+      const res = Buffer.from(data).toString().trim();
+      logPrint("stdout data " + res);
+      resolve(res);
+    });
+    pro.stderr?.on("data", (data: Buffer | string) => {
+      const res = Buffer.from(data).toString().trim();
+      logPrint("stderr data " + res);
+      reject(res);
+    });
+    pro.on("exit", (code, signal) => {
+      logPrint("exit");
+    });
+    pro.on("error", (error) => {
+      logPrint("error");
+    });
+  });
+}
+
+function _safeExecFileSync(bin: string, args: string[], env: { [key: string]: string | undefined } | undefined): Buffer {
+  logPrint(`ExecFileSync ${bin} with args ${JSON.stringify(args)}`);
+  const quotedArgs = args.map((a) => `"${a.replace(/"/g, `\\"`)}"`);
+  const customEnv = Object.assign({}, process.env, env);
+  return child_process.execFileSync(`"${bin}"`, quotedArgs, { env: customEnv, shell: true });
+}
+
+function _safeExecFile(bin: string, args: string[], env: { [key: string]: string | undefined } | undefined): child_process.ChildProcess {
+  logPrint(`ExecFile ${bin} with args ${JSON.stringify(args)}`);
+  const quotedArgs = args.map((a) => `"${a.replace(/"/g, `\\"`)}"`);
+  const customEnv = Object.assign({}, process.env, env);
+  return child_process.execFile(`"${bin}"`, quotedArgs, { env: customEnv, shell: true });
+}
+
+function _safeSpawnSync(bin: string, args: string[], env: { [key: string]: string | undefined } | undefined): child_process.SpawnSyncReturns<Buffer> {
+  logPrint(`Spawn ${bin} with args ${JSON.stringify(args)}`);
+  const quotedArgs = args.map((a) => `"${a.replace(/"/g, `\\"`)}"`);
+  const customEnv = Object.assign({}, process.env, env);
+  return child_process.spawnSync(`"${bin}"`, quotedArgs, { env: customEnv, shell: true });
+}
+
+function _safeSpawn(bin: string, args: string[], env: { [key: string]: string | undefined } | undefined): child_process.ChildProcessWithoutNullStreams {
+  logPrint(`Spawn ${bin} with args ${JSON.stringify(args)}`);
+  const quotedArgs = args.map((a) => `"${a.replace(/"/g, `\\"`)}"`);
+  const customEnv = Object.assign({}, process.env, env);
+  return child_process.spawn(`"${bin}"`, quotedArgs, { env: customEnv, shell: true });
+}
+
+function createProcess(bin: string, args: string[]) {
+  // this.logTraffic(`Spawning ${bin} with args ${JSON.stringify(args)}`);
+  // this.process.stdout.on("data", (data: Buffer | string) => this.handleStdOut(data));
+  // this.process.stderr.on("data", (data: Buffer | string) => this.handleStdErr(data));
+  // this.process.on("exit", (code, signal) => this.handleExit(code, signal));
+  // this.process.on("error", (error) => this.handleError(error));
 }

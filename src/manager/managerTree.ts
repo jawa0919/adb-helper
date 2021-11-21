@@ -5,7 +5,10 @@
  * @Description  : managerTree
  */
 
-import { commands, ExtensionContext, window } from "vscode";
+import { CancellationToken, commands, ExtensionContext, Progress, ProgressLocation, window, workspace } from "vscode";
+import { adbDevices, adbDisconnectAll } from "../command/base";
+import { connect, deviceWifiIP, screencap, tcpIp } from "../command/device";
+import { pull } from "../command/file";
 import { ExplorerTree } from "../explorer/explorerTree";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
@@ -28,16 +31,13 @@ export class ManagerTree {
 
     commands.registerCommand("adb-helper.Manager.Refresh", async () => {
       console.log("Manager.Refresh");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("adb devices -l");
-      // const mock1: IDevice = { id: "192.168.3.105:5556", type: "device", product: "PD1616B", model: "vivo_X9s", device: "PD1616B", transportId: 1, ip: "192.168.3.105", port: 5556 };
-      const mock2: IDevice = { id: "89a6bc23", type: "device", product: "PD1616B", model: "vivo_X9s", device: "PD1616B", transportId: 2 };
-      const mock3: IDevice = { id: "afc48774", type: "device", product: "MXA4514", model: "MI_8", device: "MXA4514", transportId: 3 };
-
-      this.devices = [mock2, mock3];
-      this.currentDevice = this.devices[0];
-      this.setDevice(this.currentDevice);
-      this.refreshTree("");
+      this.showProgress("Manager.Refresh running!", async () => {
+        await waitMoment();
+        this.devices = adbDevices();
+        this.currentDevice = this.devices[0];
+        this.setDevice(this.currentDevice);
+        this.refreshTree("");
+      });
     });
 
     commands.registerCommand("adb-helper.Manager.Device.Swap", async () => {
@@ -59,33 +59,32 @@ export class ManagerTree {
           this.refreshTree("");
         }
       });
-
       quickPick.show();
     });
 
     commands.registerCommand("adb-helper.Manager.Wifi.History", async () => {
       console.log("Manager.Wifi.History");
-      const quickPick = window.createQuickPick();
-      quickPick.onDidHide(() => quickPick.dispose());
-      quickPick.placeholder = "connect device";
-      quickPick.items = this.devices.map((d) => {
-        return { label: d.model, description: d.id };
-      });
-      quickPick.onDidChangeSelection((s) => {
-        if (s[0]) {
-          console.log("Manager.Wifi.History.quickPick" + s[0]);
-          // TODO 2021-11-20 22:13:08 cmd("")
-        }
-      });
+      // const quickPick = window.createQuickPick();
+      // quickPick.onDidHide(() => quickPick.dispose());
+      // quickPick.placeholder = "connect device";
+      // quickPick.items = this.devices.map((d) => {
+      //   return { label: d.model, description: d.id };
+      // });
+      // quickPick.onDidChangeSelection((s) => {
+      //   if (s[0]) {
+      //     console.log("Manager.Wifi.History.quickPick" + s[0]);
+      //     // TODO 2021-11-20 22:13:08 cmd("")
+      //   }
+      // });
 
-      quickPick.show();
+      // quickPick.show();
     });
 
     commands.registerCommand("adb-helper.Manager.Wifi.Disconnect", async () => {
       console.log("Manager.Wifi.Disconnect");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("")
-      commands.executeCommand("adb-helper.Manager.Refresh");
+      if (adbDisconnectAll()) {
+        commands.executeCommand("adb-helper.Manager.Refresh");
+      }
     });
 
     commands.registerCommand("adb-helper.Manager.Wifi.InputIPConnect", async () => {
@@ -105,10 +104,25 @@ export class ManagerTree {
       inputBox.show();
     });
 
-    commands.registerCommand("adb-helper.Manager.Device.Screenshot", async () => {
+    commands.registerCommand("adb-helper.Manager.Device.Screenshot", async (r) => {
       console.log("Manager.Device.Screenshot");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      const device: IDevice = JSON.parse(r.tooltip);
+      const path = screencap(device.id);
+      window.showOpenDialog({ canSelectFolders: true }).then((res) => {
+        let fileUri = res?.shift();
+        if (fileUri) {
+          this.showProgress("Device.Screenshot running!", async () => {
+            await waitMoment();
+            let success = pull(device.id, path, fileUri?.fsPath ?? "");
+            if (success) {
+              window.showInformationMessage("Screenshot Success");
+            } else {
+              window.showErrorMessage("Screenshot Error");
+            }
+            return;
+          });
+        }
+      });
     });
 
     commands.registerCommand("adb-helper.Manager.Device.Install", async () => {
@@ -117,10 +131,32 @@ export class ManagerTree {
       // TODO 2021-11-20 22:13:08 cmd("");
     });
 
-    commands.registerCommand("adb-helper.Manager.Device.ConnectWifi", async () => {
+    commands.registerCommand("adb-helper.Manager.Device.ConnectWifi", async (r) => {
       console.log("Manager.Device.ConnectWifi");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      const device: IDevice = JSON.parse(r.tooltip);
+      const ip: string = deviceWifiIP(device.id);
+      let port: number = parseInt(workspace.getConfiguration().get("adb-helper.startPort") ?? "5555");
+      port = port + device.transportId;
+
+      this.showProgress("Device.ConnectWifi running!", async () => {
+        await waitMoment();
+        const isTcp = tcpIp(device.id, port);
+        if (!isTcp) {
+          window.showErrorMessage(`tcpIp ${device.id} error`);
+          return;
+        }
+
+        await waitMoment();
+        const isConnect = connect(device.id, ip, port);
+        if (!isConnect) {
+          window.showErrorMessage(`connect ${device.id} error`);
+          return;
+        }
+
+        await waitMoment();
+        commands.executeCommand("adb-helper.Manager.Refresh");
+        return;
+      });
     });
 
     commands.registerCommand("adb-helper.Manager.Apk.Install_r_t", async () => {
@@ -154,10 +190,14 @@ export class ManagerTree {
   setDevice(device: IDevice) {
     this.provider.device = device;
     this.explorerTree.setDevice(device);
-    this.explorerTree.refreshTree("");
+    this.explorerTree.refreshTree();
   }
 
   refreshTree(args: string) {
     this.provider.refresh();
+  }
+
+  showProgress<T>(title: string, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<T>) {
+    window.withProgress<T>({ location: ProgressLocation.Notification, title, cancellable: false }, task);
   }
 }
