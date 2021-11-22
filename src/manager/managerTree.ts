@@ -9,6 +9,7 @@ import { CancellationToken, commands, ExtensionContext, Progress, ProgressLocati
 import { adbDevices, adbDisconnectAll } from "../command/base";
 import { connect, deviceWifiIP, screencap, tcpIp } from "../command/device";
 import { pull } from "../command/file";
+import { clear, install, uninstall } from "../command/pm";
 import { ExplorerTree } from "../explorer/explorerTree";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
@@ -127,12 +128,27 @@ export class ManagerTree {
 
     commands.registerCommand("adb-helper.Manager.Device.Install", async () => {
       console.log("Manager.Device.Install");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
+        let fileUri = res?.shift();
+        if (fileUri) {
+          this.showProgress("Device.Install running!", async () => {
+            await waitMoment();
+            let success = await install(provider.device?.id ?? "", fileUri!.fsPath);
+            if (success) {
+              provider.refresh();
+              window.showInformationMessage("Install Success");
+            } else {
+              window.showErrorMessage("Install Error");
+            }
+            return;
+          });
+        }
+      });
     });
 
     commands.registerCommand("adb-helper.Manager.Device.ConnectWifi", async (r) => {
       console.log("Manager.Device.ConnectWifi");
+      // TODO 2021-11-22 21:32:57 same error
       const device: IDevice = JSON.parse(r.tooltip);
       const ip: string = deviceWifiIP(device.id);
       let port: number = parseInt(workspace.getConfiguration().get("adb-helper.startPort") ?? "5555");
@@ -161,26 +177,79 @@ export class ManagerTree {
 
     commands.registerCommand("adb-helper.Manager.Apk.Install_r_t", async () => {
       console.log("Manager.Apk.Install_r_t");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
+        let fileUri = res?.shift();
+        if (fileUri) {
+          this.showProgress("Apk.Install_r_t running!", async () => {
+            await waitMoment();
+            let success = await install(provider.device?.id ?? "", fileUri!.fsPath, ["-t", "-r"]);
+            if (success) {
+              commands.executeCommand("adb-helper.Manager.Refresh");
+              window.showInformationMessage("Install_r_t Success");
+            } else {
+              window.showErrorMessage("Install_r_t Error");
+            }
+            return;
+          });
+        }
+      });
     });
 
-    commands.registerCommand("adb-helper.Manager.Apk.Uninstall", async () => {
+    commands.registerCommand("adb-helper.Manager.Apk.Uninstall", async (r) => {
       console.log("Manager.Apk.Uninstall");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
+        if (answer === "Yes") {
+          this.showProgress("Apk.Uninstall running!", async () => {
+            await waitMoment();
+            let success = await uninstall(provider.device?.id ?? "", r.id);
+            if (success) {
+              commands.executeCommand("adb-helper.Manager.Refresh");
+              window.showInformationMessage("Uninstall Success");
+            } else {
+              window.showErrorMessage("Uninstall Error");
+            }
+            return;
+          });
+        }
+      });
     });
 
-    commands.registerCommand("adb-helper.Manager.Apk.Wipe", async () => {
+    commands.registerCommand("adb-helper.Manager.Apk.Wipe", async (r) => {
       console.log("Manager.Apk.Wipe");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      window.showInformationMessage("Do you want wipe this apk data?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
+        if (answer === "Yes") {
+          this.showProgress("Apk.Wipe running!", async () => {
+            await waitMoment();
+            let success = await clear(provider.device?.id ?? "", r.id);
+            if (success) {
+              commands.executeCommand("adb-helper.Manager.Refresh");
+              window.showInformationMessage("Wipe Success");
+            } else {
+              window.showErrorMessage("Wipe Error");
+            }
+            return;
+          });
+        }
+      });
     });
 
-    commands.registerCommand("adb-helper.Manager.Apk.Export", async () => {
+    commands.registerCommand("adb-helper.Manager.Apk.Export", async (r) => {
       console.log("Manager.Apk.Export");
-      await waitMoment(1000);
-      // TODO 2021-11-20 22:13:08 cmd("");
+      window.showOpenDialog({ canSelectFolders: true }).then((res) => {
+        let fileUri = res?.shift();
+        if (fileUri) {
+          this.showProgress("Apk.Export running!", async () => {
+            await waitMoment();
+            let success = pull(provider.device?.id ?? "", r.tooltip, fileUri!.fsPath + "\\" + r.id + ".apk");
+            if (success) {
+              window.showInformationMessage("Export Success");
+            } else {
+              window.showErrorMessage("Export Error");
+            }
+            return;
+          });
+        }
+      });
     });
 
     /// Start
