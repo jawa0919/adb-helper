@@ -2,39 +2,45 @@
 
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://vsmarketplacebadge.apphb.com/installs/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
 
+## introduction
+
 [【中文】](./README_CN.md)
 
-ADB Helper to assist in executing common ADB commands. At present, the functions include device manager, file manager, application manager and command history.
+Assist in executing common ADB commands. At present, the functions include device management, WiFi connection, screenshot, application management and file management.
 
-![Home](./docs/assets/homeNew.png)
+![Home](./docs/assets/v3/homeV3.png)
 
 ## update
 
--Device manager, which is used to manage ADB connected devices.
+- Application manager, which is used to manage the management of third-party applications on the device。
 
--File manager, used to manage various files on the device. Similar to Android studio file management.
-
--Application manager, which is used to manage third-party applications on the device.
-
--Command History,Manually output ADB command.
+- File manager, used to manage various files on the device, similar to Android studio file management。
 
 ## Function
 
-1. Connect the mobile device to the computer through WiFi instead of USD connection.
+1. Application manager, including creating new folders, exporting files / folders, importing files, importing folders, deleting files / folders, and copying file paths.
 
-   ![ Home](./docs/assets/device.gif)
+2. adbWifi manager，Connect Android devices to the computer through WiFi, which can replace USB connection.
 
-2. Sdcard / Root file management, including creating new folders, exporting files / folders, importing files, importing folders, deleting files / folders, and copying file paths.
+   ![wifiV3](./docs/assets/v3/wifiV3.gif)
 
-   ![ Home](./docs/assets/explorer.png)
+3. File Management, including creating new folders, exporting files / folders, importing files, importing folders, deleting files / folders, and copying file paths.
 
-3. Application manager, upgrade APK, uninstall APK, clear APK cache and export APK.
+   ![explorer](./docs/assets/v3/explorerV3.png)
 
-   ![Home](./docs/assets/manager.png)
+   You can configure the root path. Pay attention to some permissions
 
-4. Command History, Manually execute the ADB command and execute the ADB history command.
+   ```json
+   {
+     "adb-helper.explorerRootPathList": ["/", "/sdcard/Download/", "/sdcard/DCIM/", "/sdcard/Music/", "/sdcard/Android/data/"]
+   }
+   ```
 
-   ![Home](./docs/assets/command.png)
+   ![explorer](./docs/assets/v3/explorerRootPathV3.gif)
+
+4. Screenshot
+
+5. USB Connection listening （Implementation using Fluent SDK）
 
 ## adb
 

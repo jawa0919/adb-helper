@@ -1,3 +1,13 @@
+# 0.3.0
+
+- Fix New Management
+- Add Screenshot
+- Add USB Connection listening
+
+# 0.2.0
+
+- Add Command History
+
 # 0.0.6
 
 - Fix show log bug
@@ -13,7 +23,5 @@
 # 0.0.3
 
 - Device manager, which is used to manage ADB connected devices.
-
 - File manager, used to manage various files on the device. Similar to Android studio file management.
-
 - Application manager, which is used to manage third-party applications on the device.

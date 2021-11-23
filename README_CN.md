@@ -6,37 +6,43 @@
 
 [【English】](./README.md)
 
-ADB 帮手，辅助执行 adb 常用命令。目前功能有 设备管理器，文件管理器，应用管理器，命令历史。
+辅助执行 adb 常用命令。目前功能有 设备管理，Wifi 连接，截图，应用管理，文件管理。
 
-![Home](./docs/assets/homeNew.png)
+![Home](./docs/assets/v3/homeV3.png)
 
 ## 更新
 
-- 设备管理器，用于管理 adb 连接的设备。
+- 应用管理器，用于管理设备上第三方应用的管理。
 
-- 文件管理器，用于设备上各种文件管理，与 Android Studio 文件管理类似。
-
-- 应用管理器，用于设备上第三方应用的管理。
-
-- 命令历史，手动输出 adb 命令。
+- 文件管理器，用于管理设备上各种文件，与 Android Studio 文件管理类似。
 
 ## 功能
 
-1. 使移动设备通过 wifi 连接电脑端，可代替 usd 连接。
+1. 应用管理，升级/安装 app，卸载 app，清除 app 缓存，导出 app 文件。
 
-   ![Home](./docs/assets/device.gif)
+   ![manager](./docs/assets/v3/managerV3.png)
 
-2. SDCard/Root 文件管理，包含新建文件夹，导出文件/文件夹，导入文件，导入文件夹，删除文件/文件夹，复制文件路径。
+2. adbWifi 管理，使 Android 设备通过 wifi 连接电脑端，可代替 usb 连接。
 
-   ![Home](./docs/assets/explorer.png)
+   ![wifiV3](./docs/assets/v3/wifiV3.gif)
 
-3. 应用管理器，升级 apk，卸载 apk，清除 apk 缓存，导出 apk。
+3. 文件管理，包含新建文件夹，导出文件/文件夹，导入文件，导入文件夹，删除文件/文件夹，复制文件路径等功能。
 
-   ![Home](./docs/assets/manager.png)
+   ![explorer](./docs/assets/v3/explorerV3.png)
 
-4. 命令历史，手动执行 adb 命令，执行 adb 历史命令。
+   可以配置根路径,注意一些权限问题
 
-   ![Home](./docs/assets/command.png)
+   ```json
+   {
+     "adb-helper.explorerRootPathList": ["/", "/sdcard/Download/", "/sdcard/DCIM/", "/sdcard/Music/", "/sdcard/Android/data/"]
+   }
+   ```
+
+   ![explorer](./docs/assets/v3/explorerRootPathV3.gif)
+
+4. 截图
+
+5. usb 连接监听 （使用 flutter sdk 实现）
 
 ## adb
 

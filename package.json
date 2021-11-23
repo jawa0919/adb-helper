@@ -258,13 +258,18 @@
         "title": "ADB Helper",
         "properties": {
           "adb-helper.explorerRootPathList": {
-            "type": "array",
             "default": [
               "/",
-              "/sdcard/Download/"
+              "/sdcard/Download/",
+              "/sdcard/DCIM/",
+              "/sdcard/Music/",
+              "/sdcard/Android/data/"
             ],
-            "description": "Explorer RootPath List",
-            "scope": "window"
+            "items": {
+              "type": "string"
+            },
+            "markdownDescription": "Explorer RootPath List",
+            "type": "array"
           }
         }
       }
