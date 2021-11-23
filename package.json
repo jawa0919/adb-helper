@@ -96,7 +96,7 @@
       },
       {
         "command": "adb-helper.Explorer.RootPath",
-        "title": "(TEST) Root Path"
+        "title": "$(test) Root Paths"
       },
       {
         "command": "adb-helper.Explorer.NewDirectory",
@@ -260,6 +260,15 @@
             "type": "number",
             "default": "5555",
             "description": "wifi Connect Start Port",
+            "scope": "window"
+          },
+          "adb-helper.explorerRootPathList": {
+            "type": "array",
+            "default": [
+              "/",
+              "/sdcard/Download/"
+            ],
+            "description": "explorer RootPath List",
             "scope": "window"
           }
         }

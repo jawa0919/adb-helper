@@ -25,7 +25,18 @@ export function ls(id: string, path: string): IFileStat[] {
     }
   } catch (error) {
     logPrint(`ls.catch\n${error}`);
-    return [];
+    let lines = `${error}`.trim().split(/\n|\r\n/);
+    lines = lines.map((r) => r.trim()).filter((r) => r !== "");
+    lines = lines.filter((r) => !r.startsWith("Error"));
+    lines = lines.filter((r) => !r.endsWith("Permission denied"));
+    if (lines.length > 0 && lines[0].startsWith("total")) {
+      lines.shift();
+      lines = lines.map((r) => r.trim());
+      return _parseV2(id, path, lines);
+    } else {
+      lines = lines.map((r) => r.trim());
+      return _parseV1(id, path, lines);
+    }
   }
 }
 

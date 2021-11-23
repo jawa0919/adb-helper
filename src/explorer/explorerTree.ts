@@ -5,17 +5,23 @@
  * @Description  : explorerTree
  */
 
-import { CancellationToken, commands, env, ExtensionContext, Progress, ProgressLocation, window } from "vscode";
+import { CancellationToken, commands, env, ExtensionContext, Progress, ProgressLocation, window, workspace } from "vscode";
 import { mkdir, pull, push, rm } from "../command/file";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
 import { ExplorerProvider } from "./explorerProvider";
 
 export class ExplorerTree {
+  static defPath = "/sdcard/";
   provider: ExplorerProvider;
+  pathList: string[];
 
   constructor(context: ExtensionContext, device?: IDevice) {
     console.debug("ExplorerTree constructor");
+
+    let path: string[] = workspace.getConfiguration().get("adb-helper.explorerRootPathList") ?? ["/"];
+    this.pathList = [ExplorerTree.defPath].concat(path);
+
     const provider = new ExplorerProvider(device);
     this.provider = provider;
     window.registerTreeDataProvider("adb-helper.Explorer", provider);
@@ -27,7 +33,21 @@ export class ExplorerTree {
 
     commands.registerCommand("adb-helper.Explorer.RootPath", () => {
       console.log("Explorer.RootPath");
-      // TODO 2021-11-22 21:32:57 same error
+      const quickPick = window.createQuickPick();
+      quickPick.onDidHide(() => quickPick.dispose());
+      quickPick.placeholder = "Swap RootPath";
+      quickPick.items = this.pathList.map((p) => {
+        return { label: `$(file-directory) ${p}` };
+      });
+      quickPick.onDidChangeSelection((s) => {
+        if (s[0]) {
+          console.log("Explorer.RootPath.quickPick" + s[0]);
+          quickPick.hide();
+          this.provider.root = s[0].label.split(" ").pop() ?? ExplorerTree.defPath;
+          commands.executeCommand("adb-helper.Explorer.Refresh");
+        }
+      });
+      quickPick.show();
     });
 
     commands.registerCommand("adb-helper.Explorer.NewDirectory", async (r) => {
@@ -135,7 +155,7 @@ export class ExplorerTree {
       console.log("Explorer.CopyPath");
       const path: string = r.resourceUri.path;
       env.clipboard.writeText(`${path}`);
-      window.showInformationMessage("file path set your clipboard");
+      window.showInformationMessage("filePath set your clipboard");
     });
   }
 
