@@ -16,7 +16,7 @@ export function ww(bin: string, args: string[], env?: { [key: string]: string | 
   const quotedArgs = args.map((a) => `${a.replace(/"/g, `\\"`)}`);
   const customEnv = Object.assign({}, process.env, env);
   const res = execa.sync(bin, quotedArgs, { env: customEnv, shell: true });
-  logPrint(`execa stdout\n${res.stdout}`);
+  logPrint(`execa.sync stdout\n${res.stdout}`);
   return res;
 }
 
@@ -26,9 +26,11 @@ export function www(bin: string, args: string[], env?: { [key: string]: string |
   const customEnv = Object.assign({}, process.env, env);
   const pro = execa(bin, quotedArgs, { env: customEnv, shell: true });
   pro.stdout?.on("data", (data: string) => {
+    pro.cancel();
     logPrint("execa.execa stdout\n" + data);
   });
   pro.stderr?.on("data", (data: string) => {
+    pro.cancel();
     logPrint("execa.execa stderr\n" + data);
   });
   return pro;
@@ -113,12 +115,4 @@ function _safeSpawn(bin: string, args: string[], env: { [key: string]: string | 
   const quotedArgs = args.map((a) => `"${a.replace(/"/g, `\\"`)}"`);
   const customEnv = Object.assign({}, process.env, env);
   return child_process.spawn(`"${bin}"`, quotedArgs, { env: customEnv, shell: true });
-}
-
-function createProcess(bin: string, args: string[]) {
-  // this.logTraffic(`Spawning ${bin} with args ${JSON.stringify(args)}`);
-  // this.process.stdout.on("data", (data: Buffer | string) => this.handleStdOut(data));
-  // this.process.stderr.on("data", (data: Buffer | string) => this.handleStdErr(data));
-  // this.process.on("exit", (code, signal) => this.handleExit(code, signal));
-  // this.process.on("error", (error) => this.handleError(error));
 }

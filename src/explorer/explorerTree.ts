@@ -13,8 +13,9 @@ import { ExplorerProvider } from "./explorerProvider";
 
 export class ExplorerTree {
   static defPath = "/sdcard/";
-  provider: ExplorerProvider;
+
   pathList: string[];
+  provider: ExplorerProvider;
 
   constructor(context: ExtensionContext, device?: IDevice) {
     console.debug("ExplorerTree constructor");
@@ -22,13 +23,16 @@ export class ExplorerTree {
     let path: string[] = workspace.getConfiguration().get("adb-helper.explorerRootPathList") ?? ["/"];
     this.pathList = [ExplorerTree.defPath].concat(path);
 
-    const provider = new ExplorerProvider(device);
-    this.provider = provider;
-    window.registerTreeDataProvider("adb-helper.Explorer", provider);
+    this.provider = new ExplorerProvider(device);
+    window.registerTreeDataProvider("adb-helper.Explorer", this.provider);
 
     commands.registerCommand("adb-helper.Explorer.Refresh", () => {
       console.log("Explorer.Refresh");
-      provider.refresh();
+      this.showProgress("Explorer.Refresh running!", async () => {
+        await waitMoment();
+        this.refreshTree("");
+        return;
+      });
     });
 
     commands.registerCommand("adb-helper.Explorer.RootPath", () => {
@@ -40,9 +44,8 @@ export class ExplorerTree {
         return { label: `$(file-directory) ${p}` };
       });
       quickPick.onDidChangeSelection((s) => {
+        quickPick.hide();
         if (s[0]) {
-          console.log("Explorer.RootPath.quickPick" + s[0]);
-          quickPick.hide();
           this.provider.root = s[0].label.split(" ").pop() ?? ExplorerTree.defPath;
           commands.executeCommand("adb-helper.Explorer.Refresh");
         }
@@ -163,7 +166,7 @@ export class ExplorerTree {
     this.provider.device = device;
   }
 
-  refreshTree() {
+  refreshTree(args: string) {
     this.provider.refresh();
   }
 

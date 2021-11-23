@@ -45,12 +45,13 @@
         "icon": "$(device-mobile)"
       },
       {
-        "command": "adb-helper.Manager.Wifi.History",
-        "title": "Wifi Device History"
+        "command": "adb-helper.Manager.Wifi.Disconnect",
+        "title": "Disconnect All Wifi Connect Devices",
+        "icon": "$(debug-disconnect)"
       },
       {
-        "command": "adb-helper.Manager.Wifi.Disconnect",
-        "title": "Disconnect All Wifi Connect Devices"
+        "command": "adb-helper.Manager.Wifi.History",
+        "title": "Wifi Device History"
       },
       {
         "command": "adb-helper.Manager.Wifi.InputIPConnect",
@@ -96,7 +97,7 @@
       },
       {
         "command": "adb-helper.Explorer.RootPath",
-        "title": "$(test) Root Paths"
+        "title": "(test)Swap Root Paths"
       },
       {
         "command": "adb-helper.Explorer.NewDirectory",
@@ -159,19 +160,19 @@
           "group": "navigation@2"
         },
         {
+          "command": "adb-helper.Manager.Wifi.Disconnect",
+          "when": "view == adb-helper.Manager",
+          "group": "navigation@3"
+        },
+        {
           "command": "adb-helper.Manager.Wifi.History",
           "when": "view == adb-helper.Manager",
           "group": "w1@1"
         },
         {
-          "command": "adb-helper.Manager.Wifi.Disconnect",
-          "when": "view == adb-helper.Manager",
-          "group": "w1@2"
-        },
-        {
           "command": "adb-helper.Manager.Wifi.InputIPConnect",
           "when": "view == adb-helper.Manager",
-          "group": "w1@3"
+          "group": "w1@2"
         },
         {
           "command": "adb-helper.Explorer.Refresh",
@@ -256,19 +257,13 @@
       {
         "title": "ADB Helper",
         "properties": {
-          "adb-helper.startPort": {
-            "type": "number",
-            "default": "5555",
-            "description": "wifi Connect Start Port",
-            "scope": "window"
-          },
           "adb-helper.explorerRootPathList": {
             "type": "array",
             "default": [
               "/",
               "/sdcard/Download/"
             ],
-            "description": "explorer RootPath List",
+            "description": "Explorer RootPath List",
             "scope": "window"
           }
         }

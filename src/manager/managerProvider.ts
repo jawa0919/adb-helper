@@ -37,7 +37,8 @@ export class ManagerProvider implements TreeDataProvider<TreeItem> {
   }
 
   _bindCurrentDevice(device: IDevice): TreeItem {
-    let item = new TreeItem(device.model);
+    const label = device.ip ? "📶 " : "📱 ";
+    let item = new TreeItem(label + device.model);
     item.id = device.id;
     item.iconPath = new ThemeIcon("chevron-down");
     item.description = device.id;

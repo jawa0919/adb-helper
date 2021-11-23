@@ -6,7 +6,7 @@
  */
 
 import { logPrint } from "../util/logs";
-import { ww } from "../util/util";
+import { ww, www } from "../util/util";
 
 export function deviceWifiIP(id: string): string {
   try {
@@ -51,10 +51,20 @@ export function tcpIp(id: string, port: number): boolean {
 
 export function connect(id: string, ip: string, port: number): boolean {
   try {
-    const res = ww("adb", ["-s", id, "connect", `${ip}:${port}`]);
-    return res.stdout === `connected to ${ip}:${port}`;
+    const pro = ww("adb", ["-s", id, "connect", `${ip}:${port}`]);
+    return pro.stdout.startsWith("connected to");
   } catch (error) {
     logPrint(`connect.catch\n${error}`);
+    return false;
+  }
+}
+
+export function connectHost(host: string): boolean {
+  try {
+    const pro = ww("adb", ["connect", host]);
+    return pro.stdout.startsWith("connected to");
+  } catch (error) {
+    logPrint(`connectHost.catch\n${error}`);
     return false;
   }
 }
