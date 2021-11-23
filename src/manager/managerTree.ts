@@ -299,13 +299,41 @@ export class ManagerTree {
     commands.executeCommand("adb-helper.Manager.Refresh");
   }
 
+  added(id: string): void {
+    console.log("Manager.Apk.added");
+    this.showProgress("Manager.Refresh running!", async () => {
+      await waitMoment();
+      this.devices = adbDevices();
+      let index = this.devices.findIndex((r) => r.id === id);
+      if (index === -1) {
+        index = 0;
+      }
+      this.currentDevice = this.devices[index];
+      this.setDevice(this.currentDevice);
+      this.refreshTree("");
+      return;
+    });
+  }
+
+  removed(id: string): void {
+    console.log("Manager.Apk.removed");
+    this.showProgress("Manager.Refresh running!", async () => {
+      await waitMoment();
+      this.devices = adbDevices();
+      this.currentDevice = this.devices[0];
+      this.setDevice(this.currentDevice);
+      this.refreshTree("");
+      return;
+    });
+  }
+
   setDevice(device: IDevice) {
     this.provider.device = device;
     this.explorerTree.setDevice(device);
     this.explorerTree.refreshTree("");
   }
 
-  refreshTree(args: string) {
+  refreshTree(args?: string) {
     this.provider.refresh();
   }
 

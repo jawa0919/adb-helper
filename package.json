@@ -51,11 +51,11 @@
       },
       {
         "command": "adb-helper.Manager.Wifi.History",
-        "title": "(test)Wifi Device History"
+        "title": "(TEST) Wifi Device History"
       },
       {
         "command": "adb-helper.Manager.Wifi.InputIPConnect",
-        "title": "(test)Input Device IP Connect"
+        "title": "(TEST) Input Device IP Connect"
       },
       {
         "command": "adb-helper.Manager.Device.Screenshot",
@@ -97,7 +97,7 @@
       },
       {
         "command": "adb-helper.Explorer.RootPath",
-        "title": "(test)Swap Root Paths"
+        "title": "(TEST) Swap Root Paths"
       },
       {
         "command": "adb-helper.Explorer.NewDirectory",

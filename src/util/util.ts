@@ -11,6 +11,24 @@ import * as child_process from "child_process";
 
 import execa = require("execa");
 
+export async function waitMoment(ms = 300): Promise<void> {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
+
+export function createUri(authority: string, path: string): Uri {
+  const scheme = "adbEx";
+  const uri = Uri.from({
+    scheme: scheme,
+    authority: authority,
+    path: path,
+  });
+  return uri;
+}
+
 export function ww(bin: string, args: string[], env?: { [key: string]: string | undefined }): execa.ExecaSyncReturnValue {
   logPrint(`\nexeca.sync ${bin} with args ${JSON.stringify(args)}`);
   const quotedArgs = args.map((a) => `${a.replace(/"/g, `\\"`)}`);
@@ -34,24 +52,6 @@ export function www(bin: string, args: string[], env?: { [key: string]: string |
     logPrint("execa.execa stderr\n" + data);
   });
   return pro;
-}
-
-export async function waitMoment(ms = 300): Promise<void> {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
-
-export function createUri(authority: string, path: string): Uri {
-  const scheme = "adbEx";
-  const uri = Uri.from({
-    scheme: scheme,
-    authority: authority,
-    path: path,
-  });
-  return uri;
 }
 
 export function cSync(bin: string, args: string[]): string {

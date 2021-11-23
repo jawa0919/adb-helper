@@ -6,7 +6,7 @@
  */
 
 import { logPrint } from "../util/logs";
-import { ww, www } from "../util/util";
+import { ww } from "../util/util";
 
 export function deviceWifiIP(id: string): string {
   try {

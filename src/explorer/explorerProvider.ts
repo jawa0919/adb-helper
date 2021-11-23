@@ -29,10 +29,6 @@ export class ExplorerProvider implements TreeDataProvider<TreeItem> {
       return Promise.resolve([new TreeItem("Please choose a device")]);
     }
 
-    if (this.root === "") {
-      return Promise.resolve([new TreeItem("Explorer Loading...")]);
-    }
-
     return new Promise<TreeItem[]>((resolve) => {
       const path = element?.resourceUri?.path ?? this.root;
       const fileList = ls(deviceId, path);
