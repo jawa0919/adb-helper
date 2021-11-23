@@ -51,11 +51,11 @@
       },
       {
         "command": "adb-helper.Manager.Wifi.History",
-        "title": "Wifi Device History"
+        "title": "(test)Wifi Device History"
       },
       {
         "command": "adb-helper.Manager.Wifi.InputIPConnect",
-        "title": "Input Device IP Connect"
+        "title": "(test)Input Device IP Connect"
       },
       {
         "command": "adb-helper.Manager.Device.Screenshot",
