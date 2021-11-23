@@ -1,25 +1,42 @@
 /*
- * @FilePath     : /adb-helper/src/api/ls.ts
- * @Date         : 2021-08-13 13:56:34
+ * @FilePath     : /src/command/ls.ts
+ * @Date         : 2021-11-21 18:21:10
  * @Author       : jawa0919 <jawa0919@163.com>
  * @Description  : ls
  */
 
 import { FileType } from "vscode";
 import { IFileStat } from "../type";
-import { createUri } from "../util/util";
-import { cmd } from "../util/c";
+import { logPrint } from "../util/logs";
+import { createUri, ww } from "../util/util";
 
-export async function ls(id: string, path: string): Promise<IFileStat[]> {
-  const s = `adb -s ${id} shell ls -l ${path}`;
-  let lines = await cmd(s);
-  if (lines.length > 0 && lines[0].startsWith("total")) {
-    lines.shift();
-    lines = lines.map((r) => r.trim());
-    return _parseV2(id, path, lines);
-  } else {
-    lines = lines.map((r) => r.trim());
-    return _parseV1(id, path, lines);
+export function ls(id: string, path: string): IFileStat[] {
+  try {
+    const res = ww("adb", ["-s", id, "shell", "ls", "-l", path]);
+    let lines = res.stdout.trim().split(/\n|\r\n/);
+    lines = lines.map((r) => r.trim()).filter((r) => r !== "");
+    if (lines.length > 0 && lines[0].startsWith("total")) {
+      lines.shift();
+      lines = lines.map((r) => r.trim());
+      return _parseV2(id, path, lines);
+    } else {
+      lines = lines.map((r) => r.trim());
+      return _parseV1(id, path, lines);
+    }
+  } catch (error) {
+    logPrint(`ls.catch\n${error}`);
+    let lines = `${error}`.trim().split(/\n|\r\n/);
+    lines = lines.map((r) => r.trim()).filter((r) => r !== "");
+    lines = lines.filter((r) => !r.startsWith("Error"));
+    lines = lines.filter((r) => !r.endsWith("Permission denied"));
+    if (lines.length > 0 && lines[0].startsWith("total")) {
+      lines.shift();
+      lines = lines.map((r) => r.trim());
+      return _parseV2(id, path, lines);
+    } else {
+      lines = lines.map((r) => r.trim());
+      return _parseV1(id, path, lines);
+    }
   }
 }
 

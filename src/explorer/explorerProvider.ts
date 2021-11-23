@@ -1,12 +1,12 @@
 /*
- * @FilePath     : /adb-helper/src/explorer/explorerProvider.ts
- * @Date         : 2021-10-23 11:19:54
+ * @FilePath     : /src/explorer/explorerProvider.ts
+ * @Date         : 2021-11-20 23:08:10
  * @Author       : jawa0919 <jawa0919@163.com>
- * @Description  : 文件管理器的提供者
+ * @Description  : explorerProvider
  */
 
-import { Event, EventEmitter, FileType, ProviderResult, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from "vscode";
-import { ls } from "../api/ls";
+import { Event, EventEmitter, FileType, ProviderResult, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from "vscode";
+import { ls } from "../command/ls";
 import { IDevice, IFileStat } from "../type";
 
 export class ExplorerProvider implements TreeDataProvider<TreeItem> {
@@ -16,7 +16,7 @@ export class ExplorerProvider implements TreeDataProvider<TreeItem> {
   public refresh(): any {
     this._onDidChangeTreeData.fire(undefined);
   }
-  constructor(public device?: IDevice, public root = "") {}
+  constructor(public device?: IDevice, public root = "/sdcard/") {}
 
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
@@ -29,15 +29,9 @@ export class ExplorerProvider implements TreeDataProvider<TreeItem> {
       return Promise.resolve([new TreeItem("Please choose a device")]);
     }
 
-    if (this.root === "") {
-      return Promise.resolve([new TreeItem("Explorer Loading...")]);
-    }
-    return new Promise<TreeItem[]>(async (resolve) => {
+    return new Promise<TreeItem[]>((resolve) => {
       const path = element?.resourceUri?.path ?? this.root;
-      const fileList = await ls(deviceId, path).catch((err) => {
-        resolve([new TreeItem(`${err}`)]);
-        return [] as IFileStat[];
-      });
+      const fileList = ls(deviceId, path);
 
       const directoryType = [FileType.Directory, FileType.SymbolicLink];
       let treeItemList = fileList.map((r) => {
