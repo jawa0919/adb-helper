@@ -15,6 +15,7 @@ export function ls(id: string, path: string): IFileStat[] {
     const res = ww("adb", ["-s", id, "shell", "ls", "-l", path]);
     let lines = res.stdout.trim().split(/\n|\r\n/);
     lines = lines.map((r) => r.trim()).filter((r) => r !== "");
+    lines = lines.filter((r) => !r.endsWith("Permission denied"));
     if (lines.length > 0 && lines[0].startsWith("total")) {
       lines.shift();
       lines = lines.map((r) => r.trim());

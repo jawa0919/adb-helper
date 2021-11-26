@@ -8,14 +8,14 @@
 import { logPrint } from "../util/logs";
 import { ww } from "../util/util";
 
-export function deviceWifiIP(id: string): string {
+export function shellIp(id: string): string {
   try {
     const res = ww("adb", ["-s", id, "shell", "ip", "addr", "show", "wlan0"]);
     let lines = res.stdout.trim().split(/\n|\r\n/);
     lines = lines.map((r) => r.trim()).filter((r) => r !== "");
-    return _wifiIPParse(lines);
+    return _shellIpParse(lines);
   } catch (error) {
-    logPrint(`deviceWifiIP.catch\n${error}`);
+    logPrint(`shellIp.catch\n${error}`);
     return "";
   }
 }
@@ -26,7 +26,7 @@ export function deviceWifiIP(id: string): string {
 //        valid_lft forever preferred_lft forever
 //     inet6 fe80::86db:acff:fef2:5824/64 scope link
 //        valid_lft forever preferred_lft forever
-function _wifiIPParse(lines: string[]): string {
+function _shellIpParse(lines: string[]): string {
   // parse
   lines = lines.filter((r) => r.startsWith("inet"));
   const ips = lines.map<string>((line) => {
