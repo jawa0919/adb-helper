@@ -1,3 +1,9 @@
+# 0.3.1
+
+- Add DeviceDaemon
+- Fix Command bug
+- Fix USB Connection listening
+
 # 0.3.0
 
 - Fix New Management

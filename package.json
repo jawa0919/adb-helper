@@ -2,7 +2,7 @@
   "name": "adb-helper",
   "displayName": "ADB Helper",
   "description": "Devices Wifi Connect, File Explorer, APK Manager",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "publisher": "jawa0919",
   "author": {
     "name": "jawa0919",
@@ -35,59 +35,64 @@
         "title": "ADB Helper Start"
       },
       {
+        "command": "adb-helper.Device.Refresh",
+        "title": "Refresh Manager",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "adb-helper.Device.Swap",
+        "title": "Swap Current Device",
+        "icon": "$(device-mobile)"
+      },
+      {
+        "command": "adb-helper.Device.DisconnectWifi",
+        "title": "Disconnect Wifi Connect",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "adb-helper.Device.WifiHistory",
+        "title": "(TEST) Wifi Device History"
+      },
+      {
+        "command": "adb-helper.Device.InputIPConnect",
+        "title": "(TEST) Input Device IP Connect"
+      },
+      {
+        "command": "adb-helper.Device.ConnectWifi",
+        "title": "Connect Wifi",
+        "icon": "$(broadcast)"
+      },
+      {
+        "command": "adb-helper.Device.Screenshot",
+        "title": "Device Screenshot",
+        "icon": "$(device-camera)"
+      },
+      {
         "command": "adb-helper.Manager.Refresh",
         "title": "Refresh Manager",
         "icon": "$(refresh)"
       },
       {
-        "command": "adb-helper.Manager.Device.Swap",
-        "title": "Swap current device",
-        "icon": "$(device-mobile)"
-      },
-      {
-        "command": "adb-helper.Manager.Wifi.Disconnect",
-        "title": "Disconnect All Wifi Connect Devices",
-        "icon": "$(debug-disconnect)"
-      },
-      {
-        "command": "adb-helper.Manager.Wifi.History",
-        "title": "(TEST) Wifi Device History"
-      },
-      {
-        "command": "adb-helper.Manager.Wifi.InputIPConnect",
-        "title": "(TEST) Input Device IP Connect"
-      },
-      {
-        "command": "adb-helper.Manager.Device.Screenshot",
-        "title": "Device Screenshot",
-        "icon": "$(device-camera)"
-      },
-      {
-        "command": "adb-helper.Manager.Device.Install",
+        "command": "adb-helper.Manager.Install",
         "title": "Install New Apk",
         "icon": "$(diff-added)"
       },
       {
-        "command": "adb-helper.Manager.Device.ConnectWifi",
-        "title": "Connect Wifi",
-        "icon": "$(broadcast)"
-      },
-      {
-        "command": "adb-helper.Manager.Apk.Install_r_t",
+        "command": "adb-helper.Manager.Install_r_t",
         "title": "Update/Install Apk",
         "icon": "$(log-in)"
       },
       {
-        "command": "adb-helper.Manager.Apk.Uninstall",
+        "command": "adb-helper.Manager.Uninstall",
         "title": "Uninstall Apk",
         "icon": "$(log-out)"
       },
       {
-        "command": "adb-helper.Manager.Apk.Wipe",
+        "command": "adb-helper.Manager.Wipe",
         "title": "Wipe Apk Data"
       },
       {
-        "command": "adb-helper.Manager.Apk.Export",
+        "command": "adb-helper.Manager.Export",
         "title": "Export Apk File"
       },
       {
@@ -96,8 +101,8 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "adb-helper.Explorer.RootPath",
-        "title": "(TEST) Swap Root Paths"
+        "command": "adb-helper.Explorer.SwapRootPath",
+        "title": "(TEST) Swap Root Path"
       },
       {
         "command": "adb-helper.Explorer.NewDirectory",
@@ -150,105 +155,105 @@
     "menus": {
       "view/title": [
         {
-          "command": "adb-helper.Manager.Refresh",
           "when": "view == adb-helper.Manager",
+          "command": "adb-helper.Device.Refresh",
           "group": "navigation@1"
         },
         {
-          "command": "adb-helper.Manager.Device.Swap",
           "when": "view == adb-helper.Manager",
+          "command": "adb-helper.Device.Swap",
           "group": "navigation@2"
         },
         {
-          "command": "adb-helper.Manager.Wifi.Disconnect",
           "when": "view == adb-helper.Manager",
+          "command": "adb-helper.Device.DisconnectWifi",
           "group": "navigation@3"
         },
         {
-          "command": "adb-helper.Manager.Wifi.History",
           "when": "view == adb-helper.Manager",
+          "command": "adb-helper.Device.WifiHistory",
           "group": "w1@1"
         },
         {
-          "command": "adb-helper.Manager.Wifi.InputIPConnect",
           "when": "view == adb-helper.Manager",
+          "command": "adb-helper.Device.InputIPConnect",
           "group": "w1@2"
         },
         {
-          "command": "adb-helper.Explorer.Refresh",
           "when": "view == adb-helper.Explorer",
+          "command": "adb-helper.Explorer.Refresh",
           "group": "navigation@1"
         },
         {
-          "command": "adb-helper.Explorer.RootPath",
           "when": "view == adb-helper.Explorer",
+          "command": "adb-helper.Explorer.SwapRootPath",
           "group": "e1@1"
         }
       ],
       "view/item/context": [
         {
-          "command": "adb-helper.Manager.Device.Screenshot",
           "when": "view == adb-helper.Manager && viewItem == currentDevice",
-          "group": "inline"
+          "command": "adb-helper.Device.ConnectWifi",
+          "group": "inline@1"
         },
         {
-          "command": "adb-helper.Manager.Device.Install",
           "when": "view == adb-helper.Manager && viewItem == currentDevice",
-          "group": "inline"
+          "command": "adb-helper.Device.Screenshot",
+          "group": "inline@2"
         },
         {
-          "command": "adb-helper.Manager.Device.ConnectWifi",
           "when": "view == adb-helper.Manager && viewItem == currentDevice",
-          "group": "inline"
+          "command": "adb-helper.Manager.Install",
+          "group": "inline@3"
         },
         {
-          "command": "adb-helper.Manager.Apk.Install_r_t",
-          "when": "view == adb-helper.Manager && viewItem != currentDevice",
+          "when": "view == adb-helper.Manager && viewItem == apk",
+          "command": "adb-helper.Manager.Install_r_t",
           "group": "d1@1"
         },
         {
-          "command": "adb-helper.Manager.Apk.Uninstall",
-          "when": "view == adb-helper.Manager && viewItem != currentDevice",
+          "when": "view == adb-helper.Manager && viewItem == apk",
+          "command": "adb-helper.Manager.Uninstall",
           "group": "d2@1"
         },
         {
-          "command": "adb-helper.Manager.Apk.Wipe",
-          "when": "view == adb-helper.Manager && viewItem != currentDevice",
+          "when": "view == adb-helper.Manager && viewItem == apk",
+          "command": "adb-helper.Manager.Wipe",
           "group": "d3@1"
         },
         {
-          "command": "adb-helper.Manager.Apk.Export",
-          "when": "view == adb-helper.Manager && viewItem != currentDevice",
+          "when": "view == adb-helper.Manager && viewItem == apk",
+          "command": "adb-helper.Manager.Export",
           "group": "d4@1"
         },
         {
-          "command": "adb-helper.Explorer.NewDirectory",
           "when": "view == adb-helper.Explorer",
+          "command": "adb-helper.Explorer.NewDirectory",
           "group": "e1@1"
         },
         {
-          "command": "adb-helper.Explorer.SaveAs",
           "when": "view == adb-helper.Explorer",
+          "command": "adb-helper.Explorer.SaveAs",
           "group": "e2@1"
         },
         {
-          "command": "adb-helper.Explorer.UploadFile",
           "when": "view == adb-helper.Explorer && viewItem == directory",
+          "command": "adb-helper.Explorer.UploadFile",
+          "group": "e3@1"
+        },
+        {
+          "when": "view == adb-helper.Explorer && viewItem == directory",
+          "command": "adb-helper.Explorer.UploadDirectory",
           "group": "e3@2"
         },
         {
-          "command": "adb-helper.Explorer.UploadDirectory",
-          "when": "view == adb-helper.Explorer && viewItem == directory",
+          "when": "view == adb-helper.Explorer",
+          "command": "adb-helper.Explorer.Delete",
           "group": "e3@3"
         },
         {
-          "command": "adb-helper.Explorer.Delete",
           "when": "view == adb-helper.Explorer",
-          "group": "e3@4"
-        },
-        {
           "command": "adb-helper.Explorer.CopyPath",
-          "when": "view == adb-helper.Explorer",
           "group": "e4@1"
         }
       ]

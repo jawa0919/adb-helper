@@ -53,7 +53,7 @@ export async function install(id: string, path: string, args: string[] = []): Pr
 export async function uninstall(id: string, path: string, args: string[] = []): Promise<boolean> {
   return new Promise<boolean>((resolve) => {
     try {
-      const pro = www("adb", ["-s", id, "uninstall", `${path}`, ...args]);
+      const pro = www("adb", ["-s", id, "shell", "pm", "uninstall", `${path}`, ...args]);
       pro.stdout?.on("data", (data: string) => {
         resolve(true);
       });
@@ -69,7 +69,7 @@ export async function uninstall(id: string, path: string, args: string[] = []): 
 export async function clear(id: string, name: string, args: string[] = []): Promise<boolean> {
   return new Promise<boolean>((resolve) => {
     try {
-      const pro = www("adb", ["-s", id, "clear", `${name}`, ...args]);
+      const pro = www("adb", ["-s", id, "shell", "pm", "clear", `${name}`, ...args]);
       pro.stdout?.on("data", (data: string) => {
         resolve(true);
       });

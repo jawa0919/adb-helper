@@ -5,174 +5,65 @@
  * @Description  : managerTree
  */
 
-import { CancellationToken, commands, ExtensionContext, Progress, ProgressLocation, QuickPickItem, window, workspace } from "vscode";
-import { adbDevices, adbDisconnectAll, adbKillServer, adbStartServer } from "../command/base";
-import { connect, connectHost, deviceWifiIP, screencap, tcpIp } from "../command/device";
+import { join } from "path";
+import { CancellationToken, commands, ExtensionContext, Progress, ProgressLocation, window, workspace } from "vscode";
 import { pull } from "../command/file";
-import { clear, install, uninstall } from "../command/pm";
-import { ExplorerTree } from "../explorer/explorerTree";
+import { clear, install, pmList, uninstall } from "../command/pm";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
 import { ManagerProvider } from "./managerProvider";
 
 export class ManagerTree {
-  provider: ManagerProvider;
-  explorerTree: ExplorerTree;
+  static defType = "-3"; // Third party package
 
-  devices: IDevice[] = [];
-  currentDevice?: IDevice;
+  private device?: IDevice;
+  private type = ManagerTree.defType;
+  private provider: ManagerProvider;
 
-  constructor(context: ExtensionContext, device?: IDevice) {
+  setDevice(currentDevice?: IDevice) {
+    this.device = currentDevice;
+    this.provider.device = currentDevice;
+  }
+
+  refreshTree(args?: any) {
+    this.provider.refresh();
+  }
+
+  constructor(private context: ExtensionContext, currentDevice?: IDevice, currentType?: string) {
     console.debug("ManagerTree constructor");
-    this.provider = new ManagerProvider(device);
-    window.registerTreeDataProvider("adb-helper.Manager", this.provider);
-    this.explorerTree = new ExplorerTree(context, device);
+    this.device = currentDevice;
+    this.type = currentType ?? ManagerTree.defType;
+    this.provider = new ManagerProvider(currentDevice);
 
+    window.registerTreeDataProvider("adb-helper.Manager", this.provider);
+
+    this._initCommands();
+  }
+
+  private _initCommands() {
     commands.registerCommand("adb-helper.Manager.Refresh", async () => {
       console.log("Manager.Refresh");
       this.showProgress("Manager.Refresh running!", async () => {
         await waitMoment();
-        this.devices = adbDevices();
-        const inc = this.devices.map((r) => r.id).includes(this.currentDevice?.id ?? "");
-        if (!inc) {
-          this.currentDevice = this.devices[0];
-          this.setDevice(this.currentDevice);
+        if (this.device) {
+          this.provider.device = this.device;
+          const apkList = pmList(this.device.id, this.type);
+          this.provider.apkList.length = 0;
+          this.provider.apkList.push(...apkList);
         }
-        this.refreshTree("");
+        this.provider.refresh();
         return;
       });
     });
 
-    commands.registerCommand("adb-helper.Manager.Device.Swap", async () => {
-      console.log("Manager.Device.Swap");
-      const quickPick = window.createQuickPick();
-      quickPick.onDidHide(() => quickPick.dispose());
-      quickPick.placeholder = "Swap Current Device";
-      quickPick.items = this.devices.map((d) => {
-        const label = d.ip ? "$(broadcast) " : "$(plug) ";
-        return { label: label + d.model, description: d.id };
-      });
-      quickPick.onDidChangeSelection((s) => {
-        if (s[0]) {
-          quickPick.hide();
-          const d = this.devices.find((r) => r.id === s[0].description);
-          this.currentDevice = d ?? this.devices[0];
-          this.setDevice(this.currentDevice);
-          this.refreshTree("");
-        }
-      });
-      quickPick.show();
-    });
-
-    commands.registerCommand("adb-helper.Manager.Wifi.Disconnect", async () => {
-      console.log("Manager.Wifi.Disconnect");
-      this.showProgress("Manager.Wifi.Disconnect running!", async () => {
-        if (adbDisconnectAll()) {
-          await waitMoment();
-          adbKillServer();
-          await waitMoment();
-          adbStartServer();
-          await waitMoment();
-          commands.executeCommand("adb-helper.Manager.Refresh");
-        }
-        return;
-      });
-    });
-
-    commands.registerCommand("adb-helper.Manager.Wifi.History", async () => {
-      console.log("Manager.Wifi.History");
-      const wifiHistory = context.globalState.get<string>("adb-helper.wifiHistory") ?? "";
-      const wifiDevices: IDevice[] = wifiHistory ? JSON.parse(wifiHistory) : [];
-      if (wifiDevices.length > 0) {
-        const quickPick = window.createQuickPick();
-        quickPick.onDidHide(() => quickPick.dispose());
-        quickPick.placeholder = "Pick Wifi History Device";
-        const clearItem: QuickPickItem = { label: "Clear History", alwaysShow: true };
-        const wifItems: QuickPickItem[] = wifiDevices.map((d) => {
-          return { label: "$(broadcast) " + d.model, description: d.id };
-        });
-        quickPick.items = wifItems.concat(clearItem);
-        quickPick.onDidChangeSelection((s) => {
-          quickPick.hide();
-          if (s[0].label === "Clear History") {
-            context.globalState.update("adb-helper.WifiHistory", "");
-            return;
-          }
-          const d = wifiDevices.find((r) => r.id === s[0].description);
-          if (d) {
-            this.showProgress("Device.ConnectWifi running!", async () => {
-              await waitMoment();
-              const host = d.ip! + d.port!;
-              const isConnect = connectHost(host);
-              if (!isConnect) {
-                window.showErrorMessage(`ConnectWifi ${host} Error`);
-                return;
-              }
-              window.showInformationMessage(`ConnectWifi Success`);
-              commands.executeCommand("adb-helper.Manager.Refresh");
-              return;
-            });
-          }
-        });
-        quickPick.show();
-      } else {
-        window.showInformationMessage("No Find Wifi History");
-      }
-    });
-
-    commands.registerCommand("adb-helper.Manager.Wifi.InputIPConnect", async () => {
-      console.log("Manager.Wifi.InputIPConnect");
-      let host = "";
-      const inputBox = window.createInputBox();
-      inputBox.onDidHide(() => inputBox.dispose());
-      inputBox.placeholder = "Input device connect host. eg: 192.168.1.103:5555";
-      inputBox.onDidChangeValue((e) => (host = e));
-      inputBox.onDidAccept(() => {
-        inputBox.hide();
-        this.showProgress("Device.InputIPConnect running!", async () => {
-          await waitMoment();
-          const isConnect = connectHost(host);
-          if (!isConnect) {
-            window.showErrorMessage(`InputIPConnect ${host} Error`);
-            return;
-          }
-          window.showInformationMessage(`InputIPConnect Success`);
-          commands.executeCommand("adb-helper.Manager.Refresh");
-          return;
-        });
-      });
-      inputBox.show();
-    });
-
-    commands.registerCommand("adb-helper.Manager.Device.Screenshot", async (r) => {
-      console.log("Manager.Device.Screenshot");
-      const device: IDevice = JSON.parse(r.tooltip);
-      const path = screencap(device.id);
-      window.showOpenDialog({ canSelectFolders: true }).then((res) => {
-        let fileUri = res?.shift();
-        if (fileUri) {
-          this.showProgress("Device.Screenshot running!", async () => {
-            await waitMoment();
-            let success = pull(device.id, path, fileUri?.fsPath ?? "");
-            if (success) {
-              window.showInformationMessage("Screenshot Success");
-            } else {
-              window.showErrorMessage("Screenshot Error");
-            }
-            return;
-          });
-        }
-      });
-    });
-
-    commands.registerCommand("adb-helper.Manager.Device.Install", async () => {
-      console.log("Manager.Device.Install");
+    commands.registerCommand("adb-helper.Manager.Install", async () => {
+      console.log("Manager.Install");
       window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
         let fileUri = res?.shift();
         if (fileUri) {
-          this.showProgress("Device.Install running!", async () => {
+          this.showProgress("Manager.Install running!", async () => {
             await waitMoment();
-            let success = await install(this.provider.device?.id ?? "", fileUri!.fsPath);
+            let success = await install(this.device?.id ?? "", fileUri!.fsPath);
             if (success) {
               window.showInformationMessage("Install Success");
               commands.executeCommand("adb-helper.Manager.Refresh");
@@ -185,50 +76,17 @@ export class ManagerTree {
       });
     });
 
-    commands.registerCommand("adb-helper.Manager.Device.ConnectWifi", async (r) => {
-      console.log("Manager.Device.ConnectWifi");
-      const device: IDevice = JSON.parse(r.tooltip);
-      const ip: string = deviceWifiIP(device.id);
-
-      let portList = this.devices.map((d) => d.port ?? 5555).sort();
-      let port: number = portList.pop() ?? 5555;
-      port = port + 1;
-
-      this.showProgress("Device.ConnectWifi running!", async () => {
-        await waitMoment();
-        const isTcp = tcpIp(device.id, port);
-        if (!isTcp) {
-          window.showErrorMessage(`ConnectWifi.tcpIp ${device.id} Error,Please Try Again.`);
-          return;
-        }
-        const isConnect = connect(device.id, ip, port);
-        if (!isConnect) {
-          window.showErrorMessage(`ConnectWifi.connect ${device.id} Error,Please Try Again.`);
-          return;
-        }
-        window.showInformationMessage(`ConnectWifi Success`);
-
-        const wifiHistory = context.globalState.get<string>("adb-helper.wifiHistory") ?? "";
-        const wifiDevices: IDevice[] = wifiHistory ? JSON.parse(wifiHistory) : [];
-        wifiDevices.push({ ...device, ip, port, id: `${ip}:${port}` });
-        context.globalState.update("adb-helper.wifiHistory", JSON.stringify(wifiDevices));
-
-        commands.executeCommand("adb-helper.Manager.Refresh");
-        return;
-      });
-    });
-
-    commands.registerCommand("adb-helper.Manager.Apk.Install_r_t", async () => {
-      console.log("Manager.Apk.Install_r_t");
+    commands.registerCommand("adb-helper.Manager.Install_r_t", async () => {
+      console.log("Manager.Install_r_t");
       window.showOpenDialog({ filters: { apk: ["apk"] } }).then(async (res) => {
         let fileUri = res?.shift();
         if (fileUri) {
-          this.showProgress("Apk.Install_r_t running!", async () => {
+          this.showProgress("Manager.Install_r_t running!", async () => {
             await waitMoment();
             let success = await install(this.provider.device?.id ?? "", fileUri!.fsPath, ["-t", "-r"]);
             if (success) {
-              commands.executeCommand("adb-helper.Manager.Refresh");
               window.showInformationMessage("Install_r_t Success");
+              commands.executeCommand("adb-helper.Manager.Refresh");
             } else {
               window.showErrorMessage("Install_r_t Error");
             }
@@ -238,16 +96,16 @@ export class ManagerTree {
       });
     });
 
-    commands.registerCommand("adb-helper.Manager.Apk.Uninstall", async (r) => {
-      console.log("Manager.Apk.Uninstall");
-      window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
-        if (answer === "Yes") {
-          this.showProgress("Apk.Uninstall running!", async () => {
+    commands.registerCommand("adb-helper.Manager.Uninstall", async (r) => {
+      console.log("Manager.Uninstall");
+      window.showInformationMessage("Do you want uninstall this apk?", { modal: true, detail: r.id }, ...["Yes"]).then(async (v) => {
+        if (v === "Yes") {
+          this.showProgress("Manager.Uninstall running!", async () => {
             await waitMoment();
-            let success = await uninstall(this.provider.device?.id ?? "", r.id);
+            let success = await uninstall(this.device?.id ?? "", r.id);
             if (success) {
-              commands.executeCommand("adb-helper.Manager.Refresh");
               window.showInformationMessage("Uninstall Success");
+              commands.executeCommand("adb-helper.Manager.Refresh");
             } else {
               window.showErrorMessage("Uninstall Error");
             }
@@ -257,16 +115,16 @@ export class ManagerTree {
       });
     });
 
-    commands.registerCommand("adb-helper.Manager.Apk.Wipe", async (r) => {
-      console.log("Manager.Apk.Wipe");
-      window.showInformationMessage("Do you want wipe this apk data?", { modal: true, detail: r.id }, ...["Yes"]).then(async (answer) => {
-        if (answer === "Yes") {
-          this.showProgress("Apk.Wipe running!", async () => {
+    commands.registerCommand("adb-helper.Manager.Wipe", async (r) => {
+      console.log("Manager.Wipe");
+      window.showInformationMessage("Do you want wipe this apk data?", { modal: true, detail: r.id }, ...["Yes"]).then(async (v) => {
+        if (v === "Yes") {
+          this.showProgress("Manager.Wipe running!", async () => {
             await waitMoment();
-            let success = await clear(this.provider.device?.id ?? "", r.id);
+            let success = await clear(this.device?.id ?? "", r.id);
             if (success) {
-              commands.executeCommand("adb-helper.Manager.Refresh");
               window.showInformationMessage("Wipe Success");
+              commands.executeCommand("adb-helper.Manager.Refresh");
             } else {
               window.showErrorMessage("Wipe Error");
             }
@@ -276,14 +134,15 @@ export class ManagerTree {
       });
     });
 
-    commands.registerCommand("adb-helper.Manager.Apk.Export", async (r) => {
-      console.log("Manager.Apk.Export");
+    commands.registerCommand("adb-helper.Manager.Export", async (r) => {
+      console.log("Manager.Export");
       window.showOpenDialog({ canSelectFolders: true }).then((res) => {
         let fileUri = res?.shift();
+        let locPath = join(fileUri!.fsPath, r.id + ".apk");
         if (fileUri) {
-          this.showProgress("Apk.Export running!", async () => {
+          this.showProgress("Manager.Export running!", async () => {
             await waitMoment();
-            let success = pull(this.provider.device?.id ?? "", r.tooltip, fileUri!.fsPath + "\\" + r.id + ".apk");
+            let success = pull(this.device?.id ?? "", r.tooltip, locPath);
             if (success) {
               window.showInformationMessage("Export Success");
             } else {
@@ -294,47 +153,6 @@ export class ManagerTree {
         }
       });
     });
-
-    /// Start
-    commands.executeCommand("adb-helper.Manager.Refresh");
-  }
-
-  added(id: string): void {
-    console.log("Manager.Apk.added");
-    this.showProgress("Manager.Refresh running!", async () => {
-      await waitMoment();
-      this.devices = adbDevices();
-      let index = this.devices.findIndex((r) => r.id === id);
-      if (index === -1) {
-        index = 0;
-      }
-      this.currentDevice = this.devices[index];
-      this.setDevice(this.currentDevice);
-      this.refreshTree("");
-      return;
-    });
-  }
-
-  removed(id: string): void {
-    console.log("Manager.Apk.removed");
-    this.showProgress("Manager.Refresh running!", async () => {
-      await waitMoment();
-      this.devices = adbDevices();
-      this.currentDevice = this.devices[0];
-      this.setDevice(this.currentDevice);
-      this.refreshTree("");
-      return;
-    });
-  }
-
-  setDevice(device: IDevice) {
-    this.provider.device = device;
-    this.explorerTree.setDevice(device);
-    this.explorerTree.refreshTree("");
-  }
-
-  refreshTree(args?: string) {
-    this.provider.refresh();
   }
 
   showProgress<T>(title: string, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<T>) {

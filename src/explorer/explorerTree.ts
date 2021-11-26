@@ -14,29 +14,50 @@ import { ExplorerProvider } from "./explorerProvider";
 export class ExplorerTree {
   static defPath = "/sdcard/";
 
+  device?: IDevice;
+
   pathList: string[];
   provider: ExplorerProvider;
 
-  constructor(context: ExtensionContext, device?: IDevice) {
+  setRoot(root?: string) {
+    this.provider.root = root ?? ExplorerTree.defPath;
+  }
+
+  setDevice(currentDevice?: IDevice) {
+    this.device = currentDevice;
+    this.provider.device = currentDevice;
+  }
+
+  refreshTree(args?: any) {
+    this.provider.refresh();
+  }
+
+  constructor(private context: ExtensionContext, currentDevice?: IDevice) {
     console.debug("ExplorerTree constructor");
 
-    let path: string[] = workspace.getConfiguration().get("adb-helper.explorerRootPathList") ?? ["/"];
+    let path: string[] = workspace.getConfiguration().get("adb-helper.explorerRootPathList") ?? [];
     this.pathList = [ExplorerTree.defPath].concat(path);
 
-    this.provider = new ExplorerProvider(device);
+    this.device = currentDevice;
+
+    this.provider = new ExplorerProvider(ExplorerTree.defPath);
     window.registerTreeDataProvider("adb-helper.Explorer", this.provider);
 
+    this._initCommands();
+  }
+
+  private _initCommands() {
     commands.registerCommand("adb-helper.Explorer.Refresh", () => {
       console.log("Explorer.Refresh");
       this.showProgress("Explorer.Refresh running!", async () => {
         await waitMoment();
-        this.refreshTree("");
+        this.refreshTree();
         return;
       });
     });
 
-    commands.registerCommand("adb-helper.Explorer.RootPath", () => {
-      console.log("Explorer.RootPath");
+    commands.registerCommand("adb-helper.Explorer.SwapRootPath", () => {
+      console.log("Explorer.SwapRootPath");
       const quickPick = window.createQuickPick();
       quickPick.onDidHide(() => quickPick.dispose());
       quickPick.placeholder = "Swap RootPath";
@@ -46,7 +67,7 @@ export class ExplorerTree {
       quickPick.onDidChangeSelection((s) => {
         quickPick.hide();
         if (s[0]) {
-          this.provider.root = s[0].label.split(" ").pop() ?? ExplorerTree.defPath;
+          this.setRoot(s[0].label.split(" ").pop() ?? ExplorerTree.defPath);
           commands.executeCommand("adb-helper.Explorer.Refresh");
         }
       });
@@ -158,16 +179,8 @@ export class ExplorerTree {
       console.log("Explorer.CopyPath");
       const path: string = r.resourceUri.path;
       env.clipboard.writeText(`${path}`);
-      window.showInformationMessage("filePath set your clipboard");
+      window.showInformationMessage("FilePath Set Your Clipboard");
     });
-  }
-
-  setDevice(device: IDevice) {
-    this.provider.device = device;
-  }
-
-  refreshTree(args: string) {
-    this.provider.refresh();
   }
 
   showProgress<T>(title: string, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<T>) {
