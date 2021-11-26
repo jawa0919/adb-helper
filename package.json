@@ -46,11 +46,11 @@
       },
       {
         "command": "adb-helper.Device.DisconnectWifi",
-        "title": "Disconnect All Wifi Connect Devices",
+        "title": "Disconnect Wifi Connect",
         "icon": "$(debug-disconnect)"
       },
       {
-        "command": "adb-helper.Device.WifiDeviceHistory",
+        "command": "adb-helper.Device.WifiHistory",
         "title": "(TEST) Wifi Device History"
       },
       {
@@ -171,7 +171,7 @@
         },
         {
           "when": "view == adb-helper.Manager",
-          "command": "adb-helper.Device.WifiDeviceHistory",
+          "command": "adb-helper.Device.WifiHistory",
           "group": "w1@1"
         },
         {
@@ -207,22 +207,22 @@
           "group": "inline@3"
         },
         {
-          "when": "view == adb-helper.Manager && viewItem = apk",
+          "when": "view == adb-helper.Manager && viewItem == apk",
           "command": "adb-helper.Manager.Install_r_t",
           "group": "d1@1"
         },
         {
-          "when": "view == adb-helper.Manager && viewItem = apk",
+          "when": "view == adb-helper.Manager && viewItem == apk",
           "command": "adb-helper.Manager.Uninstall",
           "group": "d2@1"
         },
         {
-          "when": "view == adb-helper.Manager && viewItem = apk",
+          "when": "view == adb-helper.Manager && viewItem == apk",
           "command": "adb-helper.Manager.Wipe",
           "group": "d3@1"
         },
         {
-          "when": "view == adb-helper.Manager && viewItem = apk",
+          "when": "view == adb-helper.Manager && viewItem == apk",
           "command": "adb-helper.Manager.Export",
           "group": "d4@1"
         },

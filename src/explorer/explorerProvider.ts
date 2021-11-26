@@ -12,27 +12,17 @@ import { IDevice, IFileStat } from "../type";
 export class ExplorerProvider implements TreeDataProvider<TreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
-
-  public refresh(): any {
-    this._onDidChangeTreeData.fire(undefined);
-  }
-  constructor(public device?: IDevice, public root = "/sdcard/") {}
-
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
-
   getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {
     const deviceId = this.device?.id ?? "";
-
     if (deviceId === "") {
       return Promise.resolve([new TreeItem("Please choose a device")]);
     }
-
     return new Promise<TreeItem[]>((resolve) => {
       const path = element?.resourceUri?.path ?? this.root;
-      const fileList = ls(deviceId, path);
-
+      const fileList: IFileStat[] = ls(deviceId, path);
       const directoryType = [FileType.Directory, FileType.SymbolicLink];
       let treeItemList = fileList.map((r) => {
         let isDirectory = directoryType.includes(r.type);
@@ -42,5 +32,12 @@ export class ExplorerProvider implements TreeDataProvider<TreeItem> {
       });
       resolve(treeItemList);
     });
+  }
+
+  constructor(public root: string, public device?: IDevice) {}
+
+  public refresh(args?: any): void {
+    console.log("ManagerProvider.refresh", this.device, this.root);
+    this._onDidChangeTreeData.fire(undefined);
   }
 }

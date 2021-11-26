@@ -46,15 +46,15 @@ function _adbDevicesParse(lines: string[]): IDevice[] {
   lines.shift();
   const infoList = lines.map<IDevice>((line) => {
     const temp = line.split(/\s+/);
-    const id = temp[0];
-    const type = temp[1];
-    const product = temp[2].split(":").pop() || "";
-    const model = temp[3].split(":").pop() || "";
-    const device = temp[4].split(":").pop() || "";
-    const transportId = parseInt(temp[5].split(":").pop() || "0");
+    const id = temp.shift() ?? "";
+    const type = temp.shift() ?? "";
+    const product = _findValue(temp, "product");
+    const model = _findValue(temp, "model");
+    const device = _findValue(temp, "device");
+    const transportId = parseInt(_findValue(temp, "transport_id", "0"));
     if (id.indexOf(":") !== -1) {
-      const ip = id.split(":").shift() || "";
-      const port = parseInt(id.split(":").pop() || "0");
+      const ip = id.split(":").shift() ?? "";
+      const port = parseInt(id.split(":").pop() ?? "0");
       return { id, type, product, model, device, transportId, ip, port };
     }
     return { id, type, product, model, device, transportId };
@@ -62,6 +62,12 @@ function _adbDevicesParse(lines: string[]): IDevice[] {
   // sort
   infoList.sort((a, b) => a.transportId - b.transportId);
   return infoList;
+}
+
+function _findValue(array: string[], key: string, def = ""): string {
+  const ins = array.find((e) => e.startsWith(key));
+  const v = ins?.split(":").pop();
+  return v ?? def;
 }
 
 export function adbDisconnectAll(): boolean {
