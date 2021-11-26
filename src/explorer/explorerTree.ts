@@ -14,22 +14,39 @@ import { ExplorerProvider } from "./explorerProvider";
 export class ExplorerTree {
   static defPath = "/sdcard/";
 
-  currentDevice?: IDevice;
+  device?: IDevice;
 
   pathList: string[];
   provider: ExplorerProvider;
 
-  constructor(context: ExtensionContext, device?: IDevice) {
+  setRoot(root?: string) {
+    this.provider.root = root ?? ExplorerTree.defPath;
+  }
+
+  setDevice(currentDevice?: IDevice) {
+    this.device = currentDevice;
+    this.provider.device = currentDevice;
+  }
+
+  refreshTree(args?: any) {
+    this.provider.refresh();
+  }
+
+  constructor(private context: ExtensionContext, currentDevice?: IDevice) {
     console.debug("ExplorerTree constructor");
 
     let path: string[] = workspace.getConfiguration().get("adb-helper.explorerRootPathList") ?? [];
     this.pathList = [ExplorerTree.defPath].concat(path);
 
-    this.currentDevice = device;
+    this.device = currentDevice;
 
     this.provider = new ExplorerProvider(ExplorerTree.defPath);
     window.registerTreeDataProvider("adb-helper.Explorer", this.provider);
 
+    this._initCommands();
+  }
+
+  private _initCommands() {
     commands.registerCommand("adb-helper.Explorer.Refresh", () => {
       console.log("Explorer.Refresh");
       this.showProgress("Explorer.Refresh running!", async () => {
@@ -164,18 +181,6 @@ export class ExplorerTree {
       env.clipboard.writeText(`${path}`);
       window.showInformationMessage("FilePath Set Your Clipboard");
     });
-  }
-
-  setRoot(root?: string) {
-    this.provider.root = root ?? ExplorerTree.defPath;
-  }
-
-  setDevice(device: IDevice) {
-    this.provider.device = device;
-  }
-
-  refreshTree(args?: any) {
-    this.provider.refresh();
   }
 
   showProgress<T>(title: string, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<T>) {

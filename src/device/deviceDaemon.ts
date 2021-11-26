@@ -13,6 +13,7 @@ import { ExplorerTree } from "../explorer/explorerTree";
 import { ManagerTree } from "../manager/managerTree";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
+import execa = require("execa");
 
 export class DeviceDaemon {
   private devices: IDevice[] = [];
@@ -21,26 +22,35 @@ export class DeviceDaemon {
   private managerTree: ManagerTree;
   private explorerTree: ExplorerTree;
 
-  public setDevice(device: IDevice) {
+  private flutterDaemon: execa.ExecaChildProcess;
+  private nextId = 10;
+
+  public setDevice(device?: IDevice) {
     this.currentDevice = device;
     this.managerTree.setDevice(device);
     this.explorerTree.setDevice(device);
   }
 
-  public constructor(context: ExtensionContext) {
+  public constructor(private context: ExtensionContext) {
     console.debug("DeviceDaemon constructor");
     this.managerTree = new ManagerTree(context, this.currentDevice);
     this.explorerTree = new ExplorerTree(context, this.currentDevice);
 
+    this.flutterDaemon = this._initFlutterDaemon();
+
+    this._initCommands();
+
+    /// Start
+    commands.executeCommand("adb-helper.Device.Refresh");
+    this._sendReq("device.enable");
+  }
+
+  private _initCommands() {
     commands.registerCommand("adb-helper.Device.Refresh", async () => {
       console.log("Device.Refresh");
       this.showProgress("Device.Refresh running!", async () => {
         await waitMoment();
         this.devices = adbDevices();
-        if (this.devices.length === 0) {
-          window.showErrorMessage(`No Find Connect Device`);
-          return;
-        }
         if (!this.currentDevice) {
           this.setDevice(this.devices[0]);
         }
@@ -100,7 +110,7 @@ export class DeviceDaemon {
     commands.registerCommand("adb-helper.Device.WifiHistory", async () => {
       console.log("Device.WifiHistory");
       // TODO 2021-11-26 14:37:57 bug
-      const wifiHistory = context.globalState.get<string>("adb-helper.wifiHistory") ?? "";
+      const wifiHistory = this.context.globalState.get<string>("adb-helper.wifiHistory") ?? "";
       const wifiDevices: IDevice[] = wifiHistory ? JSON.parse(wifiHistory) : [];
       if (wifiDevices.length === 0) {
         window.showInformationMessage("No Find Wifi History");
@@ -117,7 +127,7 @@ export class DeviceDaemon {
       quickPick.onDidChangeSelection((e) => {
         quickPick.hide();
         if (e[0].label === "Clear History") {
-          context.globalState.update("adb-helper.wifiHistory", "");
+          this.context.globalState.update("adb-helper.wifiHistory", "");
           return;
         }
         const d = wifiDevices.find((r) => r.id === JSON.parse(e[0].description ?? "").id);
@@ -195,11 +205,11 @@ export class DeviceDaemon {
           return;
         }
 
-        const wifiHistory = context.globalState.get<string>("adb-helper.wifiHistory") ?? "";
+        const wifiHistory = this.context.globalState.get<string>("adb-helper.wifiHistory") ?? "";
         let wifiDevices: IDevice[] = wifiHistory ? JSON.parse(wifiHistory) : [];
         wifiDevices.push({ ...device, ip, port, id: `${ip}:${port}` });
         wifiDevices = [...new Set(wifiDevices)];
-        context.globalState.update("adb-helper.wifiHistory", JSON.stringify(wifiDevices));
+        this.context.globalState.update("adb-helper.wifiHistory", JSON.stringify(wifiDevices));
 
         await waitMoment();
         this.devices = adbDevices();
@@ -229,12 +239,79 @@ export class DeviceDaemon {
         }
       });
     });
-
-    /// Start
-    commands.executeCommand("adb-helper.Device.Refresh");
   }
 
   showProgress<T>(title: string, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<T>) {
     window.withProgress<T>({ location: ProgressLocation.Notification, title, cancellable: false }, task);
+  }
+
+  private _initFlutterDaemon(): execa.ExecaChildProcess {
+    const pro = execa("flutter", ["daemon"]);
+    pro.stdout?.on("data", (data: Buffer | string) => {
+      const res = Buffer.from(data).toString();
+      console.log(`_initFlutterDaemon stdout data`, res);
+      try {
+        const msgList = res.split("\n").filter((m) => m.trim() !== "");
+        msgList.forEach((m) => this._handleRes(m));
+      } catch (error) {
+        console.log(`_initFlutterDaemon stdout data catch`, error);
+      }
+    });
+    pro.stderr?.on("data", (data: Buffer | string) => {
+      const res = Buffer.from(data).toString();
+      console.log(`_initFlutterDaemon stderr data`, res);
+      try {
+        const msgList = res.split("\n").filter((m) => m.trim() !== "");
+        msgList.forEach((m) => this._handleRes(m));
+      } catch (error) {
+        console.log(`_initFlutterDaemon stderr data catch`, error);
+      }
+    });
+    pro.on("exit", (code, signal) => {
+      console.log(`_initFlutterDaemon exit`, code, signal);
+    });
+    pro.on("error", (error) => {
+      console.log(`_initFlutterDaemon error`, error);
+    });
+    return pro;
+  }
+
+  private _sendReq(method: string): void {
+    const req = { id: this.nextId++, method };
+    const json = "[" + JSON.stringify(req) + "]\r\n";
+    this.flutterDaemon.stdin?.write(json);
+  }
+
+  private _handleRes(res: string): void {
+    console.log(`_handleRes`, res);
+    let msg = JSON.parse(res);
+    if (msg && msg.length === 1) {
+      msg = msg[0];
+    }
+    if (msg.event) {
+      let event: string = msg.event;
+      let platformType: string = msg.params.platformType;
+      if (event === "device.added" && platformType === "android") {
+        this._deviceAdded(msg.params.id);
+      }
+      if (event === "device.removed" && platformType === "android") {
+        this._deviceRemoved(msg.params.id);
+      }
+    }
+  }
+
+  private _deviceAdded(deviceId: string) {
+    this.devices = adbDevices();
+    if (this.devices.length === 1) {
+      commands.executeCommand("adb-helper.Device.Refresh");
+    }
+  }
+
+  private _deviceRemoved(deviceId: string) {
+    this.devices = adbDevices();
+    if (this.currentDevice?.id === deviceId) {
+      this.currentDevice = undefined;
+      commands.executeCommand("adb-helper.Device.Refresh");
+    }
   }
 }

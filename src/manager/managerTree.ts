@@ -20,7 +20,7 @@ export class ManagerTree {
   private type = ManagerTree.defType;
   private provider: ManagerProvider;
 
-  public setDevice(currentDevice: IDevice) {
+  setDevice(currentDevice?: IDevice) {
     this.device = currentDevice;
     this.provider.device = currentDevice;
   }
@@ -29,7 +29,7 @@ export class ManagerTree {
     this.provider.refresh();
   }
 
-  constructor(context: ExtensionContext, currentDevice?: IDevice, currentType?: string) {
+  constructor(private context: ExtensionContext, currentDevice?: IDevice, currentType?: string) {
     console.debug("ManagerTree constructor");
     this.device = currentDevice;
     this.type = currentType ?? ManagerTree.defType;
@@ -37,6 +37,10 @@ export class ManagerTree {
 
     window.registerTreeDataProvider("adb-helper.Manager", this.provider);
 
+    this._initCommands();
+  }
+
+  private _initCommands() {
     commands.registerCommand("adb-helper.Manager.Refresh", async () => {
       console.log("Manager.Refresh");
       this.showProgress("Manager.Refresh running!", async () => {
@@ -46,8 +50,8 @@ export class ManagerTree {
           const apkList = pmList(this.device.id, this.type);
           this.provider.apkList.length = 0;
           this.provider.apkList.push(...apkList);
-          this.provider.refresh();
         }
+        this.provider.refresh();
         return;
       });
     });
