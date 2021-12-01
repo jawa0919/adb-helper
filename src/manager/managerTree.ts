@@ -41,9 +41,21 @@ export class ManagerTree {
   }
 
   private _initCommands() {
-    commands.registerCommand("adb-helper.Manager.Refresh", async () => {
+    commands.registerCommand("adb-helper.Manager.Refresh", async (r) => {
       console.log("Manager.Refresh");
-      this.showProgress("Manager.Refresh running!", async () => {
+      if (r === true) {
+        this.showProgress("Manager.Refresh running!", async () => {
+          await waitMoment();
+          if (this.device) {
+            this.provider.device = this.device;
+            const apkList = pmList(this.device.id, this.type);
+            this.provider.apkList.length = 0;
+            this.provider.apkList.push(...apkList);
+          }
+          this.provider.refresh();
+          return;
+        });
+      } else {
         await waitMoment();
         if (this.device) {
           this.provider.device = this.device;
@@ -52,8 +64,7 @@ export class ManagerTree {
           this.provider.apkList.push(...apkList);
         }
         this.provider.refresh();
-        return;
-      });
+      }
     });
 
     commands.registerCommand("adb-helper.Manager.Install", async () => {
@@ -66,7 +77,7 @@ export class ManagerTree {
             let success = await install(this.device?.id ?? "", fileUri!.fsPath);
             if (success) {
               window.showInformationMessage("Install Success");
-              commands.executeCommand("adb-helper.Manager.Refresh");
+              commands.executeCommand("adb-helper.Manager.Refresh", true);
             } else {
               window.showErrorMessage("Install Error");
             }
@@ -86,7 +97,7 @@ export class ManagerTree {
             let success = await install(this.provider.device?.id ?? "", fileUri!.fsPath, ["-t", "-r"]);
             if (success) {
               window.showInformationMessage("Install_r_t Success");
-              commands.executeCommand("adb-helper.Manager.Refresh");
+              commands.executeCommand("adb-helper.Manager.Refresh", true);
             } else {
               window.showErrorMessage("Install_r_t Error");
             }
@@ -105,7 +116,7 @@ export class ManagerTree {
             let success = await uninstall(this.device?.id ?? "", r.id);
             if (success) {
               window.showInformationMessage("Uninstall Success");
-              commands.executeCommand("adb-helper.Manager.Refresh");
+              commands.executeCommand("adb-helper.Manager.Refresh", true);
             } else {
               window.showErrorMessage("Uninstall Error");
             }
@@ -124,7 +135,7 @@ export class ManagerTree {
             let success = await clear(this.device?.id ?? "", r.id);
             if (success) {
               window.showInformationMessage("Wipe Success");
-              commands.executeCommand("adb-helper.Manager.Refresh");
+              commands.executeCommand("adb-helper.Manager.Refresh", true);
             } else {
               window.showErrorMessage("Wipe Error");
             }

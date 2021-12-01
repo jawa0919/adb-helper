@@ -54,8 +54,8 @@ export class DeviceDaemon {
         if (!this.currentDevice) {
           this.setDevice(this.devices[0]);
         }
-        commands.executeCommand("adb-helper.Manager.Refresh");
-        commands.executeCommand("adb-helper.Explorer.Refresh");
+        await commands.executeCommand("adb-helper.Manager.Refresh");
+        await commands.executeCommand("adb-helper.Explorer.Refresh");
         return;
       });
     });

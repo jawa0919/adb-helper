@@ -47,13 +47,18 @@ export class ExplorerTree {
   }
 
   private _initCommands() {
-    commands.registerCommand("adb-helper.Explorer.Refresh", () => {
+    commands.registerCommand("adb-helper.Explorer.Refresh", async (r) => {
       console.log("Explorer.Refresh");
-      this.showProgress("Explorer.Refresh running!", async () => {
+      if (r === true) {
+        this.showProgress("Explorer.Refresh running!", async () => {
+          await waitMoment();
+          this.refreshTree();
+          return;
+        });
+      } else {
         await waitMoment();
         this.refreshTree();
-        return;
-      });
+      }
     });
 
     commands.registerCommand("adb-helper.Explorer.SwapRootPath", () => {
@@ -68,7 +73,7 @@ export class ExplorerTree {
         quickPick.hide();
         if (s[0]) {
           this.setRoot(s[0].label.split(" ").pop() ?? ExplorerTree.defPath);
-          commands.executeCommand("adb-helper.Explorer.Refresh");
+          commands.executeCommand("adb-helper.Explorer.Refresh", true);
         }
       });
       quickPick.show();
@@ -83,7 +88,7 @@ export class ExplorerTree {
           await waitMoment();
           let success = mkdir(id, path + `${res}/`);
           if (success) {
-            commands.executeCommand("adb-helper.Explorer.Refresh");
+            commands.executeCommand("adb-helper.Explorer.Refresh", true);
             window.showInformationMessage("NewDirectory Success");
           } else {
             window.showErrorMessage("NewDirectory Error");
@@ -125,7 +130,7 @@ export class ExplorerTree {
             await waitMoment();
             let success = push(id, fileUri!.fsPath, path);
             if (success) {
-              commands.executeCommand("adb-helper.Explorer.Refresh");
+              commands.executeCommand("adb-helper.Explorer.Refresh", true);
               window.showInformationMessage("UploadFile Success");
             } else {
               window.showErrorMessage("UploadFile Error");
@@ -147,7 +152,7 @@ export class ExplorerTree {
             await waitMoment();
             let success = push(id, fileUri!.fsPath, path);
             if (success) {
-              commands.executeCommand("adb-helper.Explorer.Refresh");
+              commands.executeCommand("adb-helper.Explorer.Refresh", true);
               window.showInformationMessage("UploadDirectory Success");
             } else {
               window.showErrorMessage("UploadDirectory Error");
@@ -166,7 +171,7 @@ export class ExplorerTree {
         if (answer === "Yes") {
           let success = rm(id, path);
           if (success) {
-            commands.executeCommand("adb-helper.Explorer.Refresh");
+            commands.executeCommand("adb-helper.Explorer.Refresh", true);
             window.showInformationMessage("Delete Success");
           } else {
             window.showErrorMessage("Delete Error");
