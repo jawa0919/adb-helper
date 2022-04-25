@@ -14,6 +14,7 @@ import { ManagerTree } from "../manager/managerTree";
 import { IDevice } from "../type";
 import { waitMoment } from "../util/util";
 import execa = require("execa");
+import { install } from "../command/pm";
 
 export class DeviceDaemon {
   private devices: IDevice[] = [];
@@ -79,6 +80,36 @@ export class DeviceDaemon {
           }
           commands.executeCommand("adb-helper.Manager.Refresh");
           commands.executeCommand("adb-helper.Explorer.Refresh");
+        }
+      });
+      quickPick.show();
+    });
+
+    commands.registerCommand("adb-helper.Device.Install_r_t", async (res) => {
+      console.log("Device.Install_r_t");
+      const apkPath = res.fsPath;
+      const quickPick = window.createQuickPick();
+      quickPick.onDidHide(() => quickPick.dispose());
+      quickPick.placeholder = "Current Device";
+      quickPick.items = this.devices.map((d) => {
+        const label = d.port ? "$(broadcast) " : "$(plug) ";
+        return { label: label + d.model, description: d.id };
+      });
+      quickPick.onDidChangeSelection((e) => {
+        if (e[0]) {
+          quickPick.hide();
+          const d = this.devices.find((r) => r.id === e[0].description) ?? this.devices[0];
+          this.showProgress("Device.Install_r_t running!", async () => {
+            await waitMoment();
+            let success = await install(d.id ?? "", apkPath, ["-t", "-r"]);
+            if (success) {
+              window.showInformationMessage("Install_r_t Success");
+              commands.executeCommand("adb-helper.Manager.Refresh", true);
+            } else {
+              window.showErrorMessage("Install_r_t Error");
+            }
+            return;
+          });
         }
       });
       quickPick.show();

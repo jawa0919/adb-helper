@@ -45,6 +45,10 @@
         "icon": "$(device-mobile)"
       },
       {
+        "command": "adb-helper.Device.Install_r_t",
+        "title": "Install To Phone"
+      },
+      {
         "command": "adb-helper.Device.DisconnectWifi",
         "title": "Disconnect Wifi Connect",
         "icon": "$(debug-disconnect)"
@@ -255,6 +259,13 @@
           "when": "view == adb-helper.Explorer",
           "command": "adb-helper.Explorer.CopyPath",
           "group": "e4@1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceExtname == .apk",
+          "command": "adb-helper.Device.Install_r_t",
+          "group": "apk"
         }
       ]
     },
