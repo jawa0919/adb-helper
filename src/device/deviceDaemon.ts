@@ -101,7 +101,7 @@ export class DeviceDaemon {
           const d = this.devices.find((r) => r.id === e[0].description) ?? this.devices[0];
           this.showProgress("Device.Install_r_t running!", async () => {
             await waitMoment();
-            let success = await install(d.id ?? "", apkPath, ["-t", "-r"]);
+            let success = await install(d.id ?? "", apkPath);
             if (success) {
               window.showInformationMessage("Install_r_t Success");
               commands.executeCommand("adb-helper.Manager.Refresh", true);

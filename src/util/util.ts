@@ -93,7 +93,7 @@ function _safeExecFileSync(bin: string, args: string[], env: { [key: string]: st
   logPrint(`ExecFileSync ${bin} with args ${JSON.stringify(args)}`);
   const quotedArgs = args.map((a) => `"${a.replace(/"/g, `\\"`)}"`);
   const customEnv = Object.assign({}, process.env, env);
-  return child_process.execFileSync(`"${bin}"`, quotedArgs, { env: customEnv, shell: true });
+  return Buffer.from(child_process.execFileSync(`"${bin}"`, quotedArgs, { env: customEnv, shell: true }));
 }
 
 function _safeExecFile(bin: string, args: string[], env: { [key: string]: string | undefined } | undefined): child_process.ChildProcess {
