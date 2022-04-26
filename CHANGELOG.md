@@ -1,3 +1,7 @@
+# 0.3.3
+
+- Add Apk files are quickly install
+
 # 0.3.1
 
 - Add DeviceDaemon

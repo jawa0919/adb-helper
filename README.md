@@ -40,7 +40,9 @@ Assist in executing common ADB commands. At present, the functions include devic
 
 4. Screenshot
 
-5. USB Connection listening （Implementation using Fluent SDK）
+5. USB Connection listening （Implementation using Flutter SDK）
+
+6. Apk files are quickly installed to the phone
 
 ## adb
 

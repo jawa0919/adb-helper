@@ -44,6 +44,8 @@
 
 5. usb 连接监听 （使用 flutter sdk 实现）
 
+6. .apk 文件快速安装到手机
+
 ## adb
 
 欢迎大家提出想法和反馈问题 [issues](https://github.com/jawa0919/adb-helper/issues)
