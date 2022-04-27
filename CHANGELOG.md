@@ -1,3 +1,7 @@
+# 0.3.4
+
+- fix readme img error
+
 # 0.3.3
 
 - Add Apk files are quickly install
