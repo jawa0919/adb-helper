@@ -24,8 +24,17 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:**/AndroidManifest.xml",
-    "workspaceContains:**.apk"
+    "workspaceContains:AndroidManifest.xml",
+    "workspaceContains:*/AndroidManifest.xml",
+    "workspaceContains:*/*/AndroidManifest.xml",
+    "workspaceContains:*.apk",
+    "workspaceContains:*/*.apk",
+    "workspaceContains:*/*/*.apk",
+    "workspaceContains:.metadata",
+    "workspaceContains:*/.metadata",
+    "workspaceContains:*/*/.metadata",
+    "onView:adb-helper.Manager",
+    "onView:adb-helper.Explorer"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -138,7 +147,8 @@
         {
           "id": "adb-helper",
           "title": "ADB Helper",
-          "icon": "assets/adb-helper.svg"
+          "icon": "assets/adb-helper.svg",
+          "contextualTitle": "Package Explorer"
         }
       ]
     },
@@ -147,11 +157,13 @@
         {
           "id": "adb-helper.Manager",
           "name": "Manager",
+          "icon": "media/dep.svg",
           "when": "adb-helper:isADBSupport"
         },
         {
           "id": "adb-helper.Explorer",
           "name": "Explorer",
+          "icon": "media/dep.svg",
           "when": "adb-helper:isADBSupport"
         }
       ]
