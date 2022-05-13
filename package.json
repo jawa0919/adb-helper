@@ -2,24 +2,123 @@
 	"name": "adb-helper",
 	"displayName": "ADB Helper",
 	"description": "ADB Helper",
-	"version": "0.0.1",
+	"version": "0.4.0",
+	"icon": "assets/icon.png",
+	"publisher": "jawa0919",
+	"author": {
+		"name": "jawa0919",
+		"email": "jawa0919@163.com"
+	},
+	"homepage": "https://github.com/jawa0919/adb-helper",
+	"bugs": {
+		"url": "https://github.com/jawa0919/adb-helper/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jawa0919/adb-helper.git"
+	},
 	"engines": {
-		"vscode": "^1.67.0"
+		"vscode": "^1.57.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:adb-helper.helloWorld"
+		"workspaceContains:AndroidManifest.xml",
+		"workspaceContains:*/AndroidManifest.xml",
+		"workspaceContains:*/*/AndroidManifest.xml",
+		"workspaceContains:*.apk",
+		"workspaceContains:*/*.apk",
+		"workspaceContains:*/*/*.apk",
+		"workspaceContains:.metadata",
+		"workspaceContains:*/.metadata",
+		"workspaceContains:*/*/.metadata",
+		"onView:adb-helper.DeviceManager",
+		"onView:adb-helper.ExplorerManager",
+		"onCommand:adb-helper.restartAdb"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "adb-helper.helloWorld",
-				"title": "Hello World"
+				"command": "adb-helper.restartAdb",
+				"title": "Start/Restart ADB Helper",
+				"icon": "$(sync)"
+			},
+			{
+				"command": "adb-helper.refreshDeviceManager",
+				"title": "Refresh Device Manager",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "adb-helper.ipConnect",
+				"title": "Input Device Ip Connect",
+				"icon": "$(rss)"
+			},
+			{
+				"command": "adb-helper.ipConnectHistory",
+				"title": "Ip Connect History",
+				"icon": "$(history)"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "adb-helper",
+					"title": "ADB Helper",
+					"icon": "assets/adb-helper.svg"
+				}
+			]
+		},
+		"views": {
+			"adb-helper": [
+				{
+					"id": "adb-helper.DeviceManager",
+					"name": "Devices Manager",
+					"contextualTitle": "Device Apk Manager"
+				},
+				{
+					"id": "adb-helper.ExplorerManager",
+					"name": "Explorer Manager",
+					"contextualTitle": "Device Explorer Manager"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "adb-helper.DeviceManager",
+				"contents": "Android Device Not Found. \nPlease Try\n[Refresh Device Manager](command:adb-helper.refreshDeviceManager)\nOr\n[Restart ADB Helper](command:adb-helper.restartAdb)\nAnd You Can Use IP Connect\n[Input Device IP Address](command:adb-helper.ipConnect)\n"
+			}
+		],
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "adb-helper.restartAdb"
+				}
+			],
+			"view/title": [
+				{
+					"command": "adb-helper.restartAdb",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "navigation@995"
+				},
+				{
+					"command": "adb-helper.refreshDeviceManager",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "navigation@996"
+				},
+				{
+					"command": "adb-helper.ipConnect",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "999_wifi@995"
+				},
+				{
+					"command": "adb-helper.ipConnectHistory",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "999_wifi@996"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -30,7 +129,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.67.0",
+		"@types/vscode": "^1.57.0",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "14.x",
