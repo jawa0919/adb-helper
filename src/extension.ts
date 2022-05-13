@@ -7,19 +7,20 @@
  */
 
 import * as vscode from "vscode";
-import { DeviceManager } from "./core/DeviceManager";
+import { logPrint } from "./core/utils/util";
+import { DeviceManager } from "./core/view/DeviceManager";
 
 let deviceManager: DeviceManager | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('"adb-helper" active');
+  logPrint('"adb-helper" active');
   if (deviceManager === undefined) {
     deviceManager = new DeviceManager(context);
   }
 }
 
 export function deactivate() {
-  console.log('"adb-helper" deactivate');
+  logPrint('"adb-helper" deactivate');
   deviceManager?.dispose();
   deviceManager = undefined;
 }
