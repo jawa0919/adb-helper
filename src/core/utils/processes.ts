@@ -6,17 +6,26 @@
  * @Description  : processes
  */
 
-import execa from "execa";
+import execa, { ExecaChildProcess, ExecaReturnValue } from "execa";
 import { logPrint } from "./util";
 
-export async function ex(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }) {
+function quoteAndEscapeArg(arg: string): string {
+  let escaped = arg.replace(/"/g, `\\"`);
+  if (process.platform.startsWith("win")) escaped = escaped.replace(/([<>])/g, "^$1");
+  return `"${escaped}"`;
+}
+
+export function safeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): ExecaChildProcess<string> {
+  const quotedArgs = args.map(quoteAndEscapeArg);
+  const customEnv = Object.assign({}, process.env, env);
+  logPrint(`🚀 ${binPath} ${quotedArgs.join(" ")}`);
+  const proc = execa(`"${binPath}"`, quotedArgs, { cwd: cwd, env: customEnv, shell: true });
+  return proc;
+}
+
+export async function simpleSafeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): Promise<ExecaReturnValue<string>> {
   logPrint(`🚀 ${binPath} ${args.join(" ")}`);
-  try {
-    const proc = await execa(binPath, args, { cwd, env });
-    logPrint(proc);
-    return proc?.exitCode === 0 ? proc?.stdout : proc?.stderr;
-  } catch (error) {
-    console.log("error");
-    logPrint(error);
-  }
+  const proc = safeSpawn(binPath, args, cwd, env);
+  logPrint(proc);
+  return await proc;
 }

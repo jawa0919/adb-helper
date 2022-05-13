@@ -6,7 +6,7 @@
  * @Description  : devices
  */
 
-import { ex } from "../utils/processes";
+import { simpleSafeSpawn } from "../utils/processes";
 
 export type IDevice = {
   devId: string;
@@ -25,9 +25,9 @@ export type IDevice = {
 //
 export async function devices(): Promise<IDevice[]> {
   let cmd = ["devices", "-l"];
-  const proc = await ex("adb", cmd);
+  const proc = await simpleSafeSpawn("adb", cmd);
   let res: IDevice[] = [];
-  proc?.split(/\n|\r\n/).forEach((line) => {
+  proc.stdout.split(/\n|\r\n/).forEach((line) => {
     let t = _deviceParse(line.trim());
     if (t) res.push(t);
   });

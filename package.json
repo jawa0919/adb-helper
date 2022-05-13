@@ -42,7 +42,7 @@
 		"commands": [
 			{
 				"command": "adb-helper.restartAdb",
-				"title": "Start/Restart ADB Helper",
+				"title": "Start/Restart Adb",
 				"icon": "$(sync)"
 			},
 			{
@@ -52,13 +52,57 @@
 			},
 			{
 				"command": "adb-helper.ipConnect",
-				"title": "Input Device Ip Connect",
+				"title": "Input Device IP Connect",
 				"icon": "$(rss)"
 			},
 			{
 				"command": "adb-helper.ipConnectHistory",
-				"title": "Ip Connect History",
+				"title": "IP Connect History",
 				"icon": "$(history)"
+			}
+		],
+		"configuration": [
+			{
+				"title": "ADB Helper Custom",
+				"properties": {
+					"adb-helper.adbBinPath": {
+						"order": 0,
+						"description": "Custom ADB Bin Path",
+						"type": "string",
+						"default": "",
+						"scope": "machine-overridable"
+					},
+					"adb-helper.androidSdkPath": {
+						"order": 1,
+						"type": "string",
+						"description": "Custom Android SDK Path",
+						"default": "",
+						"scope": "machine-overridable"
+					},
+					"adb-helper.flutterSdkPath": {
+						"order": 2,
+						"type": "string",
+						"description": "Custom Flutter SDK Path",
+						"default": "",
+						"scope": "machine-overridable"
+					},
+					"adb-helper.explorerRootPathList": {
+						"order": 3,
+						"type": "array",
+						"description": "Custom Explorer RootPath List",
+						"items": {
+							"type": "string"
+						},
+						"default": [
+							"/sdcard/",
+							"/",
+							"/sdcard/Android/data/",
+							"/sdcard/DCIM/",
+							"/sdcard/Download/"
+						],
+						"scope": "machine-overridable"
+					}
+				}
 			}
 		],
 		"viewsContainers": {

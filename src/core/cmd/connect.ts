@@ -6,16 +6,14 @@
  * @Description  : connect
  */
 
-import { ex } from "../utils/processes";
+import { simpleSafeSpawn } from "../utils/processes";
 
-export async function killServer(): Promise<boolean> {
+export async function killServer(): Promise<void> {
   let cmd = ["kill-server"];
-  const proc = await ex("adb", cmd);
-  return true;
+  const proc = await simpleSafeSpawn("adb", cmd);
 }
 
-export async function startServer(): Promise<boolean> {
+export async function startServer(): Promise<void> {
   let cmd = ["start-server"];
-  const proc = await ex("adb", cmd);
-  return true;
+  const proc = await simpleSafeSpawn("adb", cmd);
 }
