@@ -9,10 +9,10 @@
 import { ExecaChildProcess } from "execa";
 import { commands, Disposable, ExtensionContext, window } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
-import { killServer, startServer } from "../cmd/connect";
+import { connect, killServer, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { safeSpawn } from "../utils/processes";
-import { showProgress, waitMoment } from "../utils/util";
+import { showErrorMessage, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
 import { DeviceTree } from "./DeviceTree";
 
 export class DeviceManager implements Disposable {
@@ -27,11 +27,49 @@ export class DeviceManager implements Disposable {
     commands.registerCommand("adb-helper.ipConnect", () => this.ipConnect());
     commands.registerCommand("adb-helper.ipConnectHistory", () => this.ipConnectHistory());
   }
-  ipConnectHistory() {
-    console.log("ipConnectHistory");
+  async ipConnectHistory() {
+    const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
+    let historyDevices: IDevice[] = history ? JSON.parse(history) : [];
+    if (historyDevices.length === 0) {
+      showInformationMessage("No find history device");
+      return;
+    }
+    const clearItem = { label: "Clear History", detail: "Clear Ip History List", alwaysShow: true };
+    const ipItems = historyDevices.map((d) => {
+      return { label: "$(broadcast) " + d.model, description: d.devId, detail: JSON.stringify(d) };
+    });
+    let item = await showQuickPickItem([...ipItems, clearItem]);
+    if (item?.label === "Clear History") {
+      this.context.globalState.update("adb-helper.ipHistory", "");
+      return;
+    }
+    if (item === undefined) return;
+    const model: IDevice = JSON.parse(item.detail);
+    await this.ipConnect(model.devIp, model.devPort);
   }
-  ipConnect() {
-    console.log("ipConnect");
+  async ipConnect(ip?: string, port?: string) {
+    if (ip === undefined) ip = await showInputBox("Input Device IP", "eg:192.168.1.103", ip);
+    if (!ip) return;
+    if (port === undefined) port = await showInputBox("Input Device tcp port", "eg:5555", port);
+    if (!port) return;
+    showProgress("IP Connect running!", async () => {
+      const connectSuccess = await connect(ip!, port!);
+      if (!connectSuccess) {
+        showErrorMessage("IP Connect Error");
+        return;
+      }
+      await waitMoment();
+      DeviceManager.deviceList = await devices();
+      this.tree.eventEmitter.fire();
+      const dev = DeviceManager.deviceList.find((r) => r.devId === `${ip}:${port}`);
+      if (dev === undefined) return;
+      const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
+      let historyDevices: IDevice[] = history ? JSON.parse(history) : [];
+      historyDevices.push(dev);
+      historyDevices = [...new Set(historyDevices)];
+      this.context.globalState.update("adb-helper.ipHistory", JSON.stringify(historyDevices));
+      return;
+    });
   }
   async refreshDeviceManager() {
     DeviceManager.deviceList = await devices();
@@ -48,6 +86,7 @@ export class DeviceManager implements Disposable {
       return;
     });
   }
+
   dispose() {
     const req = { id: this.daemonId, method: "daemon.shutdown" };
     const cmd = "[" + JSON.stringify(req) + "]\r\n";

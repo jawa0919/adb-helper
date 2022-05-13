@@ -24,8 +24,7 @@ export function safeSpawn(binPath: string, args: string[], cwd?: string, env?: {
 }
 
 export async function simpleSafeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): Promise<ExecaReturnValue<string>> {
-  logPrint(`🚀 ${binPath} ${args.join(" ")}`);
-  const proc = safeSpawn(binPath, args, cwd, env);
-  logPrint(proc);
-  return await proc;
+  const procRes = await safeSpawn(binPath, args, cwd, env);
+  logPrint(procRes);
+  return procRes;
 }
