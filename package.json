@@ -59,6 +59,36 @@
 				"command": "adb-helper.ipConnectHistory",
 				"title": "IP Connect History",
 				"icon": "$(history)"
+			},
+			{
+				"command": "adb-helper.screenshot",
+				"title": "Device Screenshot",
+				"icon": "$(device-camera)"
+			},
+			{
+				"command": "adb-helper.installApk",
+				"title": "Install Apk",
+				"icon": "$(diff-added)"
+			},
+			{
+				"command": "adb-helper.inputText",
+				"title": "Input Text"
+			},
+			{
+				"command": "adb-helper.copyDeviceInfo",
+				"title": "Copy Device Info"
+			},
+			{
+				"command": "adb-helper.rebootDevice",
+				"title": "Reboot Device"
+			},
+			{
+				"command": "adb-helper.shutdownDevice",
+				"title": "Power Off Device"
+			},
+			{
+				"command": "adb-helper.useWifiConnect",
+				"title": "Use Wifi Connect"
 			}
 		],
 		"configuration": [
@@ -160,6 +190,43 @@
 					"command": "adb-helper.ipConnectHistory",
 					"when": "view == adb-helper.DeviceManager",
 					"group": "999_wifi@996"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "adb-helper.screenshot",
+					"when": "viewItem == AdbDevice",
+					"group": "inline@995"
+				},
+				{
+					"command": "adb-helper.installApk",
+					"when": "viewItem == AdbDevice",
+					"group": "inline@996"
+				},
+				{
+					"command": "adb-helper.inputText",
+					"when": "viewItem == AdbDevice",
+					"group": "995_info@995"
+				},
+				{
+					"command": "adb-helper.copyDeviceInfo",
+					"when": "viewItem == AdbDevice",
+					"group": "995_info@996"
+				},
+				{
+					"command": "adb-helper.rebootDevice",
+					"when": "viewItem == AdbDevice",
+					"group": "996_reboot@995"
+				},
+				{
+					"command": "adb-helper.shutdownDevice",
+					"when": "viewItem == AdbDevice",
+					"group": "996_reboot@996"
+				},
+				{
+					"command": "adb-helper.useWifiConnect",
+					"when": "viewItem == AdbDevice",
+					"group": "997_wifi@995"
 				}
 			]
 		}

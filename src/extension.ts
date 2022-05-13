@@ -8,10 +8,10 @@
 
 import { commands, ExtensionContext, workspace } from "vscode";
 import { adbBinPath, explorerRootPathList, flutterBinPath, initAppConfig } from "./core/app/AppConfig";
+import { AdbController } from "./core/controller/AdbController";
 import { logPrint, showWarningMessage } from "./core/utils/util";
-import { DeviceManager } from "./core/view/DeviceManager";
 
-let deviceManager: DeviceManager | undefined;
+let adbManager: AdbController | undefined;
 
 export function activate(context: ExtensionContext) {
   logPrint("adb-helper active");
@@ -26,14 +26,14 @@ export function activate(context: ExtensionContext) {
     return;
   }
 
-  if (deviceManager === undefined) {
-    deviceManager = new DeviceManager(context);
+  if (adbManager === undefined) {
+    adbManager = new AdbController(context);
   }
 
   commands.executeCommand("adb-helper.refreshDeviceManager");
 
   if (flutterBinPath !== "") {
-    deviceManager.createFlutterDaemon();
+    adbManager.createFlutterDaemon();
   } else {
     logPrint("No Find `flutter` Command, Can Not Auto Refresh Device List When Device Connect/Disconnect");
   }
@@ -41,6 +41,6 @@ export function activate(context: ExtensionContext) {
 
 export function deactivate() {
   logPrint("adb-helper deactivate");
-  deviceManager?.dispose();
-  deviceManager = undefined;
+  adbManager?.dispose();
+  adbManager = undefined;
 }

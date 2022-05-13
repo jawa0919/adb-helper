@@ -1,26 +1,25 @@
 /*
- * @FilePath     : /src/core/view/DeviceManager.ts
- * @Date         : 2022-05-13 16:38:20
+ * @FilePath     : /src/core/controller/AdbController.ts
+ * @Date         : 2022-05-14 01:05:59
  * @Author       : jawa0919 <jawa0919@163.com>
  * @LastEditors  : jawa0919 <jawa0919@163.com>
- * @Description  : 设备管理器
+ * @Description  : adb控制器
  */
 
 import { ExecaChildProcess } from "execa";
-import { commands, Disposable, ExtensionContext, window } from "vscode";
+import { commands, Disposable, ExtensionContext } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
 import { connect, killServer, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { safeSpawn } from "../utils/processes";
 import { showErrorMessage, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
-import { DeviceTree } from "./DeviceTree";
+import { DeviceController } from "./DeviceController";
 
-export class DeviceManager implements Disposable {
-  static deviceList: IDevice[] = [];
-  tree: DeviceTree;
+export class AdbController implements Disposable {
+  deviceController: DeviceController;
+
   constructor(public context: ExtensionContext) {
-    this.tree = new DeviceTree();
-    window.registerTreeDataProvider("adb-helper.DeviceManager", this.tree);
+    this.deviceController = new DeviceController(context);
     /// commands
     commands.registerCommand("adb-helper.restartAdb", () => this.restartAdb());
     commands.registerCommand("adb-helper.refreshDeviceManager", () => this.refreshDeviceManager());
@@ -59,9 +58,9 @@ export class DeviceManager implements Disposable {
         return;
       }
       await waitMoment();
-      DeviceManager.deviceList = await devices();
-      this.tree.eventEmitter.fire();
-      const dev = DeviceManager.deviceList.find((r) => r.devId === `${ip}:${port}`);
+      DeviceController.deviceList = await devices();
+      this.deviceController.tree.eventEmitter.fire();
+      const dev = DeviceController.deviceList.find((r) => r.devId === `${ip}:${port}`);
       if (dev === undefined) return;
       const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
       let historyDevices: IDevice[] = history ? JSON.parse(history) : [];
@@ -72,8 +71,8 @@ export class DeviceManager implements Disposable {
     });
   }
   async refreshDeviceManager() {
-    DeviceManager.deviceList = await devices();
-    this.tree.eventEmitter.fire();
+    DeviceController.deviceList = await devices();
+    this.deviceController.tree.eventEmitter.fire();
   }
   async restartAdb() {
     showProgress("Restart Adb running!", async () => {
@@ -81,8 +80,8 @@ export class DeviceManager implements Disposable {
       await waitMoment();
       await startServer();
       await waitMoment();
-      DeviceManager.deviceList = await devices();
-      this.tree.eventEmitter.fire();
+      DeviceController.deviceList = await devices();
+      this.deviceController.tree.eventEmitter.fire();
       return;
     });
   }
@@ -93,6 +92,7 @@ export class DeviceManager implements Disposable {
     this.process?.stdin?.write(cmd);
     this.process?.disconnect();
     this.daemonId === undefined;
+    this.deviceController.dispose();
   }
 
   private process: ExecaChildProcess | undefined;

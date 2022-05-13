@@ -8,7 +8,7 @@
 
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
 import { IDevice } from "../cmd/devices";
-import { DeviceManager } from "./DeviceManager";
+import { DeviceController } from "../controller/DeviceController";
 
 export class DeviceTree implements TreeDataProvider<TreeItem> {
   constructor() {}
@@ -18,7 +18,7 @@ export class DeviceTree implements TreeDataProvider<TreeItem> {
     return element;
   }
   async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-    if (element === undefined) return DeviceManager.deviceList.map((d) => this.buildDeviceNode(d));
+    if (element === undefined) return DeviceController.deviceList.map((d) => this.buildDeviceNode(d));
     return [];
   }
   buildDeviceNode(device: IDevice): TreeItem {
