@@ -119,6 +119,21 @@
 				"title": "Cope Apk Id"
 			},
 			{
+				"command": "adb-helper.refreshExplorerManager",
+				"title": "Refresh Explorer Manager",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "adb-helper.chooseDevice",
+				"title": "Choose Device",
+				"icon": "$(device-mobile)"
+			},
+			{
+				"command": "adb-helper.chooseRootPath",
+				"title": "Choose RootPath",
+				"icon": "$(database)"
+			},
+			{
 				"command": "adb-helper.installToDevice",
 				"title": "Install Apk To Device"
 			}
@@ -193,7 +208,11 @@
 		"viewsWelcome": [
 			{
 				"view": "adb-helper.DeviceManager",
-				"contents": "Android Device Not Found. \nPlease Try\n[Refresh Device Manager](command:adb-helper.refreshDeviceManager)\nOr\n[Restart ADB Helper](command:adb-helper.restartAdb)\nAnd You Can Use IP Connect\n[Input Device IP Address](command:adb-helper.ipConnect)\n"
+				"contents": "Android Device Not Found. \nPlease Try\n[$(refresh) Refresh Device Manager](command:adb-helper.refreshDeviceManager)\nOR\n[Restart ADB Helper](command:adb-helper.restartAdb)\nAnd You Can Use IP Connect\n[Input Device IP Address](command:adb-helper.ipConnect)\n"
+			},
+			{
+				"view": "adb-helper.ExplorerManager",
+				"contents": "Please Choose Android Device.\n [$(refresh) Restart Explorer Manager](command:adb-helper.refreshExplorerManager)\nOR\n[$(device-mobile) Choose Android Device](command:adb-helper.chooseDevice)"
 			}
 		],
 		"menus": {
@@ -227,6 +246,21 @@
 					"command": "adb-helper.chooseApkFilter",
 					"when": "view == adb-helper.DeviceManager",
 					"group": "998_wifi@997"
+				},
+				{
+					"command": "adb-helper.chooseRootPath",
+					"when": "view == adb-helper.ExplorerManager",
+					"group": "navigation@995"
+				},
+				{
+					"command": "adb-helper.chooseDevice",
+					"when": "view == adb-helper.ExplorerManager",
+					"group": "navigation@996"
+				},
+				{
+					"command": "adb-helper.refreshExplorerManager",
+					"when": "view == adb-helper.ExplorerManager",
+					"group": "navigation@997"
 				}
 			],
 			"view/item/context": [
