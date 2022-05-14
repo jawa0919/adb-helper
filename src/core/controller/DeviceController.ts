@@ -7,11 +7,11 @@
  */
 
 import { join } from "node:path";
-import { commands, Disposable, ExtensionContext, TreeItem, window } from "vscode";
-import { IDevice } from "../cmd/devices";
+import { commands, Disposable, env, ExtensionContext, TreeItem, window } from "vscode";
+import { IDevice, loadDeviceSystem } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
-import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showInformationMessage, showProgress, waitMoment } from "../utils/util";
+import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showInformationMessage, showModal, showProgress, waitMoment } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 
 export class DeviceController implements Disposable {
@@ -23,6 +23,7 @@ export class DeviceController implements Disposable {
     /// commands
     commands.registerCommand("adb-helper.screenshot", (res) => this.screenshot(res));
     commands.registerCommand("adb-helper.installApk", (res) => this.installApk(res));
+    commands.registerCommand("adb-helper.inputText", (res) => this.inputText(res));
     commands.registerCommand("adb-helper.showDeviceInfo", (res) => this.showDeviceInfo(res));
     commands.registerCommand("adb-helper.showClipboardData", (res) => this.showClipboardData(res));
     commands.registerCommand("adb-helper.rebootDevice", (res) => this.rebootDevice(res));
@@ -41,7 +42,15 @@ export class DeviceController implements Disposable {
   showClipboardData(res: TreeItem) {
     logPrint(res);
   }
-  showDeviceInfo(res: TreeItem) {
+  async showDeviceInfo(res: TreeItem) {
+    const info: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    const sys = await loadDeviceSystem(info.devId);
+    const deviceInfo = { ...info, ...sys };
+    showModal("DeviceInfo", `${JSON.stringify(deviceInfo, null, 2)}`, ...["Copy"]).then((r) => {
+      if (r === "Copy") env.clipboard.writeText(JSON.stringify(deviceInfo, null, 2));
+    });
+  }
+  inputText(res: TreeItem) {
     logPrint(res);
   }
   async installApk(res: TreeItem) {
