@@ -12,7 +12,7 @@ import { flutterBinPath } from "../app/AppConfig";
 import { connect, killServer, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { safeSpawn } from "../utils/processes";
-import { showErrorMessage, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
+import { showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
 import { DeviceController } from "./DeviceController";
 
 export class AdbController implements Disposable {
@@ -53,10 +53,7 @@ export class AdbController implements Disposable {
     if (!port) return;
     showProgress("IP Connect running!", async () => {
       const connectSuccess = await connect(ip!, port!);
-      if (!connectSuccess) {
-        showErrorMessage("IP Connect Error");
-        return;
-      }
+      if (!connectSuccess) return;
       await waitMoment();
       DeviceController.deviceList = await devices();
       this.deviceController.tree.eventEmitter.fire();

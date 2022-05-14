@@ -75,8 +75,12 @@
 				"title": "Input Text"
 			},
 			{
-				"command": "adb-helper.copyDeviceInfo",
-				"title": "Copy Device Info"
+				"command": "adb-helper.showDeviceInfo",
+				"title": "Show Device Info"
+			},
+			{
+				"command": "adb-helper.showClipboardData",
+				"title": "Show Clipboard Data"
 			},
 			{
 				"command": "adb-helper.rebootDevice",
@@ -209,9 +213,14 @@
 					"group": "995_info@995"
 				},
 				{
-					"command": "adb-helper.copyDeviceInfo",
+					"command": "adb-helper.showDeviceInfo",
 					"when": "viewItem == AdbDevice",
 					"group": "995_info@996"
+				},
+				{
+					"command": "adb-helper.showClipboardData",
+					"when": "viewItem == AdbDevice",
+					"group": "995_info@997"
 				},
 				{
 					"command": "adb-helper.rebootDevice",

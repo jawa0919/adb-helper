@@ -7,7 +7,7 @@
  */
 
 import { join } from "node:path";
-import { CancellationToken, Progress, ProgressLocation, QuickPickItem, window } from "vscode";
+import { CancellationToken, Progress, ProgressLocation, QuickPickItem, Uri, window } from "vscode";
 
 const logOutput = window.createOutputChannel("ADB Helper");
 
@@ -34,20 +34,16 @@ export async function showQuickPickItem<T extends QuickPickItem>(fileList: T[]):
   return await window.showQuickPick<T>(fileList);
 }
 
-export async function showInformationMessage(message: string, detail?: string, ...items: string[]): Promise<string | undefined> {
-  return await window.showInformationMessage(message, { detail }, ...items);
+export async function showInformationMessage(message: string, ...items: string[]): Promise<string | undefined> {
+  return await window.showInformationMessage(message, ...items);
 }
 
-export async function showWarningMessage(message: string, detail?: string, ...items: string[]): Promise<string | undefined> {
-  return await window.showWarningMessage(message, { detail }, ...items);
+export async function showWarningMessage(message: string, ...items: string[]): Promise<string | undefined> {
+  return await window.showWarningMessage(message, ...items);
 }
 
-export async function showErrorMessage(message: string, detail?: string, ...items: string[]): Promise<string | undefined> {
-  return await window.showErrorMessage(message, { detail }, ...items);
-}
-
-export function dateTimeName(): string {
-  return new Date().toISOString().substring(0, 19).replace(/[-:T]/g, "");
+export async function showErrorMessage(message: string, ...items: string[]): Promise<string | undefined> {
+  return await window.showErrorMessage(message, ...items, ...["Cancel"]);
 }
 
 export function showProgress<R>(title: string, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<R>): Thenable<R> {
@@ -56,6 +52,18 @@ export function showProgress<R>(title: string, task: (progress: Progress<{ messa
 
 export async function showModal(title: string, detail: string, ...items: string[]): Promise<string | undefined> {
   return await window.showWarningMessage(title, { modal: true, detail }, ...items);
+}
+
+export async function chooseFile(canSelectMany = false): Promise<Uri[] | undefined> {
+  return await window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany });
+}
+
+export async function chooseFolder(canSelectMany = false): Promise<Uri[] | undefined> {
+  return await window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany });
+}
+
+export function dateTimeName(): string {
+  return new Date().toISOString().substring(0, 19).replace(/[-:T]/g, "");
 }
 
 export async function waitMoment(ms = 300): Promise<void> {
