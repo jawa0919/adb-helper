@@ -14,16 +14,17 @@ import { devices, IDevice } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { safeSpawn } from "../utils/processes";
 import { logPrint, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
-import { ApkController } from "./ApkController";
 import { DeviceController } from "./DeviceController";
+import { ExplorerController } from "./ExplorerController";
 
 export class AdbController implements Disposable {
+  static deviceList: IDevice[] = [];
   deviceController: DeviceController;
-  apkController: ApkController;
+  explorerController: ExplorerController;
 
   constructor(public context: ExtensionContext) {
     this.deviceController = new DeviceController(context);
-    this.apkController = new ApkController(context);
+    this.explorerController = new ExplorerController(context);
     /// commands
     commands.registerCommand("adb-helper.restartAdb", () => this.restartAdb());
     commands.registerCommand("adb-helper.refreshDeviceManager", () => this.refreshDeviceManager());
@@ -32,9 +33,8 @@ export class AdbController implements Disposable {
     commands.registerCommand("adb-helper.installToDevice", (res) => this.installToDevice(res));
   }
   async installToDevice(res: Uri) {
-    logPrint(res);
     let apkPath: string = res.fsPath || "";
-    const items = DeviceController.deviceList.map((d) => {
+    const items = AdbController.deviceList.map((d) => {
       const label = d.netWorkIp ? "$(broadcast) " : "$(plug) ";
       return { label: label + d.model, description: d.devId };
     });
@@ -79,9 +79,8 @@ export class AdbController implements Disposable {
       const connectSuccess = await connect(ip!, port!);
       if (!connectSuccess) return;
       await waitMoment();
-      DeviceController.deviceList = await devices();
-      this.deviceController.tree.eventEmitter.fire();
-      const dev = DeviceController.deviceList.find((r) => r.devId === `${ip}:${port}`);
+      await commands.executeCommand("adb-helper.refreshDeviceManager");
+      const dev = AdbController.deviceList.find((r) => r.devId === `${ip}:${port}`);
       if (dev === undefined) return;
       const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
       let historyDevices: IDevice[] = history ? JSON.parse(history) : [];
@@ -92,8 +91,11 @@ export class AdbController implements Disposable {
     });
   }
   async refreshDeviceManager() {
-    DeviceController.deviceList = await devices();
+    AdbController.deviceList = await devices();
     this.deviceController.tree.eventEmitter.fire();
+    const index = AdbController.deviceList.findIndex((d) => d.devId === this.explorerController.tree.device?.devId);
+    if (index === -1) this.explorerController.tree.device = AdbController.deviceList[0];
+    this.explorerController.tree.eventEmitter.fire();
   }
   async restartAdb() {
     showProgress("Restart Adb running!", async () => {
@@ -101,8 +103,7 @@ export class AdbController implements Disposable {
       await waitMoment();
       await startServer();
       await waitMoment();
-      DeviceController.deviceList = await devices();
-      this.deviceController.tree.eventEmitter.fire();
+      await commands.executeCommand("adb-helper.refreshDeviceManager");
       return;
     });
   }

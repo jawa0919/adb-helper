@@ -10,7 +10,7 @@ import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCol
 import { AppConst } from "../app/AppConst";
 import { IDevice } from "../cmd/devices";
 import { IApk, pm } from "../cmd/pm";
-import { DeviceController } from "../controller/DeviceController";
+import { AdbController } from "../controller/AdbController";
 
 export class DeviceTree implements TreeDataProvider<TreeItem> {
   constructor(public apkFilter?: string) {}
@@ -20,7 +20,7 @@ export class DeviceTree implements TreeDataProvider<TreeItem> {
     return element;
   }
   async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-    if (element === undefined) return DeviceController.deviceList.map((d) => this.buildDeviceNode(d));
+    if (element === undefined) return AdbController.deviceList.map((d) => this.buildDeviceNode(d));
     if (this.apkFilter === undefined) return [];
     const devId = element.description?.toString() || "";
     const apkList = await pm(devId, this.apkFilter);

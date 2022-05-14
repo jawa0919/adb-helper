@@ -5,16 +5,37 @@
  * @LastEditors  : jawa0919 <jawa0919@163.com>
  * @Description  : 资源管理器
  */
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from "vscode";
+import { Event, EventEmitter, FileType, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
+import { AppConst } from "../app/AppConst";
+import { IDevice } from "../cmd/devices";
+import { ls } from "../cmd/ls";
 
-export class DeviceTree implements TreeDataProvider<TreeItem> {
-  constructor() {}
+export class ExplorerTree implements TreeDataProvider<TreeItem> {
+  constructor(public rootPath: string, public device?: IDevice) {}
   eventEmitter: EventEmitter<TreeItem | TreeItem[] | undefined | void> = new EventEmitter<TreeItem | TreeItem[] | undefined | void>();
   onDidChangeTreeData?: Event<void | TreeItem | TreeItem[] | null | undefined> | undefined = this.eventEmitter.event;
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
   async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-    return [];
+    if (this.device === undefined) return [];
+    let rootUri = Uri.from({ scheme: AppConst.scheme, authority: this.device.devId, path: this.rootPath });
+    let uri = element?.resourceUri || rootUri;
+    const children = await ls(uri.authority, uri.path);
+    return children.map(([name, type]) => this.bindFileSystemNode(name, type, rootUri));
+  }
+  bindFileSystemNode(name: string, fileType: FileType, parentUri: Uri): TreeItem {
+    let path = Uri.joinPath(parentUri, name).path;
+    const uri = parentUri.with({ path });
+    let item = new TreeItem(uri);
+    item.tooltip = JSON.stringify(uri);
+    if (fileType === FileType.File) {
+      item.collapsibleState = TreeItemCollapsibleState.None;
+      item.contextValue = "AdbFile";
+    } else {
+      item.contextValue = "AdbFolder";
+      item.collapsibleState = TreeItemCollapsibleState.Collapsed;
+    }
+    return item;
   }
 }

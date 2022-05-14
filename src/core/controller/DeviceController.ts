@@ -29,11 +29,14 @@ import {
   waitMoment,
 } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
+import { AdbController } from "./AdbController";
+import { ApkController } from "./ApkController";
 
 export class DeviceController implements Disposable {
-  static deviceList: IDevice[] = [];
+  apkController: ApkController;
   tree: DeviceTree;
   constructor(public context: ExtensionContext) {
+    this.apkController = new ApkController(context);
     this.tree = new DeviceTree(AppConst.apkFilterList[0]);
     window.registerTreeDataProvider("adb-helper.DeviceManager", this.tree);
     /// commands
@@ -77,7 +80,7 @@ export class DeviceController implements Disposable {
       if (!connectSuccess) return;
       await waitMoment();
       await commands.executeCommand("adb-helper.refreshDeviceManager");
-      const dev = DeviceController.deviceList.find((r) => r.devId === `${ip}:${port}`);
+      const dev = AdbController.deviceList.find((r) => r.devId === `${ip}:${port}`);
       if (dev === undefined) return;
       const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
       let historyDevices: IDevice[] = history ? JSON.parse(history) : [];
