@@ -119,19 +119,24 @@
 				"title": "Cope Apk Id"
 			},
 			{
-				"command": "adb-helper.refreshExplorerManager",
-				"title": "Refresh Explorer Manager",
-				"icon": "$(refresh)"
-			},
-			{
 				"command": "adb-helper.chooseDevice",
 				"title": "Choose Device",
 				"icon": "$(device-mobile)"
 			},
 			{
+				"command": "adb-helper.refreshExplorerManager",
+				"title": "Refresh Explorer Manager",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "adb-helper.chooseRootPath",
 				"title": "Choose RootPath",
 				"icon": "$(database)"
+			},
+			{
+				"command": "adb-helper.openNewWorkspace",
+				"title": "Open New Workspace",
+				"icon": "$(empty-window)"
 			},
 			{
 				"command": "adb-helper.installToDevice",
@@ -225,42 +230,47 @@
 				{
 					"command": "adb-helper.restartAdb",
 					"when": "view == adb-helper.DeviceManager",
-					"group": "navigation@995"
+					"group": "navigation@990"
 				},
 				{
 					"command": "adb-helper.refreshDeviceManager",
 					"when": "view == adb-helper.DeviceManager",
-					"group": "navigation@996"
+					"group": "navigation@991"
 				},
 				{
 					"command": "adb-helper.ipConnect",
 					"when": "view == adb-helper.DeviceManager",
-					"group": "999_wifi@995"
+					"group": "990_ip@990"
 				},
 				{
 					"command": "adb-helper.ipConnectHistory",
 					"when": "view == adb-helper.DeviceManager",
-					"group": "999_wifi@996"
+					"group": "990_ip@991"
 				},
 				{
 					"command": "adb-helper.chooseApkFilter",
 					"when": "view == adb-helper.DeviceManager",
-					"group": "998_wifi@997"
-				},
-				{
-					"command": "adb-helper.chooseRootPath",
-					"when": "view == adb-helper.ExplorerManager",
-					"group": "navigation@995"
+					"group": "991_apk@990"
 				},
 				{
 					"command": "adb-helper.chooseDevice",
 					"when": "view == adb-helper.ExplorerManager",
-					"group": "navigation@996"
+					"group": "navigation@990"
 				},
 				{
 					"command": "adb-helper.refreshExplorerManager",
 					"when": "view == adb-helper.ExplorerManager",
-					"group": "navigation@997"
+					"group": "navigation@991"
+				},
+				{
+					"command": "adb-helper.chooseRootPath",
+					"when": "view == adb-helper.ExplorerManager",
+					"group": "990_path@990"
+				},
+				{
+					"command": "adb-helper.openNewWorkspace",
+					"when": "view == adb-helper.ExplorerManager",
+					"group": "990_path@991"
 				}
 			],
 			"view/item/context": [
@@ -348,6 +358,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/fs-extra": "^9.0.13",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "14.x",
@@ -361,6 +372,7 @@
 		"typescript": "^4.6.4"
 	},
 	"dependencies": {
-		"execa": "^5.1.1"
+		"execa": "^5.1.1",
+		"fs-extra": "^10.1.0"
 	}
 }

@@ -11,7 +11,7 @@ import { join } from "node:path";
 
 export class AppConst {
   static readonly isWin = process.platform.startsWith("win");
-  static readonly scheme = "adb-helper";
+  static readonly scheme = "adbhelper";
   static readonly homePath = join(homedir(), `.${AppConst.scheme}`);
   static readonly mirrorPath = join(AppConst.homePath, `ExplorerMirror`);
   static readonly apkFilterList = ["-3", "-s", "-e", "-d"];

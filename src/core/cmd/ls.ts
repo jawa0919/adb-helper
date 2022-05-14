@@ -84,8 +84,8 @@ function _sort(a: [string, FileType], b: [string, FileType]): number {
 
 export async function stat(devId: string, devicePath: string): Promise<FileStat> {
   let cmd = ["-s", devId, "shell", "stat", devicePath, "-c", "%f=%s=%X=%Y"];
-  const proc = await simpleSafeSpawn("adb", cmd, adbBinPath);
-  return _statParse(proc.stdout.trim());
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  return _statParse(procRes.stdout);
 }
 
 // 81b0=71976=1651771061=1651771061

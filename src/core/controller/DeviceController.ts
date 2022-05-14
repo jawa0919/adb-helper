@@ -14,20 +14,7 @@ import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
 import { getDeviceIp, IDevice, loadDeviceSystem, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
-import {
-  adbJoin,
-  chooseFile,
-  chooseFolder,
-  dateTimeName,
-  logPrint,
-  showErrorMessage,
-  showInformationMessage,
-  showInputBox,
-  showModal,
-  showProgress,
-  showQuickPickItem,
-  waitMoment,
-} from "../utils/util";
+import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showErrorMessage, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 import { AdbController } from "./AdbController";
 import { ApkController } from "./ApkController";
