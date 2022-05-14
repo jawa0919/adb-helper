@@ -7,8 +7,9 @@
  */
 
 import { ExecaChildProcess } from "execa";
-import { commands, Disposable, ExtensionContext, Uri } from "vscode";
+import { commands, Disposable, ExtensionContext, TreeItem, Uri } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
+import { AppConst } from "../app/AppConst";
 import { connect, killServer, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { install } from "../cmd/install";
@@ -31,6 +32,17 @@ export class AdbController implements Disposable {
     commands.registerCommand("adb-helper.ipConnect", () => this.ipConnect());
     commands.registerCommand("adb-helper.ipConnectHistory", () => this.ipConnectHistory());
     commands.registerCommand("adb-helper.installToDevice", (res) => this.installToDevice(res));
+    commands.registerCommand("adb-helper.chooseApkFilter", () => this.chooseApkFilter());
+  }
+  async chooseApkFilter() {
+    const items = AppConst.apkFilterList.map((label) => {
+      return { label };
+    });
+    let item = await showQuickPickItem(items);
+    if (item) {
+      this.deviceController.tree.apkFilter = item.label;
+      commands.executeCommand("adb-helper.refreshDeviceManager");
+    }
   }
   async installToDevice(res: Uri) {
     let apkPath: string = res.fsPath || "";

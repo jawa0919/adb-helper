@@ -48,17 +48,6 @@ export class DeviceController implements Disposable {
     commands.registerCommand("adb-helper.rebootDevice", (res) => this.rebootDevice(res));
     commands.registerCommand("adb-helper.powerOffDevice", (res) => this.powerOffDevice(res));
     commands.registerCommand("adb-helper.useIpConnect", (res) => this.useIpConnect(res));
-    commands.registerCommand("adb-helper.chooseApkFilter", (res) => this.chooseApkFilter(res));
-  }
-  async chooseApkFilter(res: TreeItem) {
-    const items = AppConst.apkFilterList.map((label) => {
-      return { label };
-    });
-    let item = await showQuickPickItem(items);
-    if (item) {
-      this.tree.apkFilter = item.label;
-      commands.executeCommand("adb-helper.refreshDeviceManager");
-    }
   }
   async useIpConnect(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
