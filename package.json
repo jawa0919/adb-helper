@@ -93,6 +93,10 @@
 			{
 				"command": "adb-helper.useIpConnect",
 				"title": "Use Ip Connect"
+			},
+			{
+				"command": "adb-helper.installToDevice",
+				"title": "Install Apk To Device"
 			}
 		],
 		"configuration": [
@@ -236,6 +240,13 @@
 					"command": "adb-helper.useIpConnect",
 					"when": "viewItem == AdbDevice",
 					"group": "997_ip@995"
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "adb-helper.installToDevice",
+					"when": "resourceExtname == .apk",
+					"group": "995_adb@995"
 				}
 			]
 		}

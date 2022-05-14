@@ -11,8 +11,9 @@ import { commands, Disposable, ExtensionContext } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
 import { connect, killServer, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
+import { install } from "../cmd/install";
 import { safeSpawn } from "../utils/processes";
-import { showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
+import { logPrint, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
 import { DeviceController } from "./DeviceController";
 
 export class AdbController implements Disposable {
@@ -25,6 +26,26 @@ export class AdbController implements Disposable {
     commands.registerCommand("adb-helper.refreshDeviceManager", () => this.refreshDeviceManager());
     commands.registerCommand("adb-helper.ipConnect", () => this.ipConnect());
     commands.registerCommand("adb-helper.ipConnectHistory", () => this.ipConnectHistory());
+    commands.registerCommand("adb-helper.installToDevice", (res) => this.installToDevice(res));
+  }
+  async installToDevice(res: any) {
+    logPrint(res);
+    let apkPath: string = res.fsPath || "";
+    const items = DeviceController.deviceList.map((d) => {
+      const label = d.netWorkIp ? "$(broadcast) " : "$(plug) ";
+      return { label: label + d.model, description: d.devId };
+    });
+    let item = await showQuickPickItem(items);
+    if (item) {
+      const devId = item.description;
+      showProgress("Install To Device running!", async () => {
+        await waitMoment();
+        let successInstall = await install(devId, apkPath);
+        if (successInstall) commands.executeCommand("adb-helper.refreshDeviceManager");
+        showInformationMessage("Install Success");
+        return;
+      });
+    }
   }
   async ipConnectHistory() {
     const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
