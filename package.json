@@ -61,6 +61,10 @@
 				"icon": "$(history)"
 			},
 			{
+				"command": "adb-helper.chooseApkFilter",
+				"title": "Choose Apk Filter"
+			},
+			{
 				"command": "adb-helper.screenshot",
 				"title": "Device Screenshot",
 				"icon": "$(device-camera)"
@@ -218,6 +222,11 @@
 					"command": "adb-helper.ipConnectHistory",
 					"when": "view == adb-helper.DeviceManager",
 					"group": "999_wifi@996"
+				},
+				{
+					"command": "adb-helper.chooseApkFilter",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "998_wifi@997"
 				}
 			],
 			"view/item/context": [

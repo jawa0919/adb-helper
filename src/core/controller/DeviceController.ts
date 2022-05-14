@@ -14,7 +14,20 @@ import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
 import { getDeviceIp, IDevice, loadDeviceSystem, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
-import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showErrorMessage, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
+import {
+  adbJoin,
+  chooseFile,
+  chooseFolder,
+  dateTimeName,
+  logPrint,
+  showErrorMessage,
+  showInformationMessage,
+  showInputBox,
+  showModal,
+  showProgress,
+  showQuickPickItem,
+  waitMoment,
+} from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 
 export class DeviceController implements Disposable {
@@ -32,6 +45,17 @@ export class DeviceController implements Disposable {
     commands.registerCommand("adb-helper.rebootDevice", (res) => this.rebootDevice(res));
     commands.registerCommand("adb-helper.powerOffDevice", (res) => this.powerOffDevice(res));
     commands.registerCommand("adb-helper.useIpConnect", (res) => this.useIpConnect(res));
+    commands.registerCommand("adb-helper.chooseApkFilter", (res) => this.chooseApkFilter(res));
+  }
+  async chooseApkFilter(res: TreeItem) {
+    const items = AppConst.apkFilterList.map((label) => {
+      return { label };
+    });
+    let item = await showQuickPickItem(items);
+    if (item) {
+      this.tree.apkFilter = item.label;
+      commands.executeCommand("adb-helper.refreshDeviceManager");
+    }
   }
   async useIpConnect(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
