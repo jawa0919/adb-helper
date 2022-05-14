@@ -79,20 +79,20 @@
 				"title": "Show Device Info"
 			},
 			{
-				"command": "adb-helper.showClipboardData",
-				"title": "Show Clipboard Data"
+				"command": "adb-helper.startScrcpy",
+				"title": "Start Scrcpy"
 			},
 			{
 				"command": "adb-helper.rebootDevice",
 				"title": "Reboot Device"
 			},
 			{
-				"command": "adb-helper.shutdownDevice",
+				"command": "adb-helper.powerOffDevice",
 				"title": "Power Off Device"
 			},
 			{
-				"command": "adb-helper.useWifiConnect",
-				"title": "Use Wifi Connect"
+				"command": "adb-helper.useIpConnect",
+				"title": "Use Ip Connect"
 			}
 		],
 		"configuration": [
@@ -210,17 +210,17 @@
 				{
 					"command": "adb-helper.inputText",
 					"when": "viewItem == AdbDevice",
-					"group": "995_info@995"
+					"group": "995_input@995"
 				},
 				{
 					"command": "adb-helper.showDeviceInfo",
 					"when": "viewItem == AdbDevice",
-					"group": "995_info@996"
+					"group": "996_info@995"
 				},
 				{
-					"command": "adb-helper.showClipboardData",
+					"command": "adb-helper.startScrcpy",
 					"when": "viewItem == AdbDevice",
-					"group": "995_info@997"
+					"group": "996_info@996"
 				},
 				{
 					"command": "adb-helper.rebootDevice",
@@ -228,14 +228,14 @@
 					"group": "996_reboot@995"
 				},
 				{
-					"command": "adb-helper.shutdownDevice",
+					"command": "adb-helper.powerOffDevice",
 					"when": "viewItem == AdbDevice",
 					"group": "996_reboot@996"
 				},
 				{
-					"command": "adb-helper.useWifiConnect",
+					"command": "adb-helper.useIpConnect",
 					"when": "viewItem == AdbDevice",
-					"group": "997_wifi@995"
+					"group": "997_ip@995"
 				}
 			]
 		}

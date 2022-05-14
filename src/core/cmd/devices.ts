@@ -17,7 +17,7 @@ export type IDevice = {
   model: string;
   device: string;
   transportId: string;
-  devIp?: string;
+  netWorkIp?: string;
   adbTcpPort?: string;
 };
 
@@ -47,9 +47,9 @@ function _deviceParse(line: string): IDevice | undefined {
   const device = _findValue(temp, "device");
   const transportId = _findValue(temp, "transport_id");
   if (devId.indexOf(":") !== -1) {
-    const devIp = devId.split(":").shift();
+    const netWorkIp = devId.split(":").shift();
     const adbTcpPort = devId.split(":").pop();
-    return { devId, devType, product, model, device, transportId, devIp, adbTcpPort };
+    return { devId, devType, product, model, device, transportId, netWorkIp, adbTcpPort };
   }
   return { devId, devType, product, model, device, transportId };
 }
@@ -60,10 +60,10 @@ function _findValue(array: string[], key: string, def = ""): string {
   return value || def;
 }
 
-export async function loadDeviceSystem(devId: string): Promise<{ androidId: string; ip: string }> {
+export async function loadDeviceSystem(devId: string): Promise<{ androidId: string; netWorkIp: string }> {
   const androidId = await getAndroidId(devId);
-  const ip = await getDeviceIp(devId);
-  return { androidId, ip };
+  const netWorkIp = await getDeviceIp(devId);
+  return { androidId, netWorkIp };
 }
 
 export async function getAndroidId(devId: string): Promise<string> {
@@ -102,6 +102,15 @@ function _shellIpParse(line: string): string | undefined {
 
 export async function systemProperty(devId: string): Promise<boolean> {
   let cmd = ["-s", devId, "shell", "getprop"];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  if (procRes.stdout.includes("Success")) {
+    return true;
+  }
+  return false;
+}
+
+export async function shellInputText(devId: string, text: string): Promise<boolean> {
+  let cmd = ["-s", devId, "shell", "input", "text", text];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   if (procRes.stdout.includes("Success")) {
     return true;

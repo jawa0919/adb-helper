@@ -8,10 +8,12 @@
 
 import { join } from "node:path";
 import { commands, Disposable, env, ExtensionContext, TreeItem, window } from "vscode";
-import { IDevice, loadDeviceSystem } from "../cmd/devices";
+import { scrcpyBinPath } from "../app/AppConfig";
+import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
+import { getDeviceIp, IDevice, loadDeviceSystem, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
-import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showInformationMessage, showModal, showProgress, waitMoment } from "../utils/util";
+import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showErrorMessage, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 
 export class DeviceController implements Disposable {
@@ -25,33 +27,76 @@ export class DeviceController implements Disposable {
     commands.registerCommand("adb-helper.installApk", (res) => this.installApk(res));
     commands.registerCommand("adb-helper.inputText", (res) => this.inputText(res));
     commands.registerCommand("adb-helper.showDeviceInfo", (res) => this.showDeviceInfo(res));
-    commands.registerCommand("adb-helper.showClipboardData", (res) => this.showClipboardData(res));
+    commands.registerCommand("adb-helper.startScrcpy", (res) => this.startScrcpy(res));
     commands.registerCommand("adb-helper.rebootDevice", (res) => this.rebootDevice(res));
-    commands.registerCommand("adb-helper.shutdownDevice", (res) => this.shutdownDevice(res));
-    commands.registerCommand("adb-helper.useWifiConnect", (res) => this.useWifiConnect(res));
+    commands.registerCommand("adb-helper.powerOffDevice", (res) => this.powerOffDevice(res));
+    commands.registerCommand("adb-helper.useIpConnect", (res) => this.useIpConnect(res));
   }
-  useWifiConnect(res: TreeItem) {
-    logPrint(res);
+  async useIpConnect(res: TreeItem) {
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    if (device.netWorkIp !== undefined) {
+      showInformationMessage("Now Device Is Use Ip Connect");
+      return;
+    }
+    if (device.devId === "") return;
+    const ip = await getDeviceIp(device.devId);
+    if (ip === "") {
+      showErrorMessage("No Find Device Ip, Connect Wifi Error.");
+      return;
+    }
+    const port = 5555; // default port
+    const tcpIpSuccess = await tcpIp(device.devId, `${port}`);
+    if (!tcpIpSuccess) return;
+    showProgress("Wifi Connect running!", async () => {
+      const connectSuccess = await connect(ip, `${port}`);
+      if (!connectSuccess) return;
+      await waitMoment();
+      await commands.executeCommand("adb-helper.refreshDeviceManager");
+      const dev = DeviceController.deviceList.find((r) => r.devId === `${ip}:${port}`);
+      if (dev === undefined) return;
+      const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
+      let historyDevices: IDevice[] = history ? JSON.parse(history) : [];
+      historyDevices.push(dev);
+      historyDevices = [...new Set(historyDevices)];
+      this.context.globalState.update("adb-helper.ipHistory", JSON.stringify(historyDevices));
+      return;
+    });
   }
-  shutdownDevice(res: TreeItem) {
-    logPrint(res);
+  async powerOffDevice(res: TreeItem) {
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    if ((await showModal("Do you want power off this Device?", device.model, ...["YES", "NO"])) === "YES") {
+      await powerOff(device.devId);
+    }
   }
-  rebootDevice(res: TreeItem) {
-    logPrint(res);
+  async rebootDevice(res: TreeItem) {
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    if ((await showModal("Do you want reboot this Device?", device.model, ...["YES", "NO"])) === "YES") {
+      await reboot(device.devId);
+    }
   }
-  showClipboardData(res: TreeItem) {
-    logPrint(res);
+  async startScrcpy(res: TreeItem) {
+    if (scrcpyBinPath === "") {
+      showInformationMessage("Please install [Scrcpy](https://github.com/Genymobile/scrcpy) first!", ...["About Scrcpy"]).then((r) => {
+        if (r === "About Scrcpy") commands.executeCommand("vscode.open", "https://github.com/Genymobile/scrcpy");
+      });
+      return;
+    }
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    await scrcpy(device.devId);
   }
   async showDeviceInfo(res: TreeItem) {
-    const info: IDevice = JSON.parse(res.tooltip?.toString() || "");
-    const sys = await loadDeviceSystem(info.devId);
-    const deviceInfo = { ...info, ...sys };
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    const info = await loadDeviceSystem(device.devId);
+    const deviceInfo = { ...device, ...info };
     showModal("DeviceInfo", `${JSON.stringify(deviceInfo, null, 2)}`, ...["Copy"]).then((r) => {
       if (r === "Copy") env.clipboard.writeText(JSON.stringify(deviceInfo, null, 2));
     });
   }
-  inputText(res: TreeItem) {
-    logPrint(res);
+  async inputText(res: TreeItem) {
+    const devId = res.description?.toString() || "";
+    let text = await showInputBox("Input Text", "");
+    if (!text) return;
+    await shellInputText(devId, text);
   }
   async installApk(res: TreeItem) {
     const files = await chooseFile(false, { apk: ["apk"] });

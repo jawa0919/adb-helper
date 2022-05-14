@@ -14,12 +14,15 @@ import { AppConst } from "./AppConst";
 export let explorerRootPathList: string[] = [];
 export let adbBinPath = "";
 export let flutterBinPath = "";
+// https://github.com/Genymobile/scrcpy
+export let scrcpyBinPath = "";
 
 export function initAppConfig(): void {
   let cf = workspace.getConfiguration();
   loadExplorerRootPathList(cf);
   loadAdbBinPath(cf);
   loadFlutterBinPath(cf);
+  loadScrcpyBinPath(cf);
 }
 
 function loadExplorerRootPathList(cf: WorkspaceConfiguration = workspace.getConfiguration()): string[] {
@@ -58,6 +61,20 @@ function loadFlutterBinPath(cf: WorkspaceConfiguration = workspace.getConfigurat
   sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "flutter.bat" : "flutter")));
 
   flutterBinPath = sdkPaths.shift() || "";
-  commands.executeCommand("setContext", "adb-helper:adbSupport", flutterBinPath !== "");
+  commands.executeCommand("setContext", "adb-helper:flutterSupport", flutterBinPath !== "");
   return flutterBinPath;
+}
+
+function loadScrcpyBinPath(cf: WorkspaceConfiguration = workspace.getConfiguration()): string {
+  let sdkPaths = [cf.get<string>("adb-helper.scrcpyBinPath") || ""];
+  const normalPath = process.env.PATH || "";
+  sdkPaths = `${sdkPaths}${delimiter}${normalPath}`.split(delimiter).filter((p) => p);
+
+  sdkPaths = sdkPaths.map((p) => p.trim()).filter((p) => p);
+
+  sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "scrcpy.exe" : "scrcpy")));
+
+  scrcpyBinPath = sdkPaths.shift() || "";
+  commands.executeCommand("setContext", "adb-helper:scrcpySupport", scrcpyBinPath !== "");
+  return scrcpyBinPath;
 }

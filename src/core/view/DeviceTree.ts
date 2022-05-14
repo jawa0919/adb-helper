@@ -23,7 +23,7 @@ export class DeviceTree implements TreeDataProvider<TreeItem> {
   }
   buildDeviceNode(device: IDevice): TreeItem {
     const uri = Uri.from({ scheme: "adb-helper", authority: device.devId, path: "/" });
-    let item = new TreeItem(`${device.devIp ? "📶" : "📱"} ${device.model}`);
+    let item = new TreeItem(`${device.netWorkIp ? "📶" : "📱"} ${device.model}`);
     item.id = uri.toString();
     item.tooltip = JSON.stringify(device);
     item.contextValue = "AdbDevice";

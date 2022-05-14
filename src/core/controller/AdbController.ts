@@ -44,7 +44,7 @@ export class AdbController implements Disposable {
     }
     if (item === undefined) return;
     const model: IDevice = JSON.parse(item.detail);
-    await this.ipConnect(model.devIp, model.adbTcpPort);
+    await this.ipConnect(model.netWorkIp, model.adbTcpPort);
   }
   async ipConnect(ip?: string, port?: string) {
     if (ip === undefined) ip = await showInputBox("Input Device IP", "eg:192.168.1.103", ip);
