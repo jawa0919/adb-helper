@@ -19,3 +19,23 @@ export async function install(devId: string, apkLocalPath: string): Promise<bool
   showErrorMessage(procRes.stderr || procRes.stdout);
   return false;
 }
+
+export async function clear(devId: string, apkId: string): Promise<boolean> {
+  let cmd = ["-s", devId, "shell", "pm", "clear", apkId];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  if (procRes.stdout.includes("Success")) {
+    return true;
+  }
+  showErrorMessage(procRes.stderr || procRes.stdout);
+  return false;
+}
+
+export async function uninstall(devId: string, apkId: string): Promise<boolean> {
+  let cmd = ["-s", devId, "shell", "pm", "uninstall", apkId];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  if (procRes.stdout.includes("Success")) {
+    return true;
+  }
+  showErrorMessage(procRes.stderr || procRes.stdout);
+  return false;
+}

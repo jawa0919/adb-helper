@@ -7,20 +7,23 @@
  */
 
 import { ExecaChildProcess } from "execa";
-import { commands, Disposable, ExtensionContext } from "vscode";
+import { commands, Disposable, ExtensionContext, Uri } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
 import { connect, killServer, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { safeSpawn } from "../utils/processes";
 import { logPrint, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
+import { ApkController } from "./ApkController";
 import { DeviceController } from "./DeviceController";
 
 export class AdbController implements Disposable {
   deviceController: DeviceController;
+  apkController: ApkController;
 
   constructor(public context: ExtensionContext) {
     this.deviceController = new DeviceController(context);
+    this.apkController = new ApkController(context);
     /// commands
     commands.registerCommand("adb-helper.restartAdb", () => this.restartAdb());
     commands.registerCommand("adb-helper.refreshDeviceManager", () => this.refreshDeviceManager());
@@ -28,7 +31,7 @@ export class AdbController implements Disposable {
     commands.registerCommand("adb-helper.ipConnectHistory", () => this.ipConnectHistory());
     commands.registerCommand("adb-helper.installToDevice", (res) => this.installToDevice(res));
   }
-  async installToDevice(res: any) {
+  async installToDevice(res: Uri) {
     logPrint(res);
     let apkPath: string = res.fsPath || "";
     const items = DeviceController.deviceList.map((d) => {

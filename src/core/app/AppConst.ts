@@ -14,4 +14,5 @@ export class AppConst {
   static readonly scheme = "adb-helper";
   static readonly homePath = join(homedir(), `.${AppConst.scheme}`);
   static readonly mirrorPath = join(AppConst.homePath, `ExplorerMirror`);
+  static readonly apkFilterList = ["-3", "-s", "-e", "-d"];
 }

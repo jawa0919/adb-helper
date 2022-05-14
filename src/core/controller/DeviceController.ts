@@ -9,6 +9,7 @@
 import { join } from "node:path";
 import { commands, Disposable, env, ExtensionContext, TreeItem, window } from "vscode";
 import { scrcpyBinPath } from "../app/AppConfig";
+import { AppConst } from "../app/AppConst";
 import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
 import { getDeviceIp, IDevice, loadDeviceSystem, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
@@ -20,7 +21,7 @@ export class DeviceController implements Disposable {
   static deviceList: IDevice[] = [];
   tree: DeviceTree;
   constructor(public context: ExtensionContext) {
-    this.tree = new DeviceTree();
+    this.tree = new DeviceTree(AppConst.apkFilterList[0]);
     window.registerTreeDataProvider("adb-helper.DeviceManager", this.tree);
     /// commands
     commands.registerCommand("adb-helper.screenshot", (res) => this.screenshot(res));

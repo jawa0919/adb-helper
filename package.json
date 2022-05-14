@@ -95,6 +95,26 @@
 				"title": "Use Ip Connect"
 			},
 			{
+				"command": "adb-helper.wipeApkData",
+				"title": "Wipe Apk Data"
+			},
+			{
+				"command": "adb-helper.uninstallApk",
+				"title": "Uninstall Apk "
+			},
+			{
+				"command": "adb-helper.exportApk",
+				"title": "Export Apk File"
+			},
+			{
+				"command": "adb-helper.stopApk",
+				"title": "Stop Apk"
+			},
+			{
+				"command": "adb-helper.copeApkId",
+				"title": "Cope Apk Id"
+			},
+			{
 				"command": "adb-helper.installToDevice",
 				"title": "Install Apk To Device"
 			}
@@ -240,6 +260,31 @@
 					"command": "adb-helper.useIpConnect",
 					"when": "viewItem == AdbDevice",
 					"group": "997_ip@995"
+				},
+				{
+					"command": "adb-helper.wipeApkData",
+					"when": "viewItem == AdbApk",
+					"group": "995_wipe@995"
+				},
+				{
+					"command": "adb-helper.uninstallApk",
+					"when": "viewItem == AdbApk",
+					"group": "996_wipe@995"
+				},
+				{
+					"command": "adb-helper.exportApk",
+					"when": "viewItem == AdbApk",
+					"group": "996_wipe@996"
+				},
+				{
+					"command": "adb-helper.stopApk",
+					"when": "viewItem == AdbApk",
+					"group": "998_apk@995"
+				},
+				{
+					"command": "adb-helper.copeApkId",
+					"when": "viewItem == AdbApk",
+					"group": "999_apk@996"
 				}
 			],
 			"explorer/context": [
