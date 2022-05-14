@@ -54,8 +54,8 @@ export async function showModal(title: string, detail: string, ...items: string[
   return await window.showWarningMessage(title, { modal: true, detail }, ...items);
 }
 
-export async function chooseFile(canSelectMany = false): Promise<Uri[] | undefined> {
-  return await window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany });
+export async function chooseFile(canSelectMany = false, filters?: { [name: string]: string[] }): Promise<Uri[] | undefined> {
+  return await window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany, filters });
 }
 
 export async function chooseFolder(canSelectMany = false): Promise<Uri[] | undefined> {

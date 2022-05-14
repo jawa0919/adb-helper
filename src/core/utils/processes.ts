@@ -9,17 +9,10 @@
 import execa, { ExecaChildProcess, ExecaReturnValue } from "execa";
 import { logPrint } from "./util";
 
-function quoteAndEscapeArg(arg: string): string {
-  let escaped = arg.replace(/"/g, `\\"`);
-  if (process.platform.startsWith("win")) escaped = escaped.replace(/([<>])/g, "^$1");
-  return `"${escaped}"`;
-}
-
 export function safeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): ExecaChildProcess<string> {
-  const quotedArgs = args.map(quoteAndEscapeArg);
   const customEnv = Object.assign({}, process.env, env);
-  logPrint(`🚀 ${binPath} ${quotedArgs.join(" ")}`);
-  const proc = execa(`"${binPath}"`, quotedArgs, { cwd: cwd, env: customEnv, shell: true });
+  logPrint(`🚀 ${binPath} ${args.join(" ")}`);
+  const proc = execa(`${binPath}`, args, { cwd: cwd, env: customEnv, shell: true });
   return proc;
 }
 

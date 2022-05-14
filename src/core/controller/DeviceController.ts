@@ -9,8 +9,9 @@
 import { join } from "node:path";
 import { commands, Disposable, ExtensionContext, TreeItem, window } from "vscode";
 import { IDevice } from "../cmd/devices";
+import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
-import { adbJoin, chooseFolder, dateTimeName, logPrint, showInformationMessage, showProgress, waitMoment } from "../utils/util";
+import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showInformationMessage, showProgress, waitMoment } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 
 export class DeviceController implements Disposable {
@@ -43,8 +44,20 @@ export class DeviceController implements Disposable {
   showDeviceInfo(res: TreeItem) {
     logPrint(res);
   }
-  installApk(res: TreeItem) {
-    logPrint(res);
+  async installApk(res: TreeItem) {
+    const files = await chooseFile(false, { apk: ["apk"] });
+    logPrint(files?.[0]);
+    const filePath = files?.[0]?.fsPath || "";
+    if (filePath === "") return;
+    showProgress("Install Apk running!", async () => {
+      const devId = res.description?.toString() || "";
+      if (devId === "") return;
+      const successInstall = await install(devId, filePath);
+      if (!successInstall) return;
+      await waitMoment();
+      this.tree.eventEmitter.fire();
+      return;
+    });
   }
   async screenshot(res: TreeItem) {
     const folders = await chooseFolder(false);
