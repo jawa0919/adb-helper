@@ -101,12 +101,12 @@ When the fluttersdk is not found, the daemon will not be started and the device 
 
   If you have configured relevant environment variables, you can ignore them directly
 
-## 相关资源
+## about
 
 [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
 [https://github.com/EaniaHuui/android_tool](https://github.com/EaniaHuui/android_tool)
 
-## 最后
+## last
 
-欢迎大家提出想法和反馈问题 [issues](https://github.com/jawa0919/adb-helper/issues)
+You are welcome to put forward your ideas and feedback [issues](https://github.com/jawa0919/adb-helper/issues)
