@@ -8,7 +8,6 @@
 
 import { adbBinPath } from "../app/AppConfig";
 import { simpleSafeSpawn } from "../utils/processes";
-import { showErrorMessage } from "../utils/util";
 
 export type IDevice = {
   devId: string;
@@ -98,15 +97,6 @@ function _shellIpParse(line: string): string | undefined {
   const temp = line.split(/\s+/).map((r) => r.trim());
   const ip = temp[1].split("/").shift() || "";
   return ip;
-}
-
-export async function systemProperty(devId: string): Promise<boolean> {
-  let cmd = ["-s", devId, "shell", "getprop"];
-  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
-  if (procRes.stdout.includes("Success")) {
-    return true;
-  }
-  return false;
 }
 
 export async function shellInputText(devId: string, text: string): Promise<boolean> {

@@ -9,9 +9,11 @@
 import { FileStat, FileType } from "vscode";
 import { adbBinPath } from "../app/AppConfig";
 import { simpleSafeSpawn } from "../utils/processes";
+import { runAsLs, runAsStat } from "./run_as";
 
-export async function ls(devId: string, devicePath: string): Promise<[string, FileType][]> {
-  let cmd = ["-s", devId, "shell", "ls", devicePath, "-F"];
+export async function ls(devId: string, remotePath: string): Promise<[string, FileType][]> {
+  if (remotePath.startsWith("/data")) return runAsLs(devId, remotePath);
+  let cmd = ["-s", devId, "shell", "ls", remotePath, "-F"];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   let res: [string, FileType][] = [];
   procRes.stdout.split(/\n|\r\n/).forEach((line) => {
@@ -60,13 +62,13 @@ export async function ls(devId: string, devicePath: string): Promise<[string, Fi
 // sys/
 // system/
 // vendor/
-function _lsParse(line: string): [string, FileType] | undefined {
+export function _lsParse(line: string): [string, FileType] | undefined {
   if (line.length < 1) return undefined;
   if (line.startsWith("total")) return undefined;
   if (line.endsWith("Permission denied")) return undefined;
 
   if (line.endsWith("@")) {
-    return [line.substring(0, line.length - 1) + "/", FileType.Directory];
+    return [line.substring(0, line.length - 1), FileType.Directory];
   } else if (line.endsWith("/")) {
     return [line.substring(0, line.length - 1), FileType.Directory];
   } else {
@@ -74,7 +76,7 @@ function _lsParse(line: string): [string, FileType] | undefined {
   }
 }
 
-function _sort(a: [string, FileType], b: [string, FileType]): number {
+export function _sort(a: [string, FileType], b: [string, FileType]): number {
   if (a[1] === b[1]) {
     return a[0].localeCompare(b[0]);
   } else {
@@ -82,14 +84,15 @@ function _sort(a: [string, FileType], b: [string, FileType]): number {
   }
 }
 
-export async function stat(devId: string, devicePath: string): Promise<FileStat> {
-  let cmd = ["-s", devId, "shell", "stat", devicePath, "-c", "%f=%s=%X=%Y"];
+export async function stat(devId: string, remotePath: string): Promise<FileStat> {
+  if (remotePath.startsWith("/data")) return runAsStat(devId, remotePath);
+  let cmd = ["-s", devId, "shell", "stat", remotePath, "-c", "%f=%s=%X=%Y"];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   return _statParse(procRes.stdout);
 }
 
 // 81b0=71976=1651771061=1651771061
-function _statParse(line: string): FileStat {
+export function _statParse(line: string): FileStat {
   const temp = line.split(/=/);
   return {
     type: temp[0] === "81b0" ? FileType.File : FileType.Directory,
@@ -97,4 +100,8 @@ function _statParse(line: string): FileStat {
     ctime: parseInt(temp[2]),
     mtime: parseInt(temp[3]),
   };
+}
+
+export function noneFileStat(type: FileType): FileStat {
+  return { type, size: 0, ctime: 0, mtime: 0 };
 }

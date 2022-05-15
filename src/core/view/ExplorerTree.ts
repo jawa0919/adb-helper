@@ -17,11 +17,17 @@ export class ExplorerTree implements TreeDataProvider<TreeItem> {
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
+  async getParent(element: TreeItem): Promise<TreeItem> {
+    let uri = Uri.joinPath(element?.resourceUri!, "..");
+    console.log("getParent");
+    return { resourceUri: Uri.joinPath(uri, ".."), tooltip: JSON.stringify(uri), contextValue: "AdbFolder", collapsibleState: TreeItemCollapsibleState.Collapsed };
+  }
   async getChildren(element?: TreeItem): Promise<TreeItem[]> {
     if (this.device === undefined) return [];
     let rootUri = Uri.from({ scheme: AppConst.scheme, authority: this.device.devId, path: this.rootPath });
     let parentUri = element?.resourceUri || rootUri;
-    const children = await ls(parentUri.authority, parentUri.path);
+    const path = parentUri.path.endsWith("/") ? parentUri.path : parentUri.path + "/";
+    const children = await ls(parentUri.authority, path);
     return children.map(([name, type]) => this.bindFileSystemNode(name, type, parentUri));
   }
   bindFileSystemNode(name: string, fileType: FileType, parentUri: Uri): TreeItem {

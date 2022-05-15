@@ -9,6 +9,7 @@
 import { adbBinPath } from "../app/AppConfig";
 import { simpleSafeSpawn } from "../utils/processes";
 import { showErrorMessage } from "../utils/util";
+import { runAsPull, runAsPush } from "./run_as";
 
 export async function screenCap(devId: string, remotePath: string): Promise<boolean> {
   let cmd = ["-s", devId, "shell", "screencap", remotePath];
@@ -32,6 +33,7 @@ export async function openExplorerWindows(path: string): Promise<boolean> {
 }
 
 export async function pull(devId: string, remotePath: string, localPath: string): Promise<boolean> {
+  if (remotePath.startsWith("/data")) return runAsPull(devId, remotePath, localPath);
   let cmd = ["-s", devId, "pull", remotePath, localPath];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   if (procRes.exitCode === 0) {
@@ -42,6 +44,7 @@ export async function pull(devId: string, remotePath: string, localPath: string)
 }
 
 export async function push(devId: string, localPath: string, remotePath: string): Promise<boolean> {
+  if (remotePath.startsWith("/data")) return runAsPush(devId, localPath, remotePath);
   let cmd = ["-s", devId, "push", localPath, remotePath];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   if (procRes.exitCode === 0) {

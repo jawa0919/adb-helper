@@ -8,18 +8,22 @@
 
 import { adbBinPath } from "../app/AppConfig";
 import { simpleSafeSpawn } from "../utils/processes";
+import { runAsMkdir, runAsMv, runAsRm } from "./run_as";
 
 export async function mkdir(devId: string, remotePath: string): Promise<void> {
+  if (remotePath.startsWith("/data")) return runAsMkdir(devId, remotePath);
   let cmd = ["-s", devId, "shell", "mkdir", remotePath];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
 }
 
 export async function mv(devId: string, oldRemotePath: string, newRemotePath: string): Promise<void> {
+  if (oldRemotePath.startsWith("/data")) return runAsMv(devId, oldRemotePath, newRemotePath);
   let cmd = ["-s", devId, "shell", "mv", "-i", oldRemotePath, newRemotePath];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
 }
 
 export async function rm(devId: string, remotePath: string): Promise<void> {
+  if (remotePath.startsWith("/data")) return runAsRm(devId, remotePath);
   let cmd = ["-s", devId, "shell", "rm", "-r", remotePath];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
 }

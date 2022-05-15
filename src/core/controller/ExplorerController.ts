@@ -6,7 +6,7 @@
  * @Description  : ExplorerController
  */
 
-import { commands, Disposable, ExtensionContext, QuickPickItem, Uri, window, workspace } from "vscode";
+import { commands, Disposable, ExtensionContext, QuickPickItem, TreeItem, TreeView, Uri, window, workspace } from "vscode";
 import { explorerRootPathList } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
 import { logPrint, showQuickPickItem } from "../utils/util";
@@ -17,10 +17,11 @@ import { FileController } from "./FileController";
 export class ExplorerController implements Disposable {
   fileController: FileController;
   tree: ExplorerTree;
+  treeView: TreeView<TreeItem>;
   constructor(public context: ExtensionContext) {
-    this.fileController = new FileController(context);
     this.tree = new ExplorerTree(explorerRootPathList[0]);
-    window.createTreeView("adb-helper.ExplorerManager", { treeDataProvider: this.tree });
+    this.treeView = window.createTreeView<TreeItem>("adb-helper.ExplorerManager", { treeDataProvider: this.tree });
+    this.fileController = new FileController(context, this.treeView);
     /// commands
     commands.registerCommand("adb-helper.refreshExplorerManager", () => this.refreshExplorerManager());
     commands.registerCommand("adb-helper.chooseDevice", () => this.chooseDevice());
@@ -48,7 +49,6 @@ export class ExplorerController implements Disposable {
     // const win = await showModal("Open Storage", `Open Storage Use newFile/cut/copy/paste.\nWhere would you like to open the storage`, ...["This Window", "New Window"]);
     // const uri = createUri(devId, rootPath);
     // console.log(uri);
-    // // TODO 2022-05-07 00:00:52 must impl FileSystemProvider
     // // if (win === "This Window") {
     // //   workspace.updateWorkspaceFolders(0, 0, { uri, name: "Android Device Files" });
     // // } else if (win === "New Window") {
@@ -65,6 +65,7 @@ export class ExplorerController implements Disposable {
       this.tree.rootPath = item.detail;
       this.tree.eventEmitter.fire(undefined);
     }
+    this.treeView.title = `${this.tree.device?.model} ${this.tree?.rootPath}`;
   }
   async chooseDevice() {
     const items = AdbController.deviceList.map((d) => {
@@ -76,9 +77,11 @@ export class ExplorerController implements Disposable {
       this.tree.device = item;
       this.tree.eventEmitter.fire(undefined);
     }
+    this.treeView.title = `${this.tree.device?.model} ${this.tree?.rootPath}`;
   }
   refreshExplorerManager() {
     this.tree.eventEmitter.fire(undefined);
+    this.treeView.title = `${this.tree.device?.model} ${this.tree?.rootPath}`;
   }
   dispose() {}
 }

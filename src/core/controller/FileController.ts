@@ -7,15 +7,16 @@
  */
 
 import { basename } from "node:path";
-import { commands, Disposable, env, ExtensionContext, TreeItem, ViewColumn } from "vscode";
+import { commands, Disposable, env, ExtensionContext, TreeItem, TreeItemCollapsibleState, TreeView, ViewColumn } from "vscode";
 import { createMirrorUri } from "../app/AppFileSystemProvider";
 import { mkdir, mv, rm } from "../cmd/fs";
 import { pull, push } from "../cmd/io";
 import { stat } from "../cmd/ls";
 import { adbJoin, chooseFile, chooseFolder, logPrint, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
+import { ExplorerTree } from "../view/ExplorerTree";
 
 export class FileController implements Disposable {
-  constructor(public context: ExtensionContext) {
+  constructor(public context: ExtensionContext, public treeView: TreeView<TreeItem>) {
     /// commands
     commands.registerCommand("adb-helper.openFile", (res) => this.openFile(res), this);
     commands.registerCommand("adb-helper.openInTheSide", (res) => this.openInTheSide(res), this);
@@ -88,6 +89,7 @@ export class FileController implements Disposable {
     commands.executeCommand("adb-helper.refreshExplorerManager");
   }
   async copyPath(res: TreeItem) {
+    logPrint(res);
     const path: string = res.resourceUri?.path || "";
     env.clipboard.writeText(`${path}`);
   }
@@ -100,7 +102,7 @@ export class FileController implements Disposable {
     let remotePath = adbJoin(path, newName);
     if (res.contextValue === "AdbFile") remotePath = adbJoin(path, "..", newName);
     await mkdir(devId, remotePath);
-    commands.executeCommand("adb-helper.refreshExplorerManager");
+    await this.treeView.reveal(res, { expand: true });
   }
   async openInTheSide(res: TreeItem) {
     const devId: string = res.resourceUri?.authority || "";

@@ -214,6 +214,7 @@
 						"default": [
 							"/sdcard/",
 							"/",
+							"/data/data/",
 							"/sdcard/Android/data/",
 							"/sdcard/DCIM/",
 							"/sdcard/Download/"
@@ -387,7 +388,7 @@
 				},
 				{
 					"command": "adb-helper.newFolder",
-					"when": "viewItem =~ /AdbFolder|AdbFile/",
+					"when": "viewItem == AdbFolder",
 					"group": "991_new@990"
 				},
 				{
