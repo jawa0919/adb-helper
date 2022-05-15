@@ -204,8 +204,15 @@
 						"default": "",
 						"scope": "machine-overridable"
 					},
-					"adb-helper.explorerRootPathList": {
+					"adb-helper.scrcpyBinPath": {
 						"order": 3,
+						"type": "string",
+						"description": "Custom Scrcpy Bin Path",
+						"default": "",
+						"scope": "machine-overridable"
+					},
+					"adb-helper.explorerRootPathList": {
+						"order": 10,
 						"type": "array",
 						"description": "Custom Explorer RootPath List",
 						"items": {
