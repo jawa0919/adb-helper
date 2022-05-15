@@ -32,6 +32,8 @@ export class ExplorerTree implements TreeDataProvider<TreeItem> {
     if (fileType === FileType.File) {
       item.collapsibleState = TreeItemCollapsibleState.None;
       item.contextValue = "AdbFile";
+      // item.command = { command: "vscode.open", title: "Open File", arguments: [uri] };
+      item.command = { command: "adb-helper.openFile", title: "Open File", arguments: [{ resourceUri: uri }] };
     } else {
       item.contextValue = "AdbFolder";
       item.collapsibleState = TreeItemCollapsibleState.Collapsed;

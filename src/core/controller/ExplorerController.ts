@@ -9,7 +9,6 @@
 import { commands, Disposable, ExtensionContext, QuickPickItem, Uri, window, workspace } from "vscode";
 import { explorerRootPathList } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
-import { AppFileSystemProvider } from "../app/AppFileSystemProvider";
 import { logPrint, showQuickPickItem } from "../utils/util";
 import { ExplorerTree } from "../view/ExplorerTree";
 import { AdbController } from "./AdbController";
@@ -21,23 +20,22 @@ export class ExplorerController implements Disposable {
   constructor(public context: ExtensionContext) {
     this.fileController = new FileController(context);
     this.tree = new ExplorerTree(explorerRootPathList[0]);
-    // window.createTreeView("adb-helper.MainExplorerManager", { treeDataProvider: this.tree });
-    window.registerTreeDataProvider("adb-helper.ExplorerManager", this.tree);
+    window.createTreeView("adb-helper.ExplorerManager", { treeDataProvider: this.tree });
     /// commands
     commands.registerCommand("adb-helper.refreshExplorerManager", () => this.refreshExplorerManager());
     commands.registerCommand("adb-helper.chooseDevice", () => this.chooseDevice());
     commands.registerCommand("adb-helper.chooseRootPath", () => this.chooseRootPath());
-    commands.registerCommand("adb-helper.openNewWorkspace", () => this.openNewWorkspace());
+    commands.registerCommand("adb-helper.openInNewWorkspace", () => this.openInNewWorkspace());
   }
-  // FIXME 2022-05-14 21:53:17 Test FileSystemProvider
-  async openNewWorkspace() {
+  // FIXME 2022-05-14 21:53:17 FileSystemProvider
+  async openInNewWorkspace() {
     const device = this.tree.device;
     if (device === undefined) return;
-    let rootUri = Uri.from({ scheme: AppConst.scheme, path: "/", fragment: device.devId });
+    let rootUri = Uri.from({ scheme: AppConst.scheme });
     // // let rootUri = Uri.from({ scheme: AppConst.scheme, path: device.devId });
     logPrint(rootUri);
-    AppFileSystemProvider.init(this.context, AppConst.scheme, AppConst.mirrorPath);
-    workspace.updateWorkspaceFolders(workspace.workspaceFolders ? workspace.workspaceFolders.length : 0, null, { uri: rootUri, name: device.devId });
+    // AppFileSystemProvider.init(this.context, AppConst.scheme, AppConst.mirrorPath);
+    // workspace.updateWorkspaceFolders(workspace.workspaceFolders ? workspace.workspaceFolders.length : 0, null, { uri: rootUri, name: device.devId });
     // commands.executeCommand("vscode.openFolder", rootUri, { forceNewWindow: true });
     // const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
     // let rootUri = Uri.from({ scheme: AppConst.scheme, authority: device.devId, path: "/" });

@@ -134,9 +134,45 @@
 				"icon": "$(database)"
 			},
 			{
-				"command": "adb-helper.openNewWorkspace",
-				"title": "Open New Workspace",
+				"command": "adb-helper.openInNewWorkspace",
+				"title": "Open In New Workspace",
 				"icon": "$(empty-window)"
+			},
+			{
+				"command": "adb-helper.openFile",
+				"title": "Open File"
+			},
+			{
+				"command": "adb-helper.openInTheSide",
+				"title": "Open In The Side"
+			},
+			{
+				"command": "adb-helper.newFolder",
+				"title": "New Folder"
+			},
+			{
+				"command": "adb-helper.copyPath",
+				"title": "Copy Path"
+			},
+			{
+				"command": "adb-helper.rename",
+				"title": "Rename"
+			},
+			{
+				"command": "adb-helper.delete",
+				"title": "Delete"
+			},
+			{
+				"command": "adb-helper.uploadFile",
+				"title": "Upload File"
+			},
+			{
+				"command": "adb-helper.uploadFolder",
+				"title": "Upload Folder"
+			},
+			{
+				"command": "adb-helper.saveAs",
+				"title": "Save As..."
 			},
 			{
 				"command": "adb-helper.installToDevice",
@@ -268,7 +304,7 @@
 					"group": "990_path@990"
 				},
 				{
-					"command": "adb-helper.openNewWorkspace",
+					"command": "adb-helper.openInNewWorkspace",
 					"when": "view == adb-helper.ExplorerManager",
 					"group": "990_path@991"
 				}
@@ -338,6 +374,51 @@
 					"command": "adb-helper.copeApkId",
 					"when": "viewItem == AdbApk",
 					"group": "999_apk@996"
+				},
+				{
+					"command": "adb-helper.openFile",
+					"when": "viewItem == AdbFile",
+					"group": "990_open@990"
+				},
+				{
+					"command": "adb-helper.openInTheSide",
+					"when": "viewItem == AdbFile",
+					"group": "990_open@991"
+				},
+				{
+					"command": "adb-helper.newFolder",
+					"when": "viewItem =~ /AdbFolder|AdbFile/",
+					"group": "991_new@990"
+				},
+				{
+					"command": "adb-helper.copyPath",
+					"when": "viewItem =~ /AdbFolder|AdbFile/",
+					"group": "991_new@991"
+				},
+				{
+					"command": "adb-helper.rename",
+					"when": "viewItem =~ /AdbFolder|AdbFile/",
+					"group": "992_fs@990"
+				},
+				{
+					"command": "adb-helper.delete",
+					"when": "viewItem =~ /AdbFolder|AdbFile/",
+					"group": "992_fs@991"
+				},
+				{
+					"command": "adb-helper.uploadFile",
+					"when": "viewItem == AdbFolder",
+					"group": "993_io@991"
+				},
+				{
+					"command": "adb-helper.uploadFolder",
+					"when": "viewItem == AdbFolder",
+					"group": "993_io@992"
+				},
+				{
+					"command": "adb-helper.saveAs",
+					"when": "viewItem =~ /AdbFolder|AdbFile/",
+					"group": "993_io@993"
 				}
 			],
 			"explorer/context": [

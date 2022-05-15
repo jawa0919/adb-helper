@@ -6,31 +6,31 @@
  * @Description  : AppFileSystemProvider
  */
 
-import { Disposable, Event, EventEmitter, ExtensionContext, FileChangeEvent, FileStat, FileSystemError, FileSystemProvider, FileType, Uri, workspace } from "vscode";
+import { Disposable, Event, EventEmitter, ExtensionContext, FileChangeEvent, FileStat, FileSystemProvider, FileType, Uri, workspace } from "vscode";
 import { ls, stat as adbStat } from "../cmd/ls";
 import { ensureDirSync, readFile } from "fs-extra";
 import { join, sep } from "node:path";
 import { pull } from "../cmd/io";
 import { logPrint } from "../utils/util";
+import { AppConst } from "./AppConst";
 
-export class AppFileSystemProvider implements FileSystemProvider {
-  static init(context: ExtensionContext, scheme: string, mirrorPath: string) {
-    logPrint("AppFileSystemProvider.init");
-    const appFileSystemProvider = new AppFileSystemProvider(scheme, mirrorPath);
-    workspace.registerFileSystemProvider(scheme, appFileSystemProvider, { isCaseSensitive: true, isReadonly: true });
-  }
+export function initAppFileSystemProvider(context: ExtensionContext, scheme: string, mirrorPath: string) {
+  logPrint("AppFileSystemProvider.init");
+  const appFileSystemProvider = new AppFileSystemProvider(scheme, mirrorPath);
+  workspace.registerFileSystemProvider(scheme, appFileSystemProvider, { isCaseSensitive: true, isReadonly: true });
+}
 
-  fileUri2RemoteUri(fileUri: Uri): Uri {
-    return fileUri;
-  }
+export function createMirrorUri(resourceUri: Uri, mirrorPath = AppConst.mirrorPath): Uri {
+  const mirrorUri = Uri.joinPath(Uri.file(mirrorPath), resourceUri.authority, resourceUri.path);
+  if (mirrorUri.fsPath.endsWith(sep)) ensureDirSync(mirrorUri.fsPath);
+  else ensureDirSync(join(mirrorUri.fsPath, ".."));
+  return mirrorUri;
+}
 
-  createMirrorUri(mirrorPath: string, resourceUri: Uri): Uri {
-    const mirrorUri = Uri.joinPath(Uri.file(mirrorPath), resourceUri.authority, resourceUri.path);
-    if (mirrorUri.fsPath.endsWith(sep)) ensureDirSync(mirrorUri.fsPath);
-    else ensureDirSync(join(mirrorUri.fsPath, ".."));
-    return mirrorUri;
-  }
-
+export function fileUri2RemoteUri(fileUri: Uri): Uri {
+  return fileUri;
+}
+class AppFileSystemProvider implements FileSystemProvider {
   eventEmitter = new EventEmitter<FileChangeEvent[]>();
   onDidChangeFile: Event<FileChangeEvent[]> = this.eventEmitter.event;
 
@@ -64,7 +64,7 @@ export class AppFileSystemProvider implements FileSystemProvider {
   async readFile(uri: Uri): Promise<Uint8Array> {
     console.log("readFile", uri);
     if (uri.fsPath.startsWith("/.vscode")) throw new Error("No File");
-    let mirrorUri = this.createMirrorUri(this.mirrorPath, uri);
+    let mirrorUri = createMirrorUri(uri, this.mirrorPath);
     await pull(uri.fragment, uri.path, mirrorUri.fsPath);
     logPrint("readFile-res", uri, mirrorUri);
     return await readFile(mirrorUri.path!);
