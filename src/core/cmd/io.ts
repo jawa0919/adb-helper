@@ -40,3 +40,13 @@ export async function pull(devId: string, remotePath: string, localPath: string)
   showErrorMessage(procRes.stderr || procRes.stdout);
   return false;
 }
+
+export async function push(devId: string, localPath: string, remotePath: string): Promise<boolean> {
+  let cmd = ["-s", devId, "push", localPath, remotePath];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  if (procRes.exitCode === 0) {
+    return true;
+  }
+  showErrorMessage(procRes.stderr || procRes.stdout);
+  return false;
+}

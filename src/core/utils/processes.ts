@@ -18,5 +18,6 @@ export function safeSpawn(binPath: string, args: string[], cwd?: string, env?: {
 
 export async function simpleSafeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): Promise<ExecaReturnValue<string>> {
   const procRes = await safeSpawn(binPath, args, cwd, env).catch((e) => e);
+  console.log(procRes);
   return procRes;
 }

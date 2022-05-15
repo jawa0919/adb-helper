@@ -20,9 +20,9 @@ export class ExplorerTree implements TreeDataProvider<TreeItem> {
   async getChildren(element?: TreeItem): Promise<TreeItem[]> {
     if (this.device === undefined) return [];
     let rootUri = Uri.from({ scheme: AppConst.scheme, authority: this.device.devId, path: this.rootPath });
-    let uri = element?.resourceUri || rootUri;
-    const children = await ls(uri.authority, uri.path);
-    return children.map(([name, type]) => this.bindFileSystemNode(name, type, rootUri));
+    let parentUri = element?.resourceUri || rootUri;
+    const children = await ls(parentUri.authority, parentUri.path);
+    return children.map(([name, type]) => this.bindFileSystemNode(name, type, parentUri));
   }
   bindFileSystemNode(name: string, fileType: FileType, parentUri: Uri): TreeItem {
     let path = Uri.joinPath(parentUri, name).path;
@@ -32,8 +32,8 @@ export class ExplorerTree implements TreeDataProvider<TreeItem> {
     if (fileType === FileType.File) {
       item.collapsibleState = TreeItemCollapsibleState.None;
       item.contextValue = "AdbFile";
-      // item.command = { command: "vscode.open", title: "Open File", arguments: [uri] };
       item.command = { command: "adb-helper.openFile", title: "Open File", arguments: [{ resourceUri: uri }] };
+      // item.command = { command: "vscode.open", title: "Open File", arguments: [uri] };
     } else {
       item.contextValue = "AdbFolder";
       item.collapsibleState = TreeItemCollapsibleState.Collapsed;
