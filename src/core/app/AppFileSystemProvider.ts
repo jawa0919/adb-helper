@@ -13,7 +13,7 @@ import { logPrint } from "../utils/util";
 import { AppConst } from "./AppConst";
 
 export function createMirrorUri(resourceUri: Uri, mirrorPath = AppConst.mirrorPath): Uri {
-  const mirrorUri = Uri.joinPath(Uri.file(mirrorPath), resourceUri.authority, resourceUri.path);
+  const mirrorUri = Uri.joinPath(Uri.file(mirrorPath), resourceUri.authority.replace(":", "_"), resourceUri.path);
   if (mirrorUri.fsPath.endsWith(sep)) ensureDirSync(mirrorUri.fsPath);
   else ensureDirSync(join(mirrorUri.fsPath, ".."));
   return mirrorUri;
