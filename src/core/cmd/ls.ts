@@ -67,6 +67,7 @@ export function _lsParse(line: string): [string, FileType] | undefined {
   if (line.startsWith("total")) return undefined;
   if (line.endsWith("Permission denied")) return undefined;
   if (line.includes("is not debuggable")) return undefined;
+  if (line.includes("is not an application")) return undefined;
 
   if (line.endsWith("@")) {
     return [line.substring(0, line.length - 1), FileType.Directory];
