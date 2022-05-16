@@ -71,6 +71,18 @@ export function _lsParse(line: string): [string, FileType] | undefined {
     return [line.substring(0, line.length - 1), FileType.Directory];
   } else if (line.endsWith("/")) {
     return [line.substring(0, line.length - 1), FileType.Directory];
+  } else if (line.startsWith("/")) {
+    return [line.substring(0, line.length - 1), FileType.Directory];
+  } else if (line.includes(" ")) {
+    if (line.startsWith("l")) {
+      return [line.split(" ").pop() || "", FileType.Directory];
+    } else if (line.startsWith("d")) {
+      return [line.split(" ").pop() || "", FileType.Directory];
+    } else if (line.startsWith("-")) {
+      return [line.split(" ").pop() || "", FileType.File];
+    } else {
+      return [line.split(" ").pop() || "", FileType.Unknown];
+    }
   } else {
     return [line, FileType.File];
   }

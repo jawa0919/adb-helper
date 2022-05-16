@@ -7,6 +7,7 @@
  */
 
 import { adbBinPath } from "../app/AppConfig";
+import { AppConst } from "../app/AppConst";
 import { simpleSafeSpawn } from "../utils/processes";
 import { showErrorMessage } from "../utils/util";
 import { runAsPull, runAsPush } from "./run_as";
@@ -23,8 +24,7 @@ export async function screenCap(devId: string, remotePath: string): Promise<bool
 
 export async function openExplorerWindows(path: string): Promise<boolean> {
   let cmd = [path];
-  // TODO 2022-05-14 12:13:03 support MacOS
-  const procRes = await simpleSafeSpawn("explorer", cmd);
+  const procRes = await simpleSafeSpawn(AppConst.isWin ? "explorer" : "open", cmd);
   if (procRes.exitCode === 0) {
     return true;
   }
