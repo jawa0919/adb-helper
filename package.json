@@ -241,11 +241,13 @@
 				{
 					"id": "adb-helper.DeviceManager",
 					"name": "Devices Manager",
+					"when": "adb-helper:adbSupport",
 					"contextualTitle": "Device Apk Manager"
 				},
 				{
 					"id": "adb-helper.ExplorerManager",
 					"name": "Explorer Manager",
+					"when": "adb-helper:adbSupport",
 					"contextualTitle": "Device Explorer Manager"
 				}
 			]

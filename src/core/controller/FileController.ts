@@ -10,7 +10,7 @@ import { basename } from "node:path";
 import { commands, Disposable, env, ExtensionContext, TreeItem, TreeItemCollapsibleState, TreeView, ViewColumn } from "vscode";
 import { createMirrorUri } from "../app/AppFileSystemProvider";
 import { mkdir, mv, rm } from "../cmd/fs";
-import { pull, push } from "../cmd/io";
+import { openExplorerWindows, pull, push } from "../cmd/io";
 import { stat } from "../cmd/ls";
 import { adbJoin, chooseFile, chooseFolder, logPrint, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
 import { ExplorerTree } from "../view/ExplorerTree";
@@ -37,7 +37,10 @@ export class FileController implements Disposable {
     showProgress("SaveAs running!", async () => {
       await waitMoment();
       let success = await pull(devId, path, localPath);
-      if (success) showInformationMessage("SaveAs Success");
+      if (success)
+        showInformationMessage(`SaveAs Success \n\n ${localPath}`, ...["Open Explorer"]).then((r) => {
+          if (r === "Open Explorer") openExplorerWindows(localPath);
+        });
       return;
     });
   }
