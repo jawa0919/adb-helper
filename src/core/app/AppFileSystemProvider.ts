@@ -6,19 +6,11 @@
  * @Description  : AppFileSystemProvider
  */
 
-import { Disposable, Event, EventEmitter, ExtensionContext, FileChangeEvent, FileStat, FileSystemProvider, FileType, Uri, workspace } from "vscode";
-import { ls, stat as adbStat } from "../cmd/ls";
-import { ensureDirSync, readFile } from "fs-extra";
+import { Disposable, Event, EventEmitter, FileChangeEvent, FileStat, FileSystemProvider, FileType, Uri } from "vscode";
+import { ensureDirSync } from "fs-extra";
 import { join, sep } from "node:path";
-import { pull } from "../cmd/io";
 import { logPrint } from "../utils/util";
 import { AppConst } from "./AppConst";
-
-export function initAppFileSystemProvider(context: ExtensionContext, scheme: string, mirrorPath: string) {
-  logPrint("AppFileSystemProvider.init");
-  const appFileSystemProvider = new AppFileSystemProvider(scheme, mirrorPath);
-  workspace.registerFileSystemProvider(scheme, appFileSystemProvider, { isCaseSensitive: true, isReadonly: true });
-}
 
 export function createMirrorUri(resourceUri: Uri, mirrorPath = AppConst.mirrorPath): Uri {
   const mirrorUri = Uri.joinPath(Uri.file(mirrorPath), resourceUri.authority, resourceUri.path);
@@ -27,9 +19,6 @@ export function createMirrorUri(resourceUri: Uri, mirrorPath = AppConst.mirrorPa
   return mirrorUri;
 }
 
-export function fileUri2RemoteUri(fileUri: Uri): Uri {
-  return fileUri;
-}
 class AppFileSystemProvider implements FileSystemProvider {
   eventEmitter = new EventEmitter<FileChangeEvent[]>();
   onDidChangeFile: Event<FileChangeEvent[]> = this.eventEmitter.event;
@@ -39,23 +28,16 @@ class AppFileSystemProvider implements FileSystemProvider {
   }
 
   watch(uri: Uri, options: { readonly recursive: boolean; readonly excludes: readonly string[] }): Disposable {
-    // console.log("watch", uri, options);
+    console.log("watch", uri, options);
     return new Disposable(() => {});
   }
   async stat(uri: Uri): Promise<FileStat> {
     console.log("stat", uri);
-    if (uri.fsPath.startsWith("/.vscode")) throw new Error("No File");
-    const res = await adbStat(uri.fragment, uri.path);
-    logPrint("stat-res", res);
-    return res;
+    return { type: FileType.Unknown, size: 0, ctime: 0, mtime: 0 };
   }
   async readDirectory(uri: Uri): Promise<[string, FileType][]> {
     console.log("readDirectory", uri);
-    if (uri.fsPath.startsWith("/.vscode")) throw new Error("No File");
-    const res = await ls(uri.fragment, uri.path + "/");
-    logPrint("readDirectory-res", uri, res);
-    return res;
-    // return [];
+    return [];
   }
   createDirectory(uri: Uri): Promise<void> {
     console.log("createDirectory", uri);
@@ -63,11 +45,7 @@ class AppFileSystemProvider implements FileSystemProvider {
   }
   async readFile(uri: Uri): Promise<Uint8Array> {
     console.log("readFile", uri);
-    if (uri.fsPath.startsWith("/.vscode")) throw new Error("No File");
-    let mirrorUri = createMirrorUri(uri, this.mirrorPath);
-    await pull(uri.fragment, uri.path, mirrorUri.fsPath);
-    logPrint("readFile-res", uri, mirrorUri);
-    return await readFile(mirrorUri.path!);
+    return Buffer.from("");
   }
   writeFile(uri: Uri, content: Uint8Array, options: { readonly create: boolean; readonly overwrite: boolean }): Promise<void> {
     console.log("writeFile", uri, content, options);

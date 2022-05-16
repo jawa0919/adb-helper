@@ -51,7 +51,6 @@ Assist in executing common ADB commands. At present, the functions include devic
 - [x] refreshExplorerManager
 - [x] chooseDevice
 - [x] chooseRootPath
-- [ ] openInNewWorkspace(TODO)
 
 ### FileController
 

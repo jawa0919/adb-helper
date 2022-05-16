@@ -33,6 +33,7 @@
 		"workspaceContains:.metadata",
 		"workspaceContains:*/.metadata",
 		"workspaceContains:*/*/.metadata",
+		"onFileSystem:adb-helper",
 		"onView:adb-helper.DeviceManager",
 		"onView:adb-helper.ExplorerManager",
 		"onCommand:adb-helper.restartAdb"
@@ -132,11 +133,6 @@
 				"command": "adb-helper.chooseRootPath",
 				"title": "Choose RootPath",
 				"icon": "$(database)"
-			},
-			{
-				"command": "adb-helper.openInNewWorkspace",
-				"title": "Open In New Workspace",
-				"icon": "$(empty-window)"
 			},
 			{
 				"command": "adb-helper.openFile",
@@ -310,11 +306,6 @@
 					"command": "adb-helper.chooseRootPath",
 					"when": "view == adb-helper.ExplorerManager",
 					"group": "990_path@990"
-				},
-				{
-					"command": "adb-helper.openInNewWorkspace",
-					"when": "view == adb-helper.ExplorerManager",
-					"group": "990_path@991"
 				}
 			],
 			"view/item/context": [

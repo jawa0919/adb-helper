@@ -30,11 +30,10 @@ export function activate(context: ExtensionContext) {
     adbManager = new AdbController(context);
   }
 
-  commands.executeCommand("adb-helper.refreshDeviceManager");
-
   if (flutterBinPath !== "") {
     adbManager.createFlutterDaemon();
   } else {
+    commands.executeCommand("adb-helper.refreshDeviceManager");
     logPrint("No Find `flutter` Command, Can Not Auto Refresh Device List When Device Connect/Disconnect");
   }
 }

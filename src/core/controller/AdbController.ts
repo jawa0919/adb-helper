@@ -107,7 +107,7 @@ export class AdbController implements Disposable {
     this.deviceController.tree.eventEmitter.fire();
     const index = AdbController.deviceList.findIndex((d) => d.devId === this.explorerController.tree.device?.devId);
     if (index === -1) this.explorerController.tree.device = AdbController.deviceList[0];
-    this.explorerController.tree.eventEmitter.fire();
+    commands.executeCommand("adb-helper.refreshExplorerManager");
   }
   async restartAdb() {
     showProgress("Restart Adb running!", async () => {

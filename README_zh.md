@@ -51,7 +51,6 @@
 - refreshExplorerManager：刷新资源管理器
 - chooseDevice：选择资源管理器中的设备
 - chooseRootPath：选择资源管理器中的根目录
-- openInNewWorkspace：在新的工作区中打开资源管理器(TODO)
 
 ### FileController
 
