@@ -1,8 +1,12 @@
 # Change Log
 
-# 0.4.1
+# 0.4.2
 
 - Add pairDevices
+
+# 0.4.1
+
+- fix _lsParse bug
 
 # 0.4.0
 
