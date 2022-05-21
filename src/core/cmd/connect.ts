@@ -20,6 +20,16 @@ export async function startServer(): Promise<void> {
   const proc = await simpleSafeSpawn("adb", cmd);
 }
 
+export async function pair(ip: string, port: string, password: string): Promise<boolean> {
+  let cmd = ["pair", `${ip}:${port} ${password}`];
+  const procRes = await simpleSafeSpawn("adb", cmd);
+  if (procRes.stdout.includes("Successfully paired to")) {
+    return true;
+  }
+  showErrorMessage(procRes.stderr || procRes.stdout);
+  return false;
+}
+
 export async function connect(ip: string, port: string): Promise<boolean> {
   let cmd = ["connect", `${ip}:${port}`];
   const procRes = await simpleSafeSpawn("adb", cmd);

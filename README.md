@@ -18,6 +18,9 @@ Assist in executing common ADB commands. At present, the functions include devic
 - [x] refreshDeviceManager：refreshDevice/APK
 - [x] ipConnect：input ip Connect devices to the computer through WLAN, which can replace USB connection.
 - [x] ipConnectHistory：Displays the history of using WLAN to connect to ADB
+- [x] pairDevicesScanner
+- [x] pairDevicesUsingQRCode
+- [x] pairDevicesUsingCode
 - [x] installToDevice：Install the APK file in the workspace to the device
 - [x] chooseApkFilter：Select APK display type, optional: third-party application-3, system application-s, enabled-e, disabled-d
 

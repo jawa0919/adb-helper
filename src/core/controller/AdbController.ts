@@ -6,17 +6,20 @@
  * @Description  : adb控制器
  */
 
+import qrCodeTerminal from "qrcode-terminal";
 import { ExecaChildProcess } from "execa";
-import { commands, Disposable, ExtensionContext, TreeItem, Uri } from "vscode";
+import { commands, Disposable, ExtensionContext, QuickPickItem, TreeItem, Uri, ViewColumn, window } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
-import { connect, killServer, startServer } from "../cmd/connect";
+import { connect, killServer, pair, startServer } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { safeSpawn } from "../utils/processes";
-import { logPrint, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
+import { showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
 import { DeviceController } from "./DeviceController";
 import { ExplorerController } from "./ExplorerController";
+import { bonjourPairing, simpleBonjourConnect, simpleBonjourPairing } from "../cmd/bonjour_find";
+import bonjour from "bonjour";
 
 export class AdbController implements Disposable {
   static deviceList: IDevice[] = [];
@@ -31,6 +34,9 @@ export class AdbController implements Disposable {
     commands.registerCommand("adb-helper.refreshDeviceManager", () => this.refreshDeviceManager());
     commands.registerCommand("adb-helper.ipConnect", () => this.ipConnect());
     commands.registerCommand("adb-helper.ipConnectHistory", () => this.ipConnectHistory());
+    commands.registerCommand("adb-helper.pairDevicesScanner", () => this.pairDevicesScanner());
+    commands.registerCommand("adb-helper.pairDevicesUsingQRCode", () => this.pairDevicesUsingQRCode());
+    commands.registerCommand("adb-helper.pairDevicesUsingCode", () => this.pairDevicesUsingCode());
     commands.registerCommand("adb-helper.installToDevice", (res) => this.installToDevice(res));
     commands.registerCommand("adb-helper.chooseApkFilter", () => this.chooseApkFilter());
   }
@@ -61,6 +67,72 @@ export class AdbController implements Disposable {
         return;
       });
     }
+  }
+  async pairDevicesScanner() {
+    showProgress("Scanner running!", async () => {
+      const service = await simpleBonjourConnect();
+      if (service[0] && service[1] && service[2]) {
+        this.ipConnect(service[1], service[2]);
+      }
+      return;
+    });
+  }
+  async pairDevicesUsingQRCode() {
+    const password = Math.floor(Math.random() * 1000000 + 1).toString();
+    const text = "WIFI:T:ADB;S:ADB-Helper-pairDevicesUsingWifi;P:" + password + ";;";
+    const outputChannel = window.createOutputChannel("ADB-Helper-Pair-QR");
+    qrCodeTerminal.generate(text, { small: true }, (qrCode) => {
+      outputChannel.clear();
+      outputChannel.appendLine(qrCode);
+      outputChannel.show();
+      showProgress("QRCode pair running!", async () => {
+        const service = await simpleBonjourPairing();
+        outputChannel.clear();
+        outputChannel.hide();
+        if (service[0]) {
+          const successPair = await pair(service[1], service[2], password);
+          if (!successPair) return;
+          await waitMoment();
+          this.pairDevicesScanner();
+        }
+        return;
+      });
+    });
+  }
+  async pairDevicesUsingCode() {
+    const devItem: QuickPickItem[] = [];
+    const scanner = bonjourPairing((service) => {
+      if (service.name === "") return;
+      devItem.push({ label: service.addresses[0], description: `${service.port}`, detail: service.name });
+      quickPick.items = devItem;
+    });
+    const quickPick = window.createQuickPick<QuickPickItem>();
+    quickPick.title = "Scanning...";
+    quickPick.placeholder = "Choose One Device";
+    quickPick.canSelectMany = false;
+    quickPick.onDidChangeSelection(async (e) => {
+      const dev = e[0];
+      if (dev) {
+        quickPick.hide();
+        const code = await showInputBox("Input Pairing Code");
+        if (!code) return;
+        await showProgress("Code pair running!", async () => {
+          const ip = dev.label || "";
+          const port = dev.description || "";
+          const successPair = await pair(ip, `${port}`, code);
+          if (!successPair) return;
+          await waitMoment();
+          this.pairDevicesScanner();
+          return;
+        });
+      }
+    });
+    quickPick.onDidHide(() => {
+      quickPick.dispose();
+      scanner.stop();
+    });
+    quickPick.busy = true;
+    quickPick.show();
   }
   async ipConnectHistory() {
     const history = this.context.globalState.get<string>("adb-helper.ipHistory") ?? "";
@@ -127,6 +199,7 @@ export class AdbController implements Disposable {
     this.process?.disconnect();
     this.daemonId === undefined;
     this.deviceController.dispose();
+    bonjour().destroy();
   }
 
   private process: ExecaChildProcess | undefined;
@@ -149,6 +222,7 @@ export class AdbController implements Disposable {
   }
   private _outDataListener(data: any) {
     const res = Buffer.from(data).toString();
+    console.log("_outDataListener", res);
     const messageList = res.split("\n").filter((m) => m.trim() !== "");
     const ids = messageList.map((m) => this._messageLineParse(m));
     if (ids.filter((id) => id !== "").length > 0) {

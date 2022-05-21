@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.4.1
+
+- Add pairDevices
+
 # 0.4.0
 
 - fix ExplorerController

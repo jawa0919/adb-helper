@@ -45,6 +45,7 @@ function _deviceParse(line: string): IDevice | undefined {
   const model = _findValue(temp, "model");
   const device = _findValue(temp, "device");
   const transportId = _findValue(temp, "transport_id");
+  if (devType !== "device") return;
   if (devId.indexOf(":") !== -1) {
     const netWorkIp = devId.split(":").shift();
     const adbTcpPort = devId.split(":").pop();

@@ -18,6 +18,9 @@
 - refreshDeviceManager：刷新设备列表和 apk 列表
 - ipConnect：输入 ip 连接设备,用于使用 WLAN 来连接 ADB 的功能
 - ipConnectHistory：显示使用 WLAN 来连接 ADB 的历史记录
+- pairDevicesScanner: 扫描配对设备
+- pairDevicesUsingQRCode：使用 qrCode 配对设备
+- pairDevicesUsingCode：使用 code 配对设备
 - installToDevice：将工作区中的 apk 文件安装到设备
 - chooseApkFilter：选择 apk 显示种类，可选：第三方应用-3，系统应用-s，启用的-e，停用的-d
 

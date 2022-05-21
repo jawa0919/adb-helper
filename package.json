@@ -62,6 +62,21 @@
 				"icon": "$(history)"
 			},
 			{
+				"command": "adb-helper.pairDevicesScanner",
+				"title": "Pair Devices Scanner",
+				"icon": "$(rocket)"
+			},
+			{
+				"command": "adb-helper.pairDevicesUsingQRCode",
+				"title": "Pair Devices Using QRCode",
+				"icon": "$(rocket)"
+			},
+			{
+				"command": "adb-helper.pairDevicesUsingCode",
+				"title": "Pair Devices Using Code",
+				"icon": "$(rocket)"
+			},
+			{
 				"command": "adb-helper.chooseApkFilter",
 				"title": "Choose Apk Filter"
 			},
@@ -290,6 +305,21 @@
 					"group": "990_ip@991"
 				},
 				{
+					"command": "adb-helper.pairDevicesScanner",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "990_wifi@991"
+				},
+				{
+					"command": "adb-helper.pairDevicesUsingQRCode",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "990_wifi@992"
+				},
+				{
+					"command": "adb-helper.pairDevicesUsingCode",
+					"when": "view == adb-helper.DeviceManager",
+					"group": "990_wifi@993"
+				},
+				{
 					"command": "adb-helper.chooseApkFilter",
 					"when": "view == adb-helper.DeviceManager",
 					"group": "991_apk@990"
@@ -440,10 +470,12 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/bonjour": "^3.5.10",
 		"@types/fs-extra": "^9.0.13",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "14.x",
+		"@types/qrcode-terminal": "^0.12.0",
 		"@types/vscode": "^1.57.0",
 		"@typescript-eslint/eslint-plugin": "^5.21.0",
 		"@typescript-eslint/parser": "^5.21.0",
@@ -454,7 +486,9 @@
 		"typescript": "^4.6.4"
 	},
 	"dependencies": {
+		"bonjour": "^3.5.0",
 		"execa": "^5.1.1",
-		"fs-extra": "^10.1.0"
+		"fs-extra": "^10.1.0",
+		"qrcode-terminal": "^0.12.0"
 	}
 }
