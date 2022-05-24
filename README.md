@@ -2,11 +2,11 @@
 
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://vsmarketplacebadge.apphb.com/installs/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
 
-## introduction
+## Introduction
 
-[【中文】](./README_zh.md)
+[【English】](./README.md)|[【中文】](./README_zh.md)
 
-Assist in executing common ADB commands. At present, the functions include device management, WiFi connection, screenshot, application management and file management.
+Help execute 'ADB' common commands. Device management, `ip/pair`connection, device screenshot, application management, file management.
 
 ![Home](./docs/img/home.png)
 
@@ -14,15 +14,15 @@ Assist in executing common ADB commands. At present, the functions include devic
 
 ### AdbController
 
-- [x] restartAdb
-- [x] refreshDeviceManager：refreshDevice/APK
-- [x] ipConnect：input ip Connect devices to the computer through WLAN, which can replace USB connection.
-- [x] ipConnectHistory：Displays the history of using WLAN to connect to ADB
-- [x] pairDevicesScanner
-- [x] pairDevicesUsingQRCode
-- [x] pairDevicesUsingCode
+- [x] restartAdb: restart ADB
+- [x] refreshDeviceManager：refresh Device/APK
+- [x] ipConnect：input ip Connect devices.
+- [x] ipConnectHistory：Displays the history of using ip connect
+- [x] pairDevicesScanner：Scanner pair connect
+- [x] pairDevicesUsingQRCode：Use QR Code pair connect
+- [x] pairDevicesUsingCode：Use Code pair connect
 - [x] installToDevice：Install the APK file in the workspace to the device
-- [x] chooseApkFilter：Select APK display type, optional: third-party application-3, system application-s, enabled-e, disabled-d
+- [x] chooseApkFilter：Select APK type, -3:third-party(default), -s:system, -e:enabled, -d:disabled
 
 ![AdbController](./docs/img/AdbController.gif)
 
@@ -35,7 +35,7 @@ Assist in executing common ADB commands. At present, the functions include devic
 - [x] startScrcpy: start Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 - [x] rebootDevice:
 - [x] powerOffDevice:
-- [x] useIpConnect: Connect ADB using WLAN
+- [x] useIpConnect: Connect using IP
 
 ![DeviceController](./docs/img/DeviceController.gif)
 
@@ -57,12 +57,13 @@ Assist in executing common ADB commands. At present, the functions include devic
 
 ### FileController
 
-In the file management system, the opened file is the local mirror copy of the file in the device, and the file in the device cannot be edited.
+> In the file management system, the open file is a copy of the local image of the device file.
 
-In addition, in / data / data /, the relevant file directory cannot be obtained due to lack of permission. The APK list is used to virtualize the relevant file directory.
+> In the `/data/data/` directory, the directory cannot be obtained due to lack of permission. The related file directory is simulated.
 
 - [x] openFile
 - [x] openInTheSide
+- [x] openInLocalExplorer
 - [x] newFolder
 - [x] copyPath
 - [x] rename
@@ -75,15 +76,13 @@ In addition, in / data / data /, the relevant file directory cannot be obtained 
 
 ### daemon
 
-When the fluttersdk is not found, the daemon will not be started and the device list needs to be updated manually.
+> When 'flutter' is not found, you need click `refreshDeviceManager` to update the device list.
 
-- [x] flutter daemon: Monitor device connection / disconnection
+- [x] flutter daemon: Monitor device connection / disconnection. Auto refresh list
 
-## configure
+## Configure
 
-- [x] explorerRootPathList
-
-  Select the first resource in the default quick access list
+- [x] explorerRootPathList: Quick access list, the first item in the default list is displayed
 
   ```json
   [
@@ -99,16 +98,14 @@ When the fluttersdk is not found, the daemon will not be started and the device 
 - [x] adbBinPath
 - [x] androidSdkPath
 - [x] flutterSdkPath
-- [x] scrcpyBinPath：
+- [x] scrcpyBinPath
 
-  If you have configured relevant environment variables, you can ignore them directly
+  If you have configured relevant environment variables, the relevant configuration can be ignored
 
-## about
+## About
 
 [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
-[https://github.com/EaniaHuui/android_tool](https://github.com/EaniaHuui/android_tool)
-
-## last
+## Last
 
 You are welcome to put forward your ideas and feedback [issues](https://github.com/jawa0919/adb-helper/issues)

@@ -6,7 +6,7 @@
  * @Description  : FileController
  */
 
-import { basename } from "node:path";
+import { basename, join } from "node:path";
 import { commands, Disposable, env, ExtensionContext, TreeItem, TreeItemCollapsibleState, TreeView, ViewColumn } from "vscode";
 import { createMirrorUri } from "../app/AppFileSystemProvider";
 import { mkdir, mv, rm } from "../cmd/fs";
@@ -20,6 +20,7 @@ export class FileController implements Disposable {
     /// commands
     commands.registerCommand("adb-helper.openFile", (res) => this.openFile(res), this);
     commands.registerCommand("adb-helper.openInTheSide", (res) => this.openInTheSide(res), this);
+    commands.registerCommand("adb-helper.openInLocalExplorer", (res) => this.openInLocalExplorer(res), this);
     commands.registerCommand("adb-helper.newFolder", (res) => this.newFolder(res), this);
     commands.registerCommand("adb-helper.copyPath", (res) => this.copyPath(res), this);
     commands.registerCommand("adb-helper.rename", (res) => this.rename(res), this);
@@ -106,6 +107,21 @@ export class FileController implements Disposable {
     if (res.contextValue === "AdbFile") remotePath = adbJoin(path, "..", newName);
     await mkdir(devId, remotePath);
     await this.treeView.reveal(res, { expand: true });
+  }
+  async openInLocalExplorer(res: TreeItem) {
+    const devId: string = res.resourceUri?.authority || "";
+    const path: string = res.resourceUri?.path || "";
+    const st = await stat(devId, path);
+    if (st.size > 10 * 1024 * 1024) {
+      showInformationMessage("Big File Please Use `Save as..`");
+      return;
+    }
+    await waitMoment();
+    const mirrorUri = createMirrorUri(res.resourceUri!);
+    let successPull = await pull(devId, path, mirrorUri?.fsPath!);
+    if (successPull) {
+      openExplorerWindows(join(mirrorUri.fsPath, ".."));
+    }
   }
   async openInTheSide(res: TreeItem) {
     const devId: string = res.resourceUri?.authority || "";

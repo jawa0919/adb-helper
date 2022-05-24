@@ -2,7 +2,7 @@
 	"name": "adb-helper",
 	"displayName": "ADB Helper",
 	"description": "ADB Helper",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"icon": "assets/icon.png",
 	"publisher": "jawa0919",
 	"author": {
@@ -156,6 +156,10 @@
 			{
 				"command": "adb-helper.openInTheSide",
 				"title": "Open In The Side"
+			},
+			{
+				"command": "adb-helper.openInLocalExplorer",
+				"title": "Open In Local Explorer"
 			},
 			{
 				"command": "adb-helper.newFolder",
@@ -415,6 +419,11 @@
 					"command": "adb-helper.openInTheSide",
 					"when": "viewItem == AdbFile",
 					"group": "990_open@991"
+				},
+				{
+					"command": "adb-helper.openInLocalExplorer",
+					"when": "viewItem == AdbFile",
+					"group": "990_open@992"
 				},
 				{
 					"command": "adb-helper.newFolder",

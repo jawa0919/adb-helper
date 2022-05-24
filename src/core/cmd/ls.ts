@@ -12,7 +12,7 @@ import { simpleSafeSpawn } from "../utils/processes";
 import { runAsLs, runAsStat } from "./run_as";
 
 export async function ls(devId: string, remotePath: string): Promise<[string, FileType][]> {
-  if (remotePath.startsWith("/data")) return runAsLs(devId, remotePath);
+  if (remotePath.startsWith("/data/data")) return runAsLs(devId, remotePath);
   let cmd = ["-s", devId, "shell", "ls", remotePath, "-F"];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   let res: [string, FileType][] = [];
@@ -99,7 +99,7 @@ export function _sort(a: [string, FileType], b: [string, FileType]): number {
 }
 
 export async function stat(devId: string, remotePath: string): Promise<FileStat> {
-  if (remotePath.startsWith("/data")) return runAsStat(devId, remotePath);
+  if (remotePath.startsWith("/data/data")) return runAsStat(devId, remotePath);
   let cmd = ["-s", devId, "shell", "stat", remotePath, "-c", "%f=%s=%X=%Y"];
   const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
   return _statParse(procRes.stdout);

@@ -45,13 +45,13 @@ export class DeviceController implements Disposable {
     if (device.devId === "") return;
     const ip = await getDeviceIp(device.devId);
     if (ip === "") {
-      showErrorMessage("No Find Device Ip, Connect Wifi Error.");
+      showErrorMessage("No Find Device Ip, Connect Ip Error.");
       return;
     }
     const port = 5555; // default port
     const tcpIpSuccess = await tcpIp(device.devId, `${port}`);
     if (!tcpIpSuccess) return;
-    showProgress("Wifi Connect running!", async () => {
+    showProgress("Ip Connect running!", async () => {
       const connectSuccess = await connect(ip, `${port}`);
       if (!connectSuccess) return;
       await waitMoment();
