@@ -45,7 +45,7 @@
 - [x] uninstallApk: 卸载 apk
 - [x] exportApk: 导出 apk
 - [x] stopApk: 停止 apk
-- [x] copeApkId: 复制 apk id
+- [x] copyApkId: 复制 apk id
 
 ![ApkController](./docs/img/ApkController.png)
 

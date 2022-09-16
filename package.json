@@ -131,8 +131,8 @@
 				"title": "Stop Apk"
 			},
 			{
-				"command": "adb-helper.copeApkId",
-				"title": "Cope Apk Id"
+				"command": "adb-helper.copyApkId",
+				"title": "Copy Apk Id"
 			},
 			{
 				"command": "adb-helper.chooseDevice",
@@ -406,7 +406,7 @@
 					"group": "998_apk@995"
 				},
 				{
-					"command": "adb-helper.copeApkId",
+					"command": "adb-helper.copyApkId",
 					"when": "viewItem == AdbApk",
 					"group": "999_apk@996"
 				},

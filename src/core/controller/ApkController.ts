@@ -20,9 +20,9 @@ export class ApkController implements Disposable {
     commands.registerCommand("adb-helper.uninstallApk", (res) => this.uninstallApk(res));
     commands.registerCommand("adb-helper.exportApk", (res) => this.exportApk(res));
     commands.registerCommand("adb-helper.stopApk", (res) => this.stopApk(res));
-    commands.registerCommand("adb-helper.copeApkId", (res) => this.copeApkId(res));
+    commands.registerCommand("adb-helper.copyApkId", (res) => this.copyApkId(res));
   }
-  async copeApkId(res: TreeItem) {
+  async copyApkId(res: TreeItem) {
     let apk: IApk = JSON.parse(res.tooltip?.toString() || "");
     env.clipboard.writeText(`${apk.apkId}`);
   }

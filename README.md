@@ -45,7 +45,7 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
 - [x] uninstallApk:
 - [x] exportApk:
 - [x] stopApk:
-- [x] copeApkId:
+- [x] copyApkId:
 
 ![ApkController](./docs/img/ApkController.png)
 
