@@ -1,7 +1,7 @@
 {
   "name": "adb-helper",
   "displayName": "ADB Helper",
-  "description": "ADB Helper",
+  "description": "adb ui. Device/Apk/FileSystem/Pair/Scrcpy",
   "version": "0.4.3",
   "icon": "assets/icon.png",
   "publisher": "jawa0919",
