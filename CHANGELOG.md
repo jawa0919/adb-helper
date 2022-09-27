@@ -1,5 +1,10 @@
 # Change Log
 
+# 0.4.4
+
+- Add wipeApkPermissions
+- Fix typo
+
 # 0.4.3
 
 - Fix Apk Export Bug

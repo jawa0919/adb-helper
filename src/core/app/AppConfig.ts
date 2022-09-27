@@ -9,6 +9,7 @@
 import { existsSync } from "node:fs";
 import { basename, delimiter, join } from "node:path";
 import { commands, workspace, WorkspaceConfiguration } from "vscode";
+import { logPrint } from "../utils/util";
 import { AppConst } from "./AppConst";
 
 export let explorerRootPathList: string[] = [];
@@ -45,6 +46,7 @@ function loadAdbBinPath(cf: WorkspaceConfiguration = workspace.getConfiguration(
   sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "adb.exe" : "adb")));
 
   adbBinPath = sdkPaths.shift() || "";
+  logPrint("adbBinPath", adbBinPath);
   commands.executeCommand("setContext", "adb-helper:adbSupport", adbBinPath !== "");
   return adbBinPath;
 }
@@ -61,6 +63,7 @@ function loadFlutterBinPath(cf: WorkspaceConfiguration = workspace.getConfigurat
   sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "flutter.bat" : "flutter")));
 
   flutterBinPath = sdkPaths.shift() || "";
+  logPrint("flutterBinPath", flutterBinPath);
   commands.executeCommand("setContext", "adb-helper:flutterSupport", flutterBinPath !== "");
   return flutterBinPath;
 }
@@ -75,6 +78,7 @@ function loadScrcpyBinPath(cf: WorkspaceConfiguration = workspace.getConfigurati
   sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "scrcpy.exe" : "scrcpy")));
 
   scrcpyBinPath = sdkPaths.shift() || "";
+  logPrint("scrcpyBinPath", scrcpyBinPath);
   commands.executeCommand("setContext", "adb-helper:scrcpySupport", scrcpyBinPath !== "");
   return scrcpyBinPath;
 }

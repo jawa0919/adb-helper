@@ -35,6 +35,7 @@ export async function simpleBonjourConnect(timeout = 30000): Promise<string[]> {
     });
     setTimeout(() => {
       resolve([]);
+      logPrint(`🚀 simpleBonjourConnect timeout`);
       browser.stop();
     }, timeout);
   });
@@ -50,6 +51,7 @@ export async function simpleBonjourPairing(timeout = 30000): Promise<string[]> {
     });
     setTimeout(() => {
       resolve([]);
+      logPrint(`🚀 simpleBonjourPairing timeout`);
       browser.stop();
     }, timeout);
   });

@@ -42,6 +42,7 @@
 ### ApkController
 
 - [x] wipeApkData: 清除 apk 数据
+- [x] wipeApkPermissions: 清除 apk 权限
 - [x] uninstallApk: 卸载 apk
 - [x] exportApk: 导出 apk
 - [x] stopApk: 停止 apk

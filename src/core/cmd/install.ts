@@ -39,3 +39,13 @@ export async function uninstall(devId: string, apkId: string): Promise<boolean> 
   showErrorMessage(procRes.stderr || procRes.stdout);
   return false;
 }
+
+export async function revokePermission(devId: string, apkId: string, permission: string): Promise<boolean> {
+  let cmd = ["-s", devId, "shell", "pm", "revoke", apkId, permission];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  if (procRes.stdout.includes("Success")) {
+    return true;
+  }
+  showErrorMessage(procRes.stderr || procRes.stdout);
+  return false;
+}
