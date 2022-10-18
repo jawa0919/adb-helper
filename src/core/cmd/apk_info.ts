@@ -20,3 +20,17 @@ export async function getGrantedPermissions(devId: string, apkId: string): Promi
   let res = lins.filter((line) => line.indexOf("permission") >= 0 && line.indexOf("granted=true") >= 0);
   return res.map((line) => line.split(":")[0].trim());
 }
+
+export async function meminfo(devId: string, apkId: string): Promise<string[]> {
+  let cmd = ["-s", devId, "shell", "dumpsys", "meminfo", apkId];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  return procRes.stdout.split(/\n|\r\n/);
+}
+
+export async function getPid(devId: string, apkId: string): Promise<string> {
+  let lins = await meminfo(devId, apkId);
+  let res = lins.find((line) => line.includes("pid")) || "";
+  let resList = res.split(/\s+/);
+  let pidIndex = resList.findIndex((line) => line.includes("pid"));
+  return resList[pidIndex + 1];
+}

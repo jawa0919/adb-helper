@@ -28,14 +28,15 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
 
 ### DeviceController
 
-- [x] screenshot
-- [x] installApk
-- [x] inputText
-- [x] showDeviceInfo
+- [x] screenshot: Device Screenshot
+- [x] installApk: install apk to device
+- [x] inputText: input text to device
+- [x] showDeviceInfo:
 - [x] startScrcpy: start Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 - [x] rebootDevice:
 - [x] powerOffDevice:
 - [x] useIpConnect: Connect using IP
+- [x] showLogCat:
 
 ![DeviceController](./docs/img/DeviceController.gif)
 
@@ -47,6 +48,7 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
 - [x] exportApk:
 - [x] stopApk:
 - [x] copyApkId:
+- [x] showLogCatFilter:
 
 ![ApkController](./docs/img/ApkController.png)
 

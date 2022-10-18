@@ -36,6 +36,7 @@
 - [x] rebootDevice: 重启设备
 - [x] powerOffDevice: 关闭设备
 - [x] useIpConnect: 使用 Ip 连接 ADB
+- [x] showLogCat: 显示 logcat 日志
 
 ![DeviceController](./docs/img/DeviceController.gif)
 
@@ -47,6 +48,7 @@
 - [x] exportApk: 导出 apk
 - [x] stopApk: 停止 apk
 - [x] copyApkId: 复制 apk id
+- [x] showLogCatFilter: 显示本 apk 的 logcat 日志
 
 ![ApkController](./docs/img/ApkController.png)
 

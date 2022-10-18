@@ -80,7 +80,7 @@ export class AdbController implements Disposable {
   async pairDevicesUsingQRCode() {
     const password = Math.floor(Math.random() * 1000000 + 1).toString();
     const text = "WIFI:T:ADB;S:ADB-Helper-pairDevicesUsingWifi;P:" + password + ";;";
-    const outputChannel = window.createOutputChannel("ADB-Helper-Pair-QR");
+    const outputChannel = window.createOutputChannel("AdbHelper-PairQR");
     qrCodeTerminal.generate(text, { small: true }, (qrCode) => {
       outputChannel.clear();
       outputChannel.appendLine(qrCode);
@@ -219,6 +219,7 @@ export class AdbController implements Disposable {
   private _errDataListener(data: any) {
     const res = Buffer.from(data).toString();
     console.error("errDataListener", res);
+    this.process?.cancel();
   }
   private _outDataListener(data: any) {
     const res = Buffer.from(data).toString();

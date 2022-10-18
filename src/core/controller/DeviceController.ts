@@ -7,13 +7,14 @@
  */
 
 import { join } from "node:path";
-import { commands, Disposable, env, ExtensionContext, TreeItem, window } from "vscode";
+import { commands, Disposable, env, ExtensionContext, OutputChannel, TreeItem, window } from "vscode";
 import { scrcpyBinPath } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
 import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
 import { getDeviceIp, IDevice, loadDeviceSystem, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
+import { openLogCat } from "../cmd/logcat";
 import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showErrorMessage, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 import { AdbController } from "./AdbController";
@@ -35,6 +36,15 @@ export class DeviceController implements Disposable {
     commands.registerCommand("adb-helper.rebootDevice", (res) => this.rebootDevice(res));
     commands.registerCommand("adb-helper.powerOffDevice", (res) => this.powerOffDevice(res));
     commands.registerCommand("adb-helper.useIpConnect", (res) => this.useIpConnect(res));
+    commands.registerCommand("adb-helper.showLogCat", (res) => this.showLogCat(res));
+  }
+  async showLogCat(res: TreeItem) {
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    const outputChannel = window.createOutputChannel("AdbHelper-" + device.product);
+    openLogCat(device.devId, (res) => {
+      outputChannel.appendLine(res);
+    });
+    outputChannel.show();
   }
   async useIpConnect(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");

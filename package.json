@@ -115,6 +115,10 @@
         "title": "Use Ip Connect"
       },
       {
+        "command": "adb-helper.showLogCat",
+        "title": "Show LogCat"
+      },
+      {
         "command": "adb-helper.wipeApkData",
         "title": "Wipe Apk Data"
       },
@@ -137,6 +141,10 @@
       {
         "command": "adb-helper.copyApkId",
         "title": "Copy Apk Id"
+      },
+      {
+        "command": "adb-helper.showLogCatFilter",
+        "title": "Show LogCat Filter Apk"
       },
       {
         "command": "adb-helper.chooseDevice",
@@ -390,6 +398,11 @@
           "group": "997_ip@995"
         },
         {
+          "command": "adb-helper.showLogCat",
+          "when": "viewItem == AdbDevice",
+          "group": "998_log@995"
+        },
+        {
           "command": "adb-helper.wipeApkData",
           "when": "viewItem == AdbApk",
           "group": "995_wipe@995"
@@ -418,6 +431,11 @@
           "command": "adb-helper.copyApkId",
           "when": "viewItem == AdbApk",
           "group": "999_apk@996"
+        },
+        {
+          "command": "adb-helper.showLogCatFilter",
+          "when": "viewItem == AdbApk",
+          "group": "999_log@995"
         },
         {
           "command": "adb-helper.openFile",

@@ -9,7 +9,7 @@
 import { join } from "node:path";
 import { CancellationToken, Progress, ProgressLocation, QuickPickItem, Uri, window } from "vscode";
 
-const logOutput = window.createOutputChannel("ADB Helper");
+const logOutput = window.createOutputChannel("AdbHelper");
 
 export function logPrint(...optionalParams: any[]): void {
   console.log(...optionalParams);

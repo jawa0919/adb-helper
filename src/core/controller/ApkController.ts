@@ -7,10 +7,11 @@
  */
 
 import { join } from "node:path";
-import { commands, Disposable, env, ExtensionContext, TreeItem } from "vscode";
-import { getGrantedPermissions } from "../cmd/apk_info";
+import { commands, Disposable, env, ExtensionContext, TreeItem, window } from "vscode";
+import { getGrantedPermissions, getPid } from "../cmd/apk_info";
 import { clear, revokePermission, uninstall } from "../cmd/install";
 import { pull } from "../cmd/io";
+import { openLogCat } from "../cmd/logcat";
 import { getApkPath, IApk, stopTheApp } from "../cmd/pm";
 import { chooseFolder, showInformationMessage, showModal, showProgress, waitMoment } from "../utils/util";
 
@@ -23,6 +24,16 @@ export class ApkController implements Disposable {
     commands.registerCommand("adb-helper.exportApk", (res) => this.exportApk(res));
     commands.registerCommand("adb-helper.stopApk", (res) => this.stopApk(res));
     commands.registerCommand("adb-helper.copyApkId", (res) => this.copyApkId(res));
+    commands.registerCommand("adb-helper.showLogCatFilter", (res) => this.showLogCatFilter(res));
+  }
+  async showLogCatFilter(res: TreeItem) {
+    let apk: IApk = JSON.parse(res.tooltip?.toString() || "");
+    let pid = await getPid(apk.devId, apk.apkId);
+    const outputChannel = window.createOutputChannel("AdbHelper-" + apk.apkId);
+    openLogCat(apk.devId, (res) => {
+      if (res.includes(pid)) outputChannel.appendLine(res);
+    });
+    outputChannel.show();
   }
   async copyApkId(res: TreeItem) {
     let apk: IApk = JSON.parse(res.tooltip?.toString() || "");
