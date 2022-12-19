@@ -33,7 +33,8 @@ function loadExplorerRootPathList(cf: WorkspaceConfiguration = workspace.getConf
 }
 
 function loadAdbBinPath(cf: WorkspaceConfiguration = workspace.getConfiguration()): string {
-  let sdkPaths = [cf.get<string>("adb-helper.adbBinPath") || ""];
+  let paths = [cf.get<string>("adb-helper.adbBinPath") || ""];
+  let sdkPaths = [];
   sdkPaths.push(cf.get<string>("adb-helper.androidSdkPath") || "");
   sdkPaths.push(process.env.ANDROID_HOME || "");
   sdkPaths.push(process.env.ANDROID_SDK_ROOT || "");
@@ -43,7 +44,7 @@ function loadAdbBinPath(cf: WorkspaceConfiguration = workspace.getConfiguration(
   sdkPaths = sdkPaths.map((p) => p.trim()).filter((p) => p);
   sdkPaths = sdkPaths.map((p) => (basename(p) === "platform-tools" ? p : join(p, "platform-tools")));
 
-  sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "adb.exe" : "adb")));
+  sdkPaths = [...paths, ...sdkPaths].filter((p) => existsSync(join(p, AppConst.isWin ? "adb.exe" : "adb")));
 
   adbBinPath = sdkPaths.shift() || "";
   logPrint("adbBinPath", adbBinPath);
