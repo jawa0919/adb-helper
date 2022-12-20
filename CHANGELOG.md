@@ -1,5 +1,11 @@
 # Change Log
 
+# 0.5.1
+
+- Fix adbBinPath bug
+- Fix badges bug
+- Add Readme
+
 # 0.4.4
 
 - Add wipeApkPermissions

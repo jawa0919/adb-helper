@@ -1,6 +1,6 @@
 # adb-helper
 
-[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://vsmarketplacebadge.apphb.com/installs/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
+[![Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://img.shields.io/visual-studio-marketplace/i/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://img.shields.io/visual-studio-marketplace/stars/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
 
 ## 简介
 
@@ -96,10 +96,10 @@
       "/sdcard/Download/",
   ],
   ```
-- [x] adbBinPath：`adb`的 Bin 路径
-- [x] androidSdkPath：`Android` SDK 的路径
-- [x] flutterSdkPath：`Flutter` SDK 的路径
-- [x] scrcpyBinPath：`Scrcpy` 的 Bin 路径
+- [x] adbBinPath：`adb`的 Bin 路径,eg: `E:\sdk\androidSDK\platform-tools`
+- [x] androidSdkPath：`Android` SDK 的路径,eg: `E:\sdk\androidSDK`
+- [x] flutterSdkPath：`Flutter` SDK 的路径,eg: `E:\sdk\flutter339`
+- [x] scrcpyBinPath：`Scrcpy` 的 Bin 路径,eg: `C:\Users\admin\AppData\Roaming\Genymobile\scrcpy`
 
 如果已经配置了相关环境变量，可以忽略相关配置
 

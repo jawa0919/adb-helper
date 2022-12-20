@@ -212,7 +212,7 @@
         "properties": {
           "adb-helper.adbBinPath": {
             "order": 0,
-            "description": "Custom ADB Bin Path",
+            "description": "Custom ADB Bin Path, eg: `E:\\sdk\\androidSDK\\platform-tools`",
             "type": "string",
             "default": "",
             "scope": "machine-overridable"
@@ -220,21 +220,21 @@
           "adb-helper.androidSdkPath": {
             "order": 1,
             "type": "string",
-            "description": "Custom Android SDK Path",
+            "description": "Custom Android SDK Path, eg: `E:\\sdk\\androidSDK`",
             "default": "",
             "scope": "machine-overridable"
           },
           "adb-helper.flutterSdkPath": {
             "order": 2,
             "type": "string",
-            "description": "Custom Flutter SDK Path",
+            "description": "Custom Flutter SDK Path, eg: `E:\\sdk\\flutter339`",
             "default": "",
             "scope": "machine-overridable"
           },
           "adb-helper.scrcpyBinPath": {
             "order": 3,
             "type": "string",
-            "description": "Custom Scrcpy Bin Path",
+            "description": "Custom Scrcpy Bin Path, eg: `C:\\Users\\admin\\AppData\\Roaming\\Genymobile\\scrcpy`",
             "default": "",
             "scope": "machine-overridable"
           },

@@ -1,6 +1,6 @@
 # adb-helper
 
-[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://vsmarketplacebadge.apphb.com/installs/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/jawa0919.adb-helper.svg)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
+[![Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://img.shields.io/visual-studio-marketplace/i/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://img.shields.io/visual-studio-marketplace/stars/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
 
 ## Introduction
 
@@ -98,10 +98,10 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
   ],
   ```
 
-- [x] adbBinPath
-- [x] androidSdkPath
-- [x] flutterSdkPath
-- [x] scrcpyBinPath
+- [x] adbBinPath：`adb` Bin Path,eg: `E:\sdk\androidSDK\platform-tools`
+- [x] androidSdkPath：`Android` SDK Path,eg: `E:\sdk\androidSDK`
+- [x] flutterSdkPath：`Flutter` SDK Path,eg: `E:\sdk\flutter339`
+- [x] scrcpyBinPath：`Scrcpy` 的 Bin Path,eg: `C:\Users\admin\AppData\Roaming\Genymobile\scrcpy`
 
   If you have configured relevant environment variables, the relevant configuration can be ignored
 
