@@ -1,0 +1,34 @@
+total 72
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 acct
+-?????????   ? ?      ?             ?                ? adb_keys
+drwxr-xr-x  52 root   root       1100 2023-08-01 04:24 apex
+lrw-r--r--   1 root   root         11 2023-05-04 02:42 bin -> /system/bin
+lrw-r--r--   1 root   root         50 2023-05-04 02:42 bugreports -> /data/user_de/0/com.android.shell/files/bugreports
+drwxrwx---   2 system cache      4096 2023-05-04 02:04 cache
+drwxr-xr-x   3 root   root          0 2023-08-01 04:24 config
+lrw-r--r--   1 root   root         17 2023-05-04 02:42 d -> /sys/kernel/debug
+drwxrwx--x  49 system system     4096 2023-08-01 04:24 data
+d?????????   ? ?      ?             ?                ? data_mirror
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 debug_ramdisk
+drwxr-xr-x  21 root   root       2740 2023-08-01 04:24 dev
+lrw-r--r--   1 root   root         11 2023-05-04 02:42 etc -> /system/etc
+l?????????   ? ?      ?             ?                ? init -> ?
+-?????????   ? ?      ?             ?                ? init.environ.rc
+d?????????   ? ?      ?             ?                ? linkerconfig
+drwx------   2 root   root      16384 2023-05-04 02:42 lost+found
+d?????????   ? ?      ?             ?                ? metadata
+drwxr-xr-x  15 root   system      320 2023-08-01 04:24 mnt
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 odm
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 odm_dlkm
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 oem
+d?????????   ? ?      ?             ?                ? postinstall
+dr-xr-xr-x 336 root   root          0 2023-08-01 04:24 proc
+drwxr-xr-x  10 root   root       4096 2023-05-04 02:41 product
+lrw-r--r--   1 root   root         21 2023-05-04 02:42 sdcard -> /storage/self/primary
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 second_stage_resources
+drwx--x---   5 shell  everybody   100 2023-08-01 04:25 storage
+dr-xr-xr-x  13 root   root          0 2023-08-01 04:24 sys
+drwxr-xr-x  12 root   root       4096 2023-05-04 02:29 system
+drwxr-xr-x   9 root   root       4096 2023-05-04 02:41 system_ext
+drwxr-xr-x  11 root   root       4096 2023-05-04 02:27 vendor
+drwxr-xr-x   2 root   root       4096 2023-05-04 02:04 vendor_dlkm

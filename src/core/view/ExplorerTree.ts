@@ -12,8 +12,8 @@ import { ls } from "../cmd/ls";
 
 export class ExplorerTree implements TreeDataProvider<TreeItem> {
   constructor(public rootPath: string, public device?: IDevice) {}
-  eventEmitter: EventEmitter<TreeItem | TreeItem[] | undefined | void> = new EventEmitter<TreeItem | TreeItem[] | undefined | void>();
-  onDidChangeTreeData?: Event<void | TreeItem | TreeItem[] | null | undefined> | undefined = this.eventEmitter.event;
+  eventEmitter: EventEmitter<TreeItem | undefined | void> = new EventEmitter<TreeItem | undefined | void>();
+  onDidChangeTreeData?: Event<void | TreeItem | null | undefined> | undefined = this.eventEmitter.event;
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
@@ -27,7 +27,10 @@ export class ExplorerTree implements TreeDataProvider<TreeItem> {
     let rootUri = Uri.from({ scheme: AppConst.scheme, authority: this.device.devId, path: this.rootPath });
     let parentUri = element?.resourceUri || rootUri;
     const path = parentUri.path.endsWith("/") ? parentUri.path : parentUri.path + "/";
-    const children = await ls(parentUri.authority, path);
+    const children = await ls(parentUri.authority, path).catch((r) => {
+      console.log(r);
+      return [];
+    });
     return children.map(([name, type]) => this.bindFileSystemNode(name, type, parentUri));
   }
   bindFileSystemNode(name: string, fileType: FileType, parentUri: Uri): TreeItem {
@@ -40,6 +43,9 @@ export class ExplorerTree implements TreeDataProvider<TreeItem> {
       item.contextValue = "AdbFile";
       item.command = { command: "adb-helper.openFile", title: "Open File", arguments: [{ resourceUri: uri }] };
       // item.command = { command: "vscode.open", title: "Open File", arguments: [uri] };
+    } else if (fileType === FileType.Unknown) {
+      item.collapsibleState = TreeItemCollapsibleState.None;
+      item.label = name;
     } else {
       item.contextValue = "AdbFolder";
       item.collapsibleState = TreeItemCollapsibleState.Collapsed;

@@ -1,0 +1,44 @@
+ls: ./ueventd.rc: Permission denied
+ls: ./ueventd.ranchu.rc: Permission denied
+ls: ./ueventd.goldfish.rc: Permission denied
+ls: ./service_contexts: Permission denied
+ls: ./sepolicy: Permission denied
+ls: ./selinux_version: Permission denied
+ls: ./seapp_contexts: Permission denied
+ls: ./init.zygote32.rc: Permission denied
+ls: ./init.usb.rc: Permission denied
+ls: ./init.usb.configfs.rc: Permission denied
+ls: ./init.rc: Permission denied
+ls: ./init.ranchu.rc: Permission denied
+ls: ./init.ranchu-noencrypt.rc: Permission denied
+ls: ./init.ranchu-encrypt.rc: Permission denied
+ls: ./init.goldfish.rc: Permission denied
+ls: ./init.environ.rc: Permission denied
+ls: ./init: Permission denied
+ls: ./fstab.ranchu-noencrypt: Permission denied
+ls: ./fstab.ranchu-encrypt: Permission denied
+ls: ./fstab.goldfish: Permission denied
+ls: ./file_contexts.bin: Permission denied
+total 56
+drwxr-xr-x  40 root   root      0 2023-08-01 04:08 acct
+lrwxrwxrwx   1 root   root     50 1970-01-01 00:00 bugreports -> /data/user_de/0/com.android.shell/files/bugreports
+drwxrwx---   6 system cache  4096 2023-08-01 04:08 cache
+lrwxrwxrwx   1 root   root     13 1970-01-01 00:00 charger -> /sbin/healthd
+drwxr-xr-x   3 root   root      0 2023-08-01 04:08 config
+lrwxrwxrwx   1 root   root     17 1970-01-01 00:00 d -> /sys/kernel/debug
+drwxrwx--x  35 system system 4096 2023-08-01 04:09 data
+drwxr-xr-x  14 root   root   2520 2023-08-01 04:08 dev
+lrwxrwxrwx   1 root   root     11 1970-01-01 00:00 etc -> /system/etc
+drwxr-xr-x  10 root   system  220 2023-08-01 04:08 mnt
+drwxr-xr-x   2 root   root      0 1970-01-01 00:00 oem
+dr-xr-xr-x 140 root   root      0 2023-08-01 04:08 proc
+-rw-r--r--   1 root   root   4622 1970-01-01 00:00 property_contexts
+drwx------   2 root   root      0 2017-05-19 19:49 root
+drwxr-x---   2 root   root      0 1970-01-01 00:00 sbin
+lrwxrwxrwx   1 root   root     21 1970-01-01 00:00 sdcard -> /storage/self/primary
+drwxr-xr-x   5 root   root    100 2023-08-01 04:09 storage
+dr-xr-xr-x  12 root   root      0 2023-08-01 04:08 sys
+drwxr-xr-x  16 root   root   4096 1970-01-01 00:00 system
+lrwxrwxrwx   1 root   root      9 2023-08-01 04:08 var -> /data/var
+lrwxrwxrwx   1 root   root     14 1970-01-01 00:00 vendor -> /system/vendor
+ls: ./default.prop: Permission denied

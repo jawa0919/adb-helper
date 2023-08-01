@@ -51,7 +51,7 @@ export function showProgress<R>(title: string, task: (progress: Progress<{ messa
 }
 
 export async function showModal(title: string, detail: string, ...items: string[]): Promise<string | undefined> {
-  return await window.showWarningMessage(title, { modal: true, detail }, ...items);
+  return await window.showWarningMessage(title + detail, { modal: true }, ...items);
 }
 
 export async function chooseFile(canSelectMany = false, filters?: { [name: string]: string[] }): Promise<Uri[] | undefined> {

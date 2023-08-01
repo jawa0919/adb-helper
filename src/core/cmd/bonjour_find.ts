@@ -6,10 +6,10 @@
  * @Description  : bonjour_find
  */
 
-import bonjour, { Browser, RemoteService } from "bonjour";
+import * as bonjour from "bonjour";
 import { logPrint } from "../utils/util";
 
-export function bonjourConnect(onUp?: (service: RemoteService) => void): Browser {
+export function bonjourConnect(onUp?: (service: bonjour.RemoteService) => void): bonjour.Browser {
   logPrint(`🚀 bonjourConnect`);
   return bonjour().find({ type: "adb-tls-connect" }, (service) => {
     console.log(`bonjourConnect`, service);
@@ -17,7 +17,7 @@ export function bonjourConnect(onUp?: (service: RemoteService) => void): Browser
   });
 }
 
-export function bonjourPairing(onUp?: (service: RemoteService) => void): Browser {
+export function bonjourPairing(onUp?: (service: bonjour.RemoteService) => void): bonjour.Browser {
   logPrint(`🚀 bonjourPairing`);
   return bonjour().find({ type: "adb-tls-pairing" }, (service) => {
     console.log(`bonjourPairing`, service);

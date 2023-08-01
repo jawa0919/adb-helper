@@ -6,7 +6,7 @@
  * @Description  : adb控制器
  */
 
-import qrCodeTerminal from "qrcode-terminal";
+import { generate } from "qrcode-terminal";
 import { ExecaChildProcess } from "execa";
 import { commands, Disposable, ExtensionContext, QuickPickItem, TreeItem, Uri, ViewColumn, window } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
@@ -19,7 +19,7 @@ import { showInformationMessage, showInputBox, showProgress, showQuickPickItem, 
 import { DeviceController } from "./DeviceController";
 import { ExplorerController } from "./ExplorerController";
 import { bonjourPairing, simpleBonjourConnect, simpleBonjourPairing } from "../cmd/bonjour_find";
-import bonjour from "bonjour";
+import * as bonjour from "bonjour";
 
 export class AdbController implements Disposable {
   static deviceList: IDevice[] = [];
@@ -81,7 +81,7 @@ export class AdbController implements Disposable {
     const password = Math.floor(Math.random() * 1000000 + 1).toString();
     const text = "WIFI:T:ADB;S:ADB-Helper-pairDevicesUsingWifi;P:" + password + ";;";
     const outputChannel = window.createOutputChannel("AdbHelper-PairQR");
-    qrCodeTerminal.generate(text, { small: true }, (qrCode) => {
+    generate(text, { small: true }, (qrCode) => {
       outputChannel.clear();
       outputChannel.appendLine(qrCode);
       outputChannel.show();

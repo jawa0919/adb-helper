@@ -14,8 +14,8 @@ import { AdbController } from "../controller/AdbController";
 
 export class DeviceTree implements TreeDataProvider<TreeItem> {
   constructor(public apkFilter?: string) {}
-  eventEmitter: EventEmitter<TreeItem | TreeItem[] | undefined | void> = new EventEmitter<TreeItem | TreeItem[] | undefined | void>();
-  onDidChangeTreeData?: Event<void | TreeItem | TreeItem[] | null | undefined> | undefined = this.eventEmitter.event;
+  eventEmitter: EventEmitter<TreeItem | undefined | void> = new EventEmitter<TreeItem | undefined | void>();
+  onDidChangeTreeData?: Event<void | TreeItem | null | undefined> | undefined = this.eventEmitter.event;
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }

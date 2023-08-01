@@ -6,17 +6,17 @@
  * @Description  : processes
  */
 
-import execa, { ExecaChildProcess, ExecaReturnValue } from "execa";
+import * as execa from "execa";
 import { logPrint } from "./util";
 
-export function safeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): ExecaChildProcess<string> {
+export function safeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): execa.ExecaChildProcess<string> {
   const customEnv = Object.assign({}, process.env, env);
   logPrint(`🚀 ${binPath} ${args.join(" ")}`);
   const proc = execa(`${binPath}`, args, { cwd: cwd, env: customEnv, shell: true });
   return proc;
 }
 
-export async function simpleSafeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): Promise<ExecaReturnValue<string>> {
+export async function simpleSafeSpawn(binPath: string, args: string[], cwd?: string, env?: { [key: string]: string | undefined }): Promise<execa.ExecaReturnValue<string>> {
   const procRes = await safeSpawn(binPath, args, cwd, env).catch((e) => e);
   console.log(procRes);
   return procRes;
