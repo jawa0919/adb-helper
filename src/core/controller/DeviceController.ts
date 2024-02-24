@@ -30,6 +30,7 @@ export class DeviceController implements Disposable {
     /// commands
     commands.registerCommand("adb-helper.screenshot", (res) => this.screenshot(res));
     commands.registerCommand("adb-helper.installApk", (res) => this.installApk(res));
+    commands.registerCommand("adb-helper.openShell", (res) => this.openShell(res));
     commands.registerCommand("adb-helper.inputText", (res) => this.inputText(res));
     commands.registerCommand("adb-helper.showDeviceInfo", (res) => this.showDeviceInfo(res));
     commands.registerCommand("adb-helper.startScrcpy", (res) => this.startScrcpy(res));
@@ -126,6 +127,13 @@ export class DeviceController implements Disposable {
       this.tree.eventEmitter.fire();
       return;
     });
+  }
+  async openShell(res: TreeItem) {
+    const devName = res.label?.toString() || "";
+    const devId = res.description?.toString() || "";
+    const terminal = window.createTerminal({ name: devName });
+    terminal.sendText("adb -s " + devId + " shell");
+    terminal.show();
   }
   async screenshot(res: TreeItem) {
     const folders = await chooseFolder(false);

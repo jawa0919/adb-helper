@@ -91,6 +91,11 @@
         "icon": "$(diff-added)"
       },
       {
+        "command": "adb-helper.openShell",
+        "title": "Open Shell",
+        "icon": "$(terminal)"
+      },
+      {
         "command": "adb-helper.inputText",
         "title": "Input Text"
       },
@@ -366,6 +371,11 @@
           "command": "adb-helper.installApk",
           "when": "viewItem == AdbDevice",
           "group": "inline@996"
+        },
+        {
+          "command": "adb-helper.openShell",
+          "when": "viewItem == AdbDevice",
+          "group": "inline@997"
         },
         {
           "command": "adb-helper.inputText",
