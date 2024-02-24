@@ -56,15 +56,10 @@ export class AdbController implements Disposable {
       const label = d.netWorkIp ? "$(broadcast) " : "$(plug) ";
       return { label: label + d.model, description: d.devId };
     });
-    let item;
-    if (items.length === 1) {
-      item = items[0];
-    } else {
-      item = await showQuickPickItem(items);
-    }
+    let item = items.length === 1 ? items[0] : await showQuickPickItem(items);
     if (item) {
       const devId = item.description;
-      showProgress(`Install To Device:${item.label.split(')')[1]} running!`, async () => {
+      showProgress(`Install To Device:${item.label.split(")")[1]} running!`, async () => {
         await waitMoment();
         let successInstall = await install(devId, apkPath);
         if (successInstall) commands.executeCommand("adb-helper.refreshDeviceManager");
