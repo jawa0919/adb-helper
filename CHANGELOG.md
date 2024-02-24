@@ -1,8 +1,12 @@
 # Change Log
 
-# 0.5.2
+# 0.6.1
 
 - Add openShell
+
+# 0.6.0
+
+- Fix permission
 
 # 0.5.1
 
