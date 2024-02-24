@@ -31,6 +31,7 @@
 - [x] screenshot: 设备截图
 - [x] installApk: 安装 apk
 - [x] openShell: 打开 shell
+      ![openShell](./docs/img/openShell.png)
 - [x] inputText: 输入文字到设备上
 - [x] showDeviceInfo: 显示设备相关信息
 - [x] startScrcpy: 启动 Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)

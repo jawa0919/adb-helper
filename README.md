@@ -31,6 +31,7 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
 - [x] screenshot: Device Screenshot
 - [x] installApk: install apk to device
 - [x] openShell: open Shell window
+      ![openShell](./docs/img/openShell.png)
 - [x] inputText: input text to device
 - [x] showDeviceInfo:
 - [x] startScrcpy: start Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
