@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.5.2
+
+- Add openShell
+
 # 0.5.1
 
 - Fix adbBinPath bug
