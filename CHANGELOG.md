@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.6.2
+
+- Fix `/data/data/` update file permission 
+
 # 0.6.1
 
 - Add openShell
