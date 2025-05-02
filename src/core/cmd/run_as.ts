@@ -114,7 +114,7 @@ export async function runAsPush(devId: string, localPath: string, remotePath: st
   if (remotePath === "/data/data/") return false;
   let apkId = remotePath.replace("/data/data/", "").split("/").shift() || "";
 
-  let pushTempRemotePath = adbJoin("/sdcard/Download/", basename(remotePath));
+  let pushTempRemotePath = adbJoin("/data/local/tmp/", basename(remotePath));
   // Step 1 push localPath -> pushTempRemotePath
   await push(devId, localPath, pushTempRemotePath);
   // Step 2 cp pushTempRemotePath -> remotePath
