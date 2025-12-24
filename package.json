@@ -18,7 +18,7 @@
     "url": "https://github.com/jawa0919/adb-helper.git"
   },
   "engines": {
-    "vscode": "^1.57.0"
+    "vscode": "^1.88.0"
   },
   "categories": [
     "Other"
@@ -545,6 +545,7 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.3.3",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^8.14.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
