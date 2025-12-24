@@ -6,88 +6,90 @@
 
 [【English】](./README.md)|[【中文】](./README_zh.md)
 
-Help execute 'ADB' common commands. Device management, `ip/pair`connection, device screenshot, application management, file management.
+Helps execute common `ADB` commands. Device management, `ip/pair` connections, device screenshots, app management, file management.
 
 ![Home](./docs/img/home.png)
 
-## Function
+## Features
 
 ### AdbController
 
-- [x] restartAdb: restart ADB
-- [x] refreshDeviceManager：refresh Device/APK
-- [x] ipConnect：input ip Connect devices.
-- [x] ipConnectHistory：Displays the history of using ip connect
-- [x] pairDevicesScanner：Scanner pair connect
-- [x] pairDevicesUsingQRCode：Use QR Code pair connect
-- [x] pairDevicesUsingCode：Use Code pair connect
-- [x] installToDevice：Install the APK file in the workspace to the device
-- [x] chooseApkFilter：Select APK type, -3:third-party(default), -s:system, -e:enabled, -d:disabled
+- [x] restartAdb: Restart ADB service
+- [x] refreshDeviceManager: Refresh device list and apk list
+- [x] ipConnect: Connect to device by entering IP address
+- [x] ipConnectHistory: Display history of IP connections
+- [x] pairDevicesScanner: Scan for pairable devices (Android 11+)
+- [x] pairDevicesUsingQRCode: Pair devices using QR code (Android 11+)
+- [x] pairDevicesUsingCode: Pair devices using pairing code (Android 11+)
+- [x] installToDevice: Install apk files from workspace to device
+- [x] chooseApkFilter: Select apk display types, -3: third-party apps (default), -s: system apps, -e: enabled apps, -d: disabled apps
 
 ![AdbController](./docs/img/AdbController.gif)
 
 ### DeviceController
 
-- [x] screenshot: Device Screenshot
-- [x] installApk: install apk to device
-- [x] openShell: open Shell window
+- [x] screenshot: Take device screenshot
+- [x] installApk: Install apk
+- [x] openShell: Open shell
       ![openShell](./docs/img/openShell.png)
-- [x] inputText: input text to device
-- [x] showDeviceInfo:
-- [x] startScrcpy: start Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
-- [x] rebootDevice:
-- [x] powerOffDevice:
-- [x] useIpConnect: Connect using IP
-- [x] showLogCat:
+- [x] inputText: Input text to device
+- [x] showDeviceInfo: Display device related information
+- [x] startScrcpy: Launch Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
+- [x] showTopActivity: View top activity
+- [x] rebootDevice: Reboot device
+- [x] powerOffDevice: Power off device
+- [x] useIpConnect: Connect ADB using IP
+- [x] showLogCat: Display logcat logs
+- [x] closeLogCat: Close logcat logs
 
 ![DeviceController](./docs/img/DeviceController.gif)
 
 ### ApkController
 
-- [x] wipeApkData:
-- [x] wipeApkPermissions:
-- [x] uninstallApk:
-- [x] exportApk:
-- [x] stopApk:
-- [x] copyApkId:
-- [x] showAppLogCat:
+- [x] wipeApkData: Clear apk data
+- [x] wipeApkPermissions: Clear apk permissions
+- [x] uninstallApk: Uninstall apk
+- [x] exportApk: Export apk
+- [x] stopApk: Stop apk
+- [x] copyApkId: Copy apk id
+- [x] showAppLogCat: Display logcat logs for this apk
 
 ![ApkController](./docs/img/ApkController.png)
 
 ### ExplorerController
 
-- [x] refreshExplorerManager
-- [x] chooseDevice
-- [x] chooseRootPath
+- [x] refreshExplorerManager: Refresh explorer
+- [x] chooseDevice: Select device in explorer
+- [x] chooseRootPath: Select root directory in explorer
 
 ### FileController
 
-> In the file management system, the open file is a copy of the local image of the device file.
+> In the file management system, opened files are copies of device files mirrored locally.
 
-> In the `/data/data/` directory, the directory cannot be obtained due to lack of permission. The related file directory is simulated.
+> In the `/data/data/` directory, due to lack of permissions, directories cannot be obtained. Related file directories are simulated.
 
-- [x] openFile
-- [x] openInTheSide
-- [x] openInLocalExplorer
-- [x] newFolder
-- [x] copyPath
-- [x] rename
-- [x] delete
-- [x] uploadFile
-- [x] uploadFolder
-- [x] saveAs
+- [x] openFile: Open file
+- [x] openInTheSide: Open file on the right side
+- [x] openInLocalExplorer: Open in local file explorer
+- [x] newFolder: Create new folder
+- [x] copyPath: Copy path
+- [x] rename: Rename
+- [x] delete: Delete
+- [x] uploadFile: Upload file
+- [x] uploadFolder: Upload folder
+- [x] saveAs: Save as to local
 
 ![FileController](./docs/img/FileController.png)
 
-### daemon
+### flutter daemon
 
-> When 'flutter' is not found, you need click `refreshDeviceManager` to update the device list.
+> When `flutter` is not found, click `refreshDeviceManager` to update device list.
 
-- [x] flutter daemon: Monitor device connection / disconnection. Auto refresh list
+- [x] flutter daemon: Monitor device connection/disconnection, automatically refresh list
 
-## Configure
+## Configuration
 
-- [x] explorerRootPathList: Quick access list, the first item in the default list is displayed
+- [x] explorerRootPathList: Quick access list, first item in list is displayed by default
 
   ```json
   [
@@ -100,17 +102,17 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
   ],
   ```
 
-- [x] adbBinPath：`adb` Bin Path,eg: `E:\sdk\androidSDK\platform-tools`
-- [x] androidSdkPath：`Android` SDK Path,eg: `E:\sdk\androidSDK`
-- [x] flutterSdkPath：`Flutter` SDK Path,eg: `E:\sdk\flutter339`
-- [x] scrcpyBinPath：`Scrcpy` 的 Bin Path,eg: `C:\Users\admin\AppData\Roaming\Genymobile\scrcpy`
+- [x] adbBinPath: Path to `adb` binary, e.g.: `E:\sdk\androidSDK\platform-tools`
+- [x] androidSdkPath: Path to `Android` SDK, e.g.: `E:\sdk\androidSDK`
+- [x] flutterSdkPath: Path to `Flutter` SDK, e.g.: `E:\sdk\flutter339`
+- [x] scrcpyBinPath: Path to `Scrcpy` binary, e.g.: `C:\Users\admin\AppData\Roaming\Genymobile\scrcpy`
 
-  If you have configured relevant environment variables, the relevant configuration can be ignored
+If related environment variables are already configured, you can ignore these configurations
 
-## About
+## Related
 
 [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
-## Last
+## Finally
 
-You are welcome to put forward your ideas and feedback [issues](https://github.com/jawa0919/adb-helper/issues)
+Welcome to share ideas and report issues [issues](https://github.com/jawa0919/adb-helper/issues)
