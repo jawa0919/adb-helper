@@ -1,8 +1,14 @@
 # Change Log
 
+# 0.6.3
+
+- Fix LogCat
+- Add Close LogCat
+- Add Top Activity
+
 # 0.6.2
 
-- Fix `/data/data/` update file permission 
+- Fix `/data/data/` update file permission
 
 # 0.6.1
 
