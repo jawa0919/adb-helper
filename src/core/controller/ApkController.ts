@@ -11,9 +11,10 @@ import { commands, Disposable, env, ExtensionContext, TreeItem, window } from "v
 import { getGrantedPermissions, getPid } from "../cmd/apk_info";
 import { clear, revokePermission, uninstall } from "../cmd/install";
 import { pull } from "../cmd/io";
-import { openLogCat } from "../cmd/logcat";
+import { openApkLogCat } from "../cmd/logcat";
 import { getApkPath, IApk, stopTheApp } from "../cmd/pm";
 import { chooseFolder, showInformationMessage, showModal, showProgress, waitMoment } from "../utils/util";
+import { DeviceController } from "./DeviceController";
 
 export class ApkController implements Disposable {
   constructor(public context: ExtensionContext) {
@@ -24,16 +25,32 @@ export class ApkController implements Disposable {
     commands.registerCommand("adb-helper.exportApk", (res) => this.exportApk(res));
     commands.registerCommand("adb-helper.stopApk", (res) => this.stopApk(res));
     commands.registerCommand("adb-helper.copyApkId", (res) => this.copyApkId(res));
-    commands.registerCommand("adb-helper.showLogCatFilter", (res) => this.showLogCatFilter(res));
+    commands.registerCommand("adb-helper.showAppLogCat", (res) => this.showAppLogCat(res));
   }
-  async showLogCatFilter(res: TreeItem) {
+  async showAppLogCat(res: TreeItem) {
     let apk: IApk = JSON.parse(res.tooltip?.toString() || "");
+    DeviceController.logCatProcess?.cancel();
+    DeviceController.logCatChannel?.dispose();
+    await waitMoment();
     let pid = await getPid(apk.devId, apk.apkId);
-    const outputChannel = window.createOutputChannel("AdbHelper-" + apk.apkId);
-    openLogCat(apk.devId, (res) => {
-      if (res.includes(pid)) outputChannel.appendLine(res);
+    DeviceController.logCatChannel = window.createOutputChannel("AdbHelper-" + apk.devId + "-" + apk.apkId, { log: true });
+    DeviceController.logCatProcess = openApkLogCat(apk.devId, pid, (res, level) => {
+      // TODO 2025-12-24 16:07:06 Level
+      if (level === "V") {
+        DeviceController.logCatChannel?.trace(res);
+      } else if (level === "D") {
+        DeviceController.logCatChannel?.debug(res);
+      } else if (level === "I") {
+        DeviceController.logCatChannel?.info(res);
+      } else if (level === "W") {
+        DeviceController.logCatChannel?.warn(res);
+      } else if (level === "E") {
+        DeviceController.logCatChannel?.error(res);
+      } else {
+        DeviceController.logCatChannel?.appendLine(res);
+      }
     });
-    outputChannel.show();
+    DeviceController.logCatChannel?.show();
   }
   async copyApkId(res: TreeItem) {
     let apk: IApk = JSON.parse(res.tooltip?.toString() || "");
@@ -90,5 +107,5 @@ export class ApkController implements Disposable {
       return;
     }
   }
-  dispose() {}
+  dispose() { }
 }

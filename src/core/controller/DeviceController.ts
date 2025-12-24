@@ -7,14 +7,14 @@
  */
 
 import { join } from "node:path";
-import { commands, Disposable, env, ExtensionContext, OutputChannel, TreeItem, window } from "vscode";
+import { commands, Disposable, env, ExtensionContext, LogOutputChannel, TreeItem, window } from "vscode";
 import { scrcpyBinPath } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
 import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
 import { getDeviceIp, IDevice, loadDeviceSystem, loadDeviceTopActivity, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
-import { openLogCat } from "../cmd/logcat";
+import { LogCatProcess, openLogCat } from "../cmd/logcat";
 import { adbJoin, chooseFile, chooseFolder, dateTimeName, logPrint, showErrorMessage, showInformationMessage, showInputBox, showModal, showProgress, waitMoment } from "../utils/util";
 import { DeviceTree } from "../view/DeviceTree";
 import { AdbController } from "./AdbController";
@@ -39,18 +39,41 @@ export class DeviceController implements Disposable {
     commands.registerCommand("adb-helper.powerOffDevice", (res) => this.powerOffDevice(res));
     commands.registerCommand("adb-helper.useIpConnect", (res) => this.useIpConnect(res));
     commands.registerCommand("adb-helper.showLogCat", (res) => this.showLogCat(res));
-    commands.registerCommand("adb-helper.closeAllLogCat", (res) => this.closeAllLogCat(res));
+    commands.registerCommand("adb-helper.closeLogCat", (res) => this.closeLogCat(res));
   }
-  async closeAllLogCat(res: TreeItem) {
+
+  async closeLogCat(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    DeviceController.logCatProcess?.cancel();
+    DeviceController.logCatChannel?.dispose();
   }
+
+  static logCatProcess: LogCatProcess | undefined | null = null;
+  static logCatChannel: LogOutputChannel | undefined | null = null;
+
   async showLogCat(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
-    const outputChannel = window.createOutputChannel("AdbHelper-" + device.product);
-    openLogCat(device.devId, (res) => {
-      outputChannel.appendLine(res);
+    DeviceController.logCatProcess?.cancel();
+    DeviceController.logCatChannel?.dispose();
+    await waitMoment();
+    DeviceController.logCatChannel = window.createOutputChannel("AdbHelper-" + device.devId, { log: true });
+    DeviceController.logCatProcess = openLogCat(device.devId, (res, level) => {
+      // TODO 2025-12-24 16:07:06 Level
+      if (level === "V") {
+        DeviceController.logCatChannel?.trace(res);
+      } else if (level === "D") {
+        DeviceController.logCatChannel?.debug(res);
+      } else if (level === "I") {
+        DeviceController.logCatChannel?.info(res);
+      } else if (level === "W") {
+        DeviceController.logCatChannel?.warn(res);
+      } else if (level === "E") {
+        DeviceController.logCatChannel?.error(res);
+      } else {
+        DeviceController.logCatChannel?.appendLine(res);
+      }
     });
-    outputChannel.show();
+    DeviceController.logCatChannel.show();
   }
   async useIpConnect(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
@@ -168,5 +191,8 @@ export class DeviceController implements Disposable {
     });
   }
 
-  dispose() { }
+  dispose() {
+    DeviceController.logCatProcess?.cancel();
+    DeviceController.logCatChannel?.dispose();
+  }
 }

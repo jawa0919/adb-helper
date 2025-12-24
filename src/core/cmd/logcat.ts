@@ -6,11 +6,14 @@
  * @Description  : 日志
  */
 
+import * as execa from "execa";
 import { adbBinPath } from "../app/AppConfig";
 import { safeSpawn } from "../utils/processes";
 import { showErrorMessage } from "../utils/util";
 
-export async function openLogCat(devId: string, callback?: (line: string) => void): Promise<string> {
+export type LogCatProcess = execa.ExecaChildProcess<string>;
+
+export function openLogCat(devId: string, callback?: (...res: string[]) => void): LogCatProcess {
   let cmd = ["-s", devId, "logcat", "-v", "time"];
   const procRes = safeSpawn("adb", cmd, adbBinPath);
   procRes.stderr?.on("data", (err) => {
@@ -22,7 +25,8 @@ export async function openLogCat(devId: string, callback?: (line: string) => voi
   procRes.stdout?.on("data", (chunk) => {
     const res = Buffer.from(chunk).toString();
     res.split(/\n|\r\n/).forEach((line) => {
-      if (callback) callback(line.trim());
+      if (callback) callback(line.trimEnd());
+      // if (callback) callback(line, line.slice(19, 20));
     });
   });
   procRes.on("error", (err) => {
@@ -31,5 +35,30 @@ export async function openLogCat(devId: string, callback?: (line: string) => voi
     showErrorMessage(res);
     procRes.cancel();
   });
-  return "";
+  return procRes;
+}
+
+export function openApkLogCat(devId: string, pid: string, callback?: (...res: string[]) => void): LogCatProcess {
+  let cmd = ["-s", devId, "logcat", "--pid=" + pid, "-v", "time"];
+  const procRes = safeSpawn("adb", cmd, adbBinPath);
+  procRes.stderr?.on("data", (err) => {
+    const res = Buffer.from(err).toString();
+    console.error("errDataListener", res);
+    showErrorMessage(res);
+    procRes.cancel();
+  });
+  procRes.stdout?.on("data", (chunk) => {
+    const res = Buffer.from(chunk).toString();
+    res.split(/\n|\r\n/).forEach((line) => {
+      if (callback) callback(line.trimEnd());
+      // if (callback) callback(line, line.slice(19, 20));
+    });
+  });
+  procRes.on("error", (err) => {
+    const res = Buffer.from(err.message).toString();
+    console.error("errDataListener", res);
+    showErrorMessage(res);
+    procRes.cancel();
+  });
+  return procRes;
 }

@@ -50,7 +50,7 @@ Help execute 'ADB' common commands. Device management, `ip/pair`connection, devi
 - [x] exportApk:
 - [x] stopApk:
 - [x] copyApkId:
-- [x] showLogCatFilter:
+- [x] showAppLogCat:
 
 ![ApkController](./docs/img/ApkController.png)
 

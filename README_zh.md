@@ -35,10 +35,12 @@
 - [x] inputText: 输入文字到设备上
 - [x] showDeviceInfo: 显示设备相关信息
 - [x] startScrcpy: 启动 Scrcpy [https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
+- [x] showTopActivity: 查看顶层Activity
 - [x] rebootDevice: 重启设备
 - [x] powerOffDevice: 关闭设备
 - [x] useIpConnect: 使用 Ip 连接 ADB
 - [x] showLogCat: 显示 logcat 日志
+- [x] closeLogCat: 关闭 logcat 日志
 
 ![DeviceController](./docs/img/DeviceController.gif)
 
@@ -50,7 +52,7 @@
 - [x] exportApk: 导出 apk
 - [x] stopApk: 停止 apk
 - [x] copyApkId: 复制 apk id
-- [x] showLogCatFilter: 显示本 apk 的 logcat 日志
+- [x] showAppLogCat: 显示本 apk 的 logcat 日志
 
 ![ApkController](./docs/img/ApkController.png)
 
@@ -88,6 +90,7 @@
 ## 配置
 
 - [x] explorerRootPathList：快速访问列表，默认列表中的第一项显示
+
   ```json
   [
       "/sdcard/",
@@ -98,6 +101,7 @@
       "/sdcard/Download/",
   ],
   ```
+
 - [x] adbBinPath：`adb`的 Bin 路径,eg: `E:\sdk\androidSDK\platform-tools`
 - [x] androidSdkPath：`Android` SDK 的路径,eg: `E:\sdk\androidSDK`
 - [x] flutterSdkPath：`Flutter` SDK 的路径,eg: `E:\sdk\flutter339`

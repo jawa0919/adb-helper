@@ -104,6 +104,10 @@
         "title": "Show Device Info"
       },
       {
+        "command": "adb-helper.showTopActivity",
+        "title": "Top Activity Info"
+      },
+      {
         "command": "adb-helper.startScrcpy",
         "title": "Start Scrcpy"
       },
@@ -122,6 +126,10 @@
       {
         "command": "adb-helper.showLogCat",
         "title": "Show LogCat"
+      },
+      {
+        "command": "adb-helper.closeLogCat",
+        "title": "Close LogCat"
       },
       {
         "command": "adb-helper.wipeApkData",
@@ -148,8 +156,8 @@
         "title": "Copy Apk Id"
       },
       {
-        "command": "adb-helper.showLogCatFilter",
-        "title": "Show LogCat Filter Apk"
+        "command": "adb-helper.showAppLogCat",
+        "title": "Show App LogCat"
       },
       {
         "command": "adb-helper.chooseDevice",
@@ -393,6 +401,11 @@
           "group": "996_info@996"
         },
         {
+          "command": "adb-helper.showTopActivity",
+          "when": "viewItem == AdbDevice",
+          "group": "996_info@997"
+        },
+        {
           "command": "adb-helper.rebootDevice",
           "when": "viewItem == AdbDevice",
           "group": "996_reboot@995"
@@ -411,6 +424,11 @@
           "command": "adb-helper.showLogCat",
           "when": "viewItem == AdbDevice",
           "group": "998_log@995"
+        },
+        {
+          "command": "adb-helper.closeLogCat",
+          "when": "viewItem == AdbDevice",
+          "group": "998_log@996"
         },
         {
           "command": "adb-helper.wipeApkData",
@@ -443,7 +461,7 @@
           "group": "999_apk@996"
         },
         {
-          "command": "adb-helper.showLogCatFilter",
+          "command": "adb-helper.showAppLogCat",
           "when": "viewItem == AdbApk",
           "group": "999_log@995"
         },
@@ -523,7 +541,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "20.4.5",
     "@types/qrcode-terminal": "^0.12.0",
-    "@types/vscode": "1.57.0",
+    "@types/vscode": "1.88.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.3.3",
