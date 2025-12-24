@@ -11,7 +11,7 @@ import { commands, Disposable, env, ExtensionContext, OutputChannel, TreeItem, w
 import { scrcpyBinPath } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
 import { connect, powerOff, reboot, scrcpy, tcpIp } from "../cmd/connect";
-import { getDeviceIp, IDevice, loadDeviceSystem, shellInputText } from "../cmd/devices";
+import { getDeviceIp, IDevice, loadDeviceSystem, loadDeviceTopActivity, shellInputText } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { openExplorerWindows, pull, screenCap } from "../cmd/io";
 import { openLogCat } from "../cmd/logcat";
@@ -33,11 +33,16 @@ export class DeviceController implements Disposable {
     commands.registerCommand("adb-helper.openShell", (res) => this.openShell(res));
     commands.registerCommand("adb-helper.inputText", (res) => this.inputText(res));
     commands.registerCommand("adb-helper.showDeviceInfo", (res) => this.showDeviceInfo(res));
+    commands.registerCommand("adb-helper.showTopActivity", (res) => this.showTopActivity(res));
     commands.registerCommand("adb-helper.startScrcpy", (res) => this.startScrcpy(res));
     commands.registerCommand("adb-helper.rebootDevice", (res) => this.rebootDevice(res));
     commands.registerCommand("adb-helper.powerOffDevice", (res) => this.powerOffDevice(res));
     commands.registerCommand("adb-helper.useIpConnect", (res) => this.useIpConnect(res));
     commands.registerCommand("adb-helper.showLogCat", (res) => this.showLogCat(res));
+    commands.registerCommand("adb-helper.closeAllLogCat", (res) => this.closeAllLogCat(res));
+  }
+  async closeAllLogCat(res: TreeItem) {
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
   }
   async showLogCat(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
@@ -99,6 +104,13 @@ export class DeviceController implements Disposable {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
     await scrcpy(device.devId);
   }
+  async showTopActivity(res: TreeItem) {
+    const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
+    const info = await loadDeviceTopActivity(device.devId);
+    showInformationMessage(`TopActivity ${info}`, ...["Copy"]).then((r) => {
+      if (r === "Copy") env.clipboard.writeText(info);;
+    });
+  }
   async showDeviceInfo(res: TreeItem) {
     const device: IDevice = JSON.parse(res.tooltip?.toString() || "");
     const info = await loadDeviceSystem(device.devId);
@@ -156,5 +168,5 @@ export class DeviceController implements Disposable {
     });
   }
 
-  dispose() {}
+  dispose() { }
 }

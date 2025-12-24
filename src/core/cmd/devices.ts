@@ -60,6 +60,15 @@ function _findValue(array: string[], key: string, def = ""): string {
   return value || def;
 }
 
+export async function loadDeviceTopActivity(devId: string): Promise<string> {
+  let cmd = ["-s", devId, "shell", "dumpsys", "activity", "top", "| grep ACTIVITY"];
+  const procRes = await simpleSafeSpawn("adb", cmd, adbBinPath);
+  if (procRes.exitCode === 0) {
+    return procRes.stdout;
+  }
+  return "";
+}
+
 export async function loadDeviceSystem(devId: string): Promise<{ androidId: string; netWorkIp: string }> {
   const androidId = await getAndroidId(devId);
   const netWorkIp = await getDeviceIp(devId);
