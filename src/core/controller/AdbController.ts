@@ -8,20 +8,18 @@
 
 import { generate } from "qrcode-terminal";
 import { ExecaChildProcess } from "execa";
-import { commands, Disposable, ExtensionContext, ProgressLocation, QuickPickItem, Uri, window } from "vscode";
+import { commands, Disposable, ExtensionContext, QuickPickItem, Uri, window } from "vscode";
 import { flutterBinPath } from "../app/AppConfig";
 import { AppConst } from "../app/AppConst";
-import { connect, killServer, pair, startServer } from "../cmd/connect";
+import { connect, pair } from "../cmd/connect";
 import { devices, IDevice } from "../cmd/devices";
 import { install } from "../cmd/install";
 import { safeSpawn } from "../utils/processes";
-import { logPrint, showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
+import { showInformationMessage, showInputBox, showProgress, showQuickPickItem, waitMoment } from "../utils/util";
 import { DeviceController } from "./DeviceController";
 import { ExplorerController } from "./ExplorerController";
 import { bonjourPairing, simpleBonjourConnect, simpleBonjourPairing } from "../cmd/bonjour_find";
 import * as bonjour from "bonjour";
-import { join } from "path";
-import { downloadFile, zipFile } from "../utils/file_util";
 
 export class AdbController implements Disposable {
   static deviceList: IDevice[] = [];
@@ -32,8 +30,6 @@ export class AdbController implements Disposable {
     this.deviceController = new DeviceController(context);
     this.explorerController = new ExplorerController(context);
     /// commands
-    commands.registerCommand("adb-helper.installAdb", () => this.installAdb());
-    commands.registerCommand("adb-helper.restartAdb", () => this.restartAdb());
     commands.registerCommand("adb-helper.refreshDeviceManager", () => this.refreshDeviceManager());
     commands.registerCommand("adb-helper.ipConnect", () => this.ipConnect());
     commands.registerCommand("adb-helper.ipConnectHistory", () => this.ipConnectHistory());
@@ -183,55 +179,6 @@ export class AdbController implements Disposable {
     const index = AdbController.deviceList.findIndex((d) => d.devId === this.explorerController.tree.device?.devId);
     if (index === -1) this.explorerController.tree.device = AdbController.deviceList[0];
     commands.executeCommand("adb-helper.refreshExplorerManager");
-  }
-  async restartAdb() {
-    showProgress("Restart Adb running!", async () => {
-      await killServer();
-      await waitMoment();
-      await startServer();
-      await waitMoment();
-      await commands.executeCommand("adb-helper.refreshDeviceManager");
-      return;
-    });
-  }
-  async installAdb() {
-    logPrint("installAdb");
-    let zipName = "";
-    if (AppConst.isWin) {
-      zipName = "platform-tools-latest-windows.zip";
-    } else if (AppConst.isMac) {
-      zipName = "platform-tools-latest-darwin.zip";
-    } else if (AppConst.isLinux) {
-      zipName = "platform-tools-latest-linux.zip";
-    }
-    if (zipName === "") {
-      window.showErrorMessage(`no find you system support adb`);
-      return;
-    }
-    try {
-      const tempFile = join(AppConst.homePath, zipName);
-      // 下载
-      await window.withProgress({
-        location: ProgressLocation.Notification,
-        title: 'download adb zip...'
-      }, async (progress) => {
-        progress.report({ message: 'starting download' });
-        const adbZipUrl = 'https://googledownloads.cn/android/repository/' + zipName;
-        await downloadFile(adbZipUrl, tempFile);
-      });
-
-      // 解压
-      await window.withProgress({
-        location: ProgressLocation.Notification,
-        title: 'unzip...'
-      }, async () => {
-        await zipFile(tempFile, AppConst.homePath);
-      });
-      window.showInformationMessage(`installAdb success: ${AppConst.quickSdkPath}`);
-    } catch (error) {
-      logPrint("installAdb error: " + error);
-      window.showErrorMessage(`installAdb error: ${error}`);
-    }
   }
 
   dispose() {

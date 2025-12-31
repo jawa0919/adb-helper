@@ -33,21 +33,18 @@
     "workspaceContains:.metadata",
     "workspaceContains:*/.metadata",
     "workspaceContains:*/*/.metadata",
-    "onFileSystem:adb-helper",
-    "onView:adb-helper.DeviceManager",
-    "onView:adb-helper.ExplorerManager",
-    "onCommand:adb-helper.restartAdb"
+    "onFileSystem:adb-helper"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "adb-helper.installAdb",
-        "title": "Install Adb (Adb-helper)"
+        "title": "Install Adb @Adb-helper"
       },
       {
         "command": "adb-helper.restartAdb",
-        "title": "Start/Restart Adb (Adb-helper)",
+        "title": "Start/Restart Adb @Adb-helper",
         "icon": "$(sync)"
       },
       {

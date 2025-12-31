@@ -13,8 +13,6 @@ export async function downloadFile(url: string, targetPath: string): Promise<voi
             const response = await fetch(url);
             const buffer = Buffer.from(await response.arrayBuffer());
             writeFileSync(targetPath, buffer);
-            response.arrayBuffer();
-            Promise.resolve();
             resolve();
         } catch (error) {
             reject(error);
