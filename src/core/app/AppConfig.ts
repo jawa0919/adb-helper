@@ -44,7 +44,7 @@ function loadAdbBinPath(cf: WorkspaceConfiguration = workspace.getConfiguration(
   sdkPaths = sdkPaths.map((p) => p.trim()).filter((p) => p);
   sdkPaths = sdkPaths.map((p) => (basename(p) === "platform-tools" ? p : join(p, "platform-tools")));
 
-  sdkPaths = [...paths, ...sdkPaths].filter((p) => existsSync(join(p, AppConst.isWin ? "adb.exe" : "adb")));
+  sdkPaths = [...paths, ...sdkPaths, AppConst.quickSdkPath].filter((p) => existsSync(join(p, AppConst.isWin ? "adb.exe" : "adb")));
 
   adbBinPath = sdkPaths.shift() || "";
   logPrint("adbBinPath", adbBinPath);

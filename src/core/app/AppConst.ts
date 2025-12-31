@@ -11,8 +11,11 @@ import { join } from "node:path";
 
 export class AppConst {
   static readonly isWin = process.platform.startsWith("win");
+  static readonly isMac = process.platform.startsWith("darwin");
+  static readonly isLinux = process.platform.startsWith("linux");
   static readonly scheme = "adb-helper";
   static readonly homePath = join(homedir(), `.${AppConst.scheme}`);
+  static readonly quickSdkPath = join(AppConst.homePath, `platform-tools`);
   static readonly mirrorPath = join(AppConst.homePath, `ExplorerMirror`);
   static readonly apkFilterList = ["-3", "-s", "-e", "-d"];
 }
