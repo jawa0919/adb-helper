@@ -1,6 +1,10 @@
 # adb-helper
 
-[![Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Installs](https://img.shields.io/visual-studio-marketplace/i/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![Rating](https://img.shields.io/visual-studio-marketplace/stars/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper) [![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
+[![Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper)
+[![Rating](https://img.shields.io/visual-studio-marketplace/stars/jawa0919.adb-helper)](https://marketplace.visualstudio.com/items?itemName=jawa0919.adb-helper)
+[![GitHub issues](https://img.shields.io/github/issues/jawa0919/adb-helper)](https://github.com/jawa0919/adb-helper/issues)
+[![Open VSX Version](https://img.shields.io/open-vsx/v/jawa0919/adb-helper)](https://open-vsx.org/extension/jawa0919/adb-helper)
 
 ## Introduction
 
@@ -66,7 +70,6 @@ Helps execute common `ADB` commands. Device management, `ip/pair` connections, d
 ### FileController
 
 > In the file management system, opened files are copies of device files mirrored locally.
-
 > In the `/data/data/` directory, due to lack of permissions, directories cannot be obtained. Related file directories are simulated.
 
 - [x] openFile: Open file
