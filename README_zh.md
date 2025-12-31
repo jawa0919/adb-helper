@@ -23,6 +23,7 @@
 - [x] pairDevicesUsingCode：使用 pair 的 code 配对设备（Android11 以上使用）
 - [x] installToDevice：将工作区中的 apk 文件安装到设备
 - [x] chooseApkFilter：选择 apk 显示种类，-3：第三方应用（默认），-s：系统应用，-e：启用的应用，-d：停用的应用
+- [x] installAdb 安装adb
 
 ![AdbController](./docs/img/AdbController.gif)
 
@@ -108,6 +109,18 @@
 - [x] scrcpyBinPath：`Scrcpy` 的 Bin 路径,eg: `C:\Users\admin\AppData\Roaming\Genymobile\scrcpy`
 
 如果已经配置了相关环境变量，可以忽略相关配置
+
+### 快速使用
+
+如果只在某些简单场景下使用`adb`，不想安装完整的androidSdk开发环境
+
+可以使用`installAdb`命令安装`adb`
+
+> 按`F1`调出命令窗口，键入`installAdb`,等待进度弹窗完成快速安装
+
+![liteAdb](./docs/img/liteAdb.png)
+
+插件会下载`android`的[platform-tools](https://android-docs.cn/tools/releases/platform-tools)安装到用户文件下的`.adb-helper/platform-tools`目录下
 
 ## 相关
 

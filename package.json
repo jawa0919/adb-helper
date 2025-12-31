@@ -43,11 +43,11 @@
     "commands": [
       {
         "command": "adb-helper.installAdb",
-        "title": "Install adb (Adb-helper)"
+        "title": "Install Adb (Adb-helper)"
       },
       {
         "command": "adb-helper.restartAdb",
-        "title": "Start/Restart Adb",
+        "title": "Start/Restart Adb (Adb-helper)",
         "icon": "$(sync)"
       },
       {

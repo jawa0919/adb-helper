@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.6.4
+
+- Add installAdb
+
 # 0.6.3
 
 - Fix LogCat

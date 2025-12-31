@@ -23,6 +23,7 @@ Helps execute common `ADB` commands. Device management, `ip/pair` connections, d
 - [x] pairDevicesUsingCode: Pair devices using pairing code (Android 11+)
 - [x] installToDevice: Install apk files from workspace to device
 - [x] chooseApkFilter: Select apk display types, -3: third-party apps (default), -s: system apps, -e: enabled apps, -d: disabled apps
+- [x] installAdb: Install adb
 
 ![AdbController](./docs/img/AdbController.gif)
 
@@ -108,6 +109,16 @@ Helps execute common `ADB` commands. Device management, `ip/pair` connections, d
 - [x] scrcpyBinPath: Path to `Scrcpy` binary, e.g.: `C:\Users\admin\AppData\Roaming\Genymobile\scrcpy`
 
 If related environment variables are already configured, you can ignore these configurations
+
+### Quick Use
+
+If you only want to use `adb` in some simple scenarios without installing the complete Android SDK development environment, you can use the `installAdb` command to install `adb`.
+
+> Press `F1` to bring up the command window, type `installAdb`, and wait for the progress dialog to complete the quick installation.
+
+![liteAdb](./docs/img/liteAdb.png)
+
+The plugin will download Android's [platform-tools](https://android-docs.cn/tools/releases/platform-tools) and install it to the `.adb-helper/platform-tools` directory under the user's home directory.
 
 ## Related
 
