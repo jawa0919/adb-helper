@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.6.7
+
+- Add installScrcpy
+
 # 0.6.6/5/4
 
 - Add installAdb

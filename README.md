@@ -28,6 +28,7 @@ Helps execute common `ADB` commands. Device management, `ip/pair` connections, d
 - [x] installToDevice: Install apk files from workspace to device
 - [x] chooseApkFilter: Select apk display types, -3: third-party apps (default), -s: system apps, -e: enabled apps, -d: disabled apps
 - [x] installAdb: Install adb
+- [x] installScrcpy: Install Scrcpy[https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
 ![AdbController](./docs/img/AdbController.gif)
 

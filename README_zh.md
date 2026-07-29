@@ -28,6 +28,7 @@
 - [x] installToDevice：将工作区中的 apk 文件安装到设备
 - [x] chooseApkFilter：选择 apk 显示种类，-3：第三方应用（默认），-s：系统应用，-e：启用的应用，-d：停用的应用
 - [x] installAdb 安装adb
+- [x] installScrcpy: 安装 Scrcpy[https://github.com/Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
 ![AdbController](./docs/img/AdbController.gif)
 

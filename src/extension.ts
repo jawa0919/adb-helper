@@ -7,13 +7,15 @@
  */
 
 import { commands, ExtensionContext, ProgressLocation, window, workspace } from "vscode";
-import { adbBinPath, explorerRootPathList, flutterBinPath, initAppConfig } from "./core/app/AppConfig";
+import { adbBinPath, explorerRootPathList, flutterBinPath, initAppConfig, scrcpyBinPath } from "./core/app/AppConfig";
 import { AdbController } from "./core/controller/AdbController";
 import { logPrint, showProgress, showWarningMessage, waitMoment } from "./core/utils/util";
 import { AppConst } from "./core/app/AppConst";
 import { join } from "node:path";
-import { downloadFile, zipFile } from "./core/utils/file_util";
+import { cpSync, renameSync, rmSync } from "node:fs";
+import { downloadFile, zipFile, extractFile } from "./core/utils/file_util";
 import { killServer, startServer } from "./core/cmd/connect";
+import { findScrcpyBinDir, getScrcpyAsset } from "./core/utils/github_asset_download";
 
 let adbManager: AdbController | undefined;
 
@@ -29,6 +31,21 @@ export function activate(context: ExtensionContext) {
     await installAdb();
     initAppConfig();
     logPrint(explorerRootPathList, adbBinPath, flutterBinPath);
+    if (adbManager === undefined) {
+      adbManager = new AdbController(context);
+    }
+    if (flutterBinPath !== "") {
+      adbManager.createFlutterDaemon();
+    } else {
+      commands.executeCommand("adb-helper.refreshDeviceManager");
+      logPrint("No Find `flutter` Command, Can Not Auto Refresh Device List When Device Connect/Disconnect");
+    }
+  });
+
+  commands.registerCommand("adb-helper.installScrcpy", async () => {
+    await installScrcpy();
+    initAppConfig();
+    logPrint(explorerRootPathList, adbBinPath, flutterBinPath, scrcpyBinPath);
     if (adbManager === undefined) {
       adbManager = new AdbController(context);
     }
@@ -112,3 +129,43 @@ async function installAdb() {
     window.showErrorMessage(`installAdb error: ${error}`);
   }
 }
+
+async function installScrcpy() {
+  logPrint("installScrcpy");
+  try {
+    const asset = await getScrcpyAsset();
+    if (!asset) {
+      window.showErrorMessage(`no find you system support scrcpy`);
+      return;
+    }
+    const tempFile = join(AppConst.homePath, asset.name);
+    rmSync(tempFile, { recursive: true, force: true });
+    await window.withProgress({
+      location: ProgressLocation.Notification,
+      title: 'downloading scrcpy'
+    }, async (progress) => {
+      progress.report({ message: 'starting download' });
+      await downloadFile(asset.browser_download_url, tempFile);
+      progress.report({ message: 'starting unzip' });
+      await extractFile(tempFile, AppConst.homePath);
+    });
+    const binDir = findScrcpyBinDir(AppConst.homePath);
+    if (!binDir) {
+      window.showErrorMessage(`can not find scrcpy after extract`);
+      return;
+    }
+    rmSync(AppConst.quickScrcpyPath, { recursive: true, force: true });
+    try {
+      renameSync(binDir, AppConst.quickScrcpyPath);
+    } catch {
+      cpSync(binDir, AppConst.quickScrcpyPath, { recursive: true });
+      rmSync(binDir, { recursive: true, force: true });
+    }
+    window.showInformationMessage(`installScrcpy success: ${AppConst.quickScrcpyPath}`);
+  } catch (error) {
+    logPrint("installScrcpy error: " + error);
+    window.showErrorMessage(`installScrcpy error: ${error}`);
+  }
+}
+
+

@@ -76,7 +76,7 @@ function loadScrcpyBinPath(cf: WorkspaceConfiguration = workspace.getConfigurati
 
   sdkPaths = sdkPaths.map((p) => p.trim()).filter((p) => p);
 
-  sdkPaths = sdkPaths.filter((p) => existsSync(join(p, AppConst.isWin ? "scrcpy.exe" : "scrcpy")));
+  sdkPaths = [...sdkPaths, AppConst.quickScrcpyPath].filter((p) => existsSync(join(p, AppConst.isWin ? "scrcpy.exe" : "scrcpy")));
 
   scrcpyBinPath = sdkPaths.shift() || "";
   logPrint("scrcpyBinPath", scrcpyBinPath);
