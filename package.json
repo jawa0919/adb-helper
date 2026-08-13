@@ -24,15 +24,9 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:AndroidManifest.xml",
-    "workspaceContains:*/AndroidManifest.xml",
-    "workspaceContains:*/*/AndroidManifest.xml",
-    "workspaceContains:*.apk",
-    "workspaceContains:*/*.apk",
-    "workspaceContains:*/*/*.apk",
-    "workspaceContains:.metadata",
-    "workspaceContains:*/.metadata",
-    "workspaceContains:*/*/.metadata",
+    "workspaceContains:**/AndroidManifest.xml",
+    "workspaceContains:**/*.apk",
+    "workspaceContains:**/.metadata",
     "onFileSystem:adb-helper"
   ],
   "main": "./out/extension.js",
