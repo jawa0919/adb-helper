@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.6.8
+
+- Fix activationEvents path
+
 # 0.6.7
 
 - Add installScrcpy
